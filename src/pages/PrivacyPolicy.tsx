@@ -15,7 +15,7 @@ const PrivacyPolicy = () => (
     <section className="section-padding bg-background">
       <div className="container-tight max-w-3xl">
         <motion.div {...fadeUp} className="prose prose-neutral dark:prose-invert max-w-none space-y-8">
-          <p className="text-muted-foreground text-sm">Last Updated: February 23, 2026</p>
+          <p className="text-muted-foreground text-sm">Last Updated: August 15, 2024</p>
 
           <div>
             <h2 className="text-xl font-heading font-bold text-foreground mb-3">1. Introduction</h2>
