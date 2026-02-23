@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Linkedin, Twitter, Instagram, Github } from "lucide-react";
+import { Linkedin, Twitter, Instagram } from "lucide-react";
 
 const Footer = () => (
   <footer className="bg-navy text-primary-foreground">
@@ -8,9 +8,7 @@ const Footer = () => (
         {/* Brand */}
         <div className="lg:col-span-1">
           <Link to="/" className="flex items-center gap-2 mb-4">
-            <div className="gradient-primary rounded-lg w-9 h-9 flex items-center justify-center">
-              <span className="text-primary-foreground font-heading font-bold text-lg">S</span>
-            </div>
+            <img src="/logo.png" alt="ScaleXWeb Logo" className="w-9 h-9 rounded-lg" />
             <span className="font-heading font-bold text-xl text-primary-foreground">
               ScaleXWeb
             </span>
@@ -21,10 +19,9 @@ const Footer = () => (
           </p>
           <div className="flex gap-3">
             {[
-              { icon: Linkedin, href: "#" },
-              { icon: Twitter, href: "#" },
+              { icon: Linkedin, href: "https://www.linkedin.com/company/scale-x-web-solution/" },
+              { icon: Twitter, href: "https://x.com/ScaleXWeb" },
               { icon: Instagram, href: "#" },
-              { icon: Github, href: "#" },
             ].map(({ icon: Icon, href }, i) => (
               <a key={i} href={href} className="w-9 h-9 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-primary/60 transition-colors">
                 <Icon className="w-4 h-4" />
@@ -63,7 +60,7 @@ const Footer = () => (
         <div>
           <h4 className="font-heading font-semibold text-sm mb-4 text-primary-foreground/80">Contact</h4>
           <ul className="space-y-2.5 text-sm text-primary-foreground/50">
-            <li>hello@scalexweb.com</li>
+            <li>scalexwebsolution@gmail.com</li>
             <li>+91 XXXXX XXXXX</li>
             <li>Ahmedabad, Gujarat, India</li>
             <li>Mon–Fri: 9:00 AM – 6:00 PM IST</li>
