@@ -128,7 +128,7 @@ const Contact = () => {
               <div className="space-y-5 mb-8">
                 {[
                   { icon: Mail, label: "Email", value: "scalexwebsolution@gmail.com" },
-                  { icon: Phone, label: "Phone", value: "+91 XXXXX XXXXX" },
+                  
                   { icon: MapPin, label: "Location", value: "Ahmedabad, Gujarat, India" },
                   { icon: Clock, label: "Business Hours", value: "Mon–Fri: 9 AM – 6 PM IST" },
                 ].map(({ icon: Icon, label, value }) => (
