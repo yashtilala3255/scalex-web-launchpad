@@ -108,10 +108,10 @@ const About = () => (
           <div className="w-24 h-24 mx-auto mb-6 rounded-full gradient-primary flex items-center justify-center">
             <Users className="w-10 h-10 text-primary-foreground" />
           </div>
-          <h3 className="text-2xl font-heading font-bold text-foreground mb-1">Yash Tilala</h3>
+          <h3 className="text-2xl font-heading font-bold text-foreground mb-1">Yash Patel</h3>
           <p className="text-sm text-muted-foreground mb-4">Founder & CEO, ScaleXWeb Solution</p>
           <p className="text-muted-foreground leading-relaxed mb-6">
-            Yash Tilala founded ScaleXWeb Solution with a vision to bridge the gap between business ambition and technology execution. With deep expertise in software architecture and product strategy, he leads a passionate team of engineers and designers committed to delivering digital excellence. Under his leadership, ScaleXWeb has delivered 50+ successful projects across 10+ industries.
+            Yash Patel founded ScaleXWeb Solution with a vision to bridge the gap between business ambition and technology execution. With deep expertise in software architecture and product strategy, he leads a passionate team of engineers and designers committed to delivering digital excellence. Under his leadership, ScaleXWeb has delivered 50+ successful projects across 10+ industries.
           </p>
           <blockquote className="text-lg italic text-foreground/80 mb-6 border-l-4 border-primary pl-4 text-left">
             "We don't just build websites — we build growth engines for ambitious businesses."

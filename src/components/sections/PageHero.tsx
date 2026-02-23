@@ -7,8 +7,8 @@ interface PageHeroProps {
   breadcrumbs: { name: string; path: string }[];
   headline: string;
   subheadline: string;
-  ctaText: string;
-  ctaLink: string;
+  ctaText?: string;
+  ctaLink?: string;
 }
 
 const PageHero = ({ breadcrumbs, headline, subheadline, ctaText, ctaLink }: PageHeroProps) => (
@@ -33,9 +33,11 @@ const PageHero = ({ breadcrumbs, headline, subheadline, ctaText, ctaLink }: Page
       </div>
       <h1 className="text-3xl md:text-5xl font-heading font-bold text-primary-foreground mb-4 max-w-3xl">{headline}</h1>
       <p className="text-lg text-primary-foreground/80 mb-8 max-w-2xl">{subheadline}</p>
-      <Link to={ctaLink}>
-        <Button variant="hero-outline" size="lg" className="text-base">{ctaText}</Button>
-      </Link>
+      {ctaText && ctaLink && (
+        <Link to={ctaLink}>
+          <Button variant="hero-outline" size="lg" className="text-base">{ctaText}</Button>
+        </Link>
+      )}
     </motion.div>
   </section>
 );
