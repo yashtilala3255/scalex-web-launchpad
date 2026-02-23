@@ -61,7 +61,7 @@ const Footer = () => (
           <h4 className="font-heading font-semibold text-sm mb-4 text-primary-foreground/80">Contact</h4>
           <ul className="space-y-2.5 text-sm text-primary-foreground/50">
             <li>scalexwebsolution@gmail.com</li>
-            <li>+91 XXXXX XXXXX</li>
+            
             <li>Ahmedabad, Gujarat, India</li>
             <li>Mon–Fri: 9:00 AM – 6:00 PM IST</li>
           </ul>
