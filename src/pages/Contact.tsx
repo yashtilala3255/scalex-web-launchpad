@@ -40,10 +40,22 @@ const Contact = () => {
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = (data: FormData) => {
-    console.log("Form submitted:", data);
-    toast.success("Thank you! We'll respond within 24 business hours.");
-    reset();
+  const onSubmit = async (data: FormData) => {
+    try {
+      const response = await fetch("https://formspree.io/f/mykdbezz", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (response.ok) {
+        toast.success("Thank you! We'll respond within 24 business hours.");
+        reset();
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
+    } catch {
+      toast.error("Network error. Please try again later.");
+    }
   };
 
   return (
