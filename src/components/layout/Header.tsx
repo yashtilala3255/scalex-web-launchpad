@@ -46,9 +46,7 @@ const Header = () => {
     >
       <div className="container-tight flex items-center justify-between h-16 md:h-20">
         <Link to="/" className="flex items-center gap-2">
-          <div className="gradient-primary rounded-lg w-9 h-9 flex items-center justify-center">
-            <span className="text-primary-foreground font-heading font-bold text-lg">S</span>
-          </div>
+          <img src="/logo.png" alt="ScaleXWeb Logo" className="w-9 h-9 rounded-lg" />
           <span className={`font-heading font-bold text-xl ${scrolled ? "text-foreground" : "text-primary-foreground md:text-foreground"}`}>
             ScaleX<span className="gradient-text">Web</span>
           </span>

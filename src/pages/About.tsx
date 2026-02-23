@@ -116,9 +116,6 @@ const About = () => (
           <blockquote className="text-lg italic text-foreground/80 mb-6 border-l-4 border-primary pl-4 text-left">
             "We don't just build websites — we build growth engines for ambitious businesses."
           </blockquote>
-          <a href="#" className="inline-flex items-center gap-2 text-primary hover:underline text-sm">
-            <Linkedin className="w-4 h-4" /> Connect on LinkedIn
-          </a>
         </motion.div>
       </div>
     </section>
