@@ -14,6 +14,8 @@ import SaasDevelopment from "./pages/services/SaasDevelopment";
 import Ecommerce from "./pages/services/Ecommerce";
 import UiUxDesign from "./pages/services/UiUxDesign";
 import NotFound from "./pages/NotFound";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +36,8 @@ const App = () => (
           <Route path="/services/saas-development" element={<SaasDevelopment />} />
           <Route path="/services/ecommerce" element={<Ecommerce />} />
           <Route path="/services/ui-ux-design" element={<UiUxDesign />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-of-service" element={<TermsOfService />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
