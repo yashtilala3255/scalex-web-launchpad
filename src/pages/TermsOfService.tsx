@@ -1,11 +1,17 @@
 import Layout from "@/components/layout/Layout";
 import PageHero from "@/components/sections/PageHero";
+import SEO from "@/components/SEO";
 import { motion } from "framer-motion";
 
 const fadeUp = { initial: { opacity: 0, y: 30 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true }, transition: { duration: 0.5 } };
 
 const TermsOfService = () => (
   <Layout>
+    <SEO
+      title="Terms of Service | ScaleXWeb Solution"
+      description="Review the Terms of Service for using ScaleXWeb Solution's website and digital development services."
+      path="/terms-of-service"
+    />
     <PageHero
       breadcrumbs={[{ name: "Home", path: "/" }, { name: "Terms of Service", path: "/terms-of-service" }]}
       headline="Terms of Service"

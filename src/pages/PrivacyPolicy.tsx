@@ -1,11 +1,17 @@
 import Layout from "@/components/layout/Layout";
 import PageHero from "@/components/sections/PageHero";
+import SEO from "@/components/SEO";
 import { motion } from "framer-motion";
 
 const fadeUp = { initial: { opacity: 0, y: 30 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true }, transition: { duration: 0.5 } };
 
 const PrivacyPolicy = () => (
   <Layout>
+    <SEO
+      title="Privacy Policy | ScaleXWeb Solution"
+      description="Read how ScaleXWeb Solution collects, uses, and protects personal information when you visit our website or engage our digital services."
+      path="/privacy-policy"
+    />
     <PageHero
       breadcrumbs={[{ name: "Home", path: "/" }, { name: "Privacy Policy", path: "/privacy-policy" }]}
       headline="Privacy Policy"
