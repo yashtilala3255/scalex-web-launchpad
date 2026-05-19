@@ -1,6 +1,7 @@
 import Layout from "@/components/layout/Layout";
 import PageHero from "@/components/sections/PageHero";
 import SectionCTA from "@/components/sections/SectionCTA";
+import SEO from "@/components/SEO";
 import { motion } from "framer-motion";
 import { ReactNode } from "react";
 import { LucideIcon } from "lucide-react";
@@ -20,6 +21,9 @@ interface ServicePageProps {
   headline: string;
   subheadline: string;
   ctaText: string;
+  seoTitle: string;
+  seoDescription: string;
+  serviceName?: string;
   sections: ServiceSection[];
   processSteps: { title: string; desc: string }[];
   techStack: Record<string, string[]>;
@@ -29,9 +33,24 @@ interface ServicePageProps {
 
 const ServicePageTemplate = ({
   breadcrumbName, path, headline, subheadline, ctaText,
+  seoTitle, seoDescription, serviceName,
   sections, processSteps, techStack, ctaHeadline, ctaSubheadline,
 }: ServicePageProps) => (
   <Layout>
+    <SEO
+      title={seoTitle}
+      description={seoDescription}
+      path={path}
+      jsonLd={{
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": serviceName || breadcrumbName,
+        "provider": { "@type": "Organization", "name": "ScaleXWeb Solution", "url": "https://scalexweb.lovable.app" },
+        "areaServed": "Worldwide",
+        "url": `https://scalexweb.lovable.app${path}`,
+        "description": seoDescription,
+      }}
+    />
     <PageHero
       breadcrumbs={[{ name: "Home", path: "/" }, { name: "Services", path: "/services/website-development" }, { name: breadcrumbName, path }]}
       headline={headline}
@@ -39,6 +58,7 @@ const ServicePageTemplate = ({
       ctaText={ctaText}
       ctaLink="/contact"
     />
+
 
     {/* Content Sections */}
     {sections.map((section, i) => (
