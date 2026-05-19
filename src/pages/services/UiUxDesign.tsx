@@ -4,6 +4,9 @@ const UiUxDesign = () => (
   <ServicePageTemplate
     breadcrumbName="UI/UX Design"
     path="/services/ui-ux-design"
+    seoTitle="UI/UX Design Services for Web & Mobile | ScaleXWeb"
+    seoDescription="Research-driven UI/UX design by ScaleXWeb — wireframes, prototypes, and design systems that turn user insight into measurable business results."
+    serviceName="UI/UX Design"
     headline="UI/UX Design That Converts & Delights"
     subheadline="Human-centered design backed by research, data, and creative excellence."
     ctaText="Get a Design Consultation"

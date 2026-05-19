@@ -4,6 +4,9 @@ const WebsiteDevelopment = () => (
   <ServicePageTemplate
     breadcrumbName="Website Development"
     path="/services/website-development"
+    seoTitle="Website Development Services in Ahmedabad | ScaleXWeb"
+    seoDescription="Custom website design and development by ScaleXWeb — corporate sites, landing pages, e-commerce, and portals built for speed, SEO, and conversion."
+    serviceName="Website Development"
     headline="Website Design and Development Services in Ahmedabad"
     subheadline="From stunning landing pages to complex enterprise portals — we craft websites that perform, convert, and scale."
     ctaText="Get a Free Website Quote"

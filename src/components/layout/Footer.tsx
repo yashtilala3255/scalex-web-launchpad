@@ -19,11 +19,11 @@ const Footer = () => (
           </p>
           <div className="flex gap-3">
             {[
-              { icon: Linkedin, href: "https://www.linkedin.com/company/scale-x-web-solution/" },
-              { icon: Twitter, href: "https://x.com/ScaleXWeb" },
-              { icon: Instagram, href: "#" },
-            ].map(({ icon: Icon, href }, i) => (
-              <a key={i} href={href} className="w-9 h-9 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-primary/60 transition-colors">
+              { icon: Linkedin, href: "https://www.linkedin.com/company/scale-x-web-solution/", label: "ScaleXWeb on LinkedIn" },
+              { icon: Twitter, href: "https://x.com/ScaleXWeb", label: "ScaleXWeb on X (Twitter)" },
+              { icon: Instagram, href: "#", label: "ScaleXWeb on Instagram" },
+            ].map(({ icon: Icon, href, label }, i) => (
+              <a key={i} href={href} aria-label={label} className="w-9 h-9 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-primary/60 transition-colors">
                 <Icon className="w-4 h-4" />
               </a>
             ))}

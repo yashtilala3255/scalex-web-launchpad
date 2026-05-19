@@ -1,4 +1,5 @@
 import Layout from "@/components/layout/Layout";
+import SEO from "@/components/SEO";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
@@ -77,10 +78,15 @@ const stats = [
 
 const Index = () => (
   <Layout>
+    <SEO
+      title="ScaleXWeb — Digital Agency for Web & App Development"
+      description="ScaleXWeb Solution is an Ahmedabad-based digital agency building custom websites, mobile apps, SaaS platforms, and e-commerce stores for ambitious businesses."
+      path="/"
+    />
     {/* Hero */}
     <section className="relative min-h-screen flex items-center overflow-hidden">
       <div className="absolute inset-0">
-        <img src={heroBg} alt="" className="w-full h-full object-cover" />
+        <img src={heroBg} alt="" className="w-full h-full object-cover" fetchPriority="high" decoding="async" />
         <div className="absolute inset-0 bg-navy/70" />
       </div>
       <div className="container-tight relative z-10 pt-24 pb-16">
@@ -136,7 +142,7 @@ const Index = () => (
                 { title: "Scalable Architecture", desc: "Built to grow with your business" },
               ].map((item) => (
                 <div key={item.title} className="text-center sm:text-left">
-                  <h4 className="font-heading font-semibold text-foreground mb-1 text-sm">{item.title}</h4>
+                  <h3 className="font-heading font-semibold text-foreground mb-1 text-sm">{item.title}</h3>
                   <p className="text-xs text-muted-foreground">{item.desc}</p>
                 </div>
               ))}

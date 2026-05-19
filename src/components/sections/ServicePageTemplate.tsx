@@ -1,6 +1,7 @@
 import Layout from "@/components/layout/Layout";
 import PageHero from "@/components/sections/PageHero";
 import SectionCTA from "@/components/sections/SectionCTA";
+import SEO from "@/components/SEO";
 import { motion } from "framer-motion";
 import { ReactNode } from "react";
 import { LucideIcon } from "lucide-react";
@@ -20,6 +21,9 @@ interface ServicePageProps {
   headline: string;
   subheadline: string;
   ctaText: string;
+  seoTitle: string;
+  seoDescription: string;
+  serviceName?: string;
   sections: ServiceSection[];
   processSteps: { title: string; desc: string }[];
   techStack: Record<string, string[]>;
@@ -29,9 +33,24 @@ interface ServicePageProps {
 
 const ServicePageTemplate = ({
   breadcrumbName, path, headline, subheadline, ctaText,
+  seoTitle, seoDescription, serviceName,
   sections, processSteps, techStack, ctaHeadline, ctaSubheadline,
 }: ServicePageProps) => (
   <Layout>
+    <SEO
+      title={seoTitle}
+      description={seoDescription}
+      path={path}
+      jsonLd={{
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": serviceName || breadcrumbName,
+        "provider": { "@type": "Organization", "name": "ScaleXWeb Solution", "url": "https://scalexweb.lovable.app" },
+        "areaServed": "Worldwide",
+        "url": `https://scalexweb.lovable.app${path}`,
+        "description": seoDescription,
+      }}
+    />
     <PageHero
       breadcrumbs={[{ name: "Home", path: "/" }, { name: "Services", path: "/services/website-development" }, { name: breadcrumbName, path }]}
       headline={headline}
@@ -39,6 +58,7 @@ const ServicePageTemplate = ({
       ctaText={ctaText}
       ctaLink="/contact"
     />
+
 
     {/* Content Sections */}
     {sections.map((section, i) => (
@@ -93,7 +113,7 @@ const ServicePageTemplate = ({
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {Object.entries(techStack).map(([category, techs], i) => (
             <motion.div key={category} {...stagger} transition={{ delay: i * 0.1 }} className="glass rounded-2xl p-6">
-              <h4 className="font-heading font-semibold text-primary-foreground mb-3">{category}</h4>
+              <h3 className="font-heading font-semibold text-primary-foreground mb-3">{category}</h3>
               <div className="flex flex-wrap gap-2">
                 {techs.map((t) => (
                   <span key={t} className="px-3 py-1 rounded-full text-xs bg-primary-foreground/10 text-primary-foreground/80">{t}</span>

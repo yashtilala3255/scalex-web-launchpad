@@ -1,0 +1,24 @@
+# ScaleXWeb Solution
+
+> Ahmedabad-based digital agency building custom websites, mobile apps, SaaS platforms, and e-commerce stores for startups and enterprises.
+
+## Pages
+
+- [Home](/): Overview of ScaleXWeb's services, industries served, and process.
+- [About](/about): Company story, vision, mission, leadership, and values.
+- [Solutions](/solutions): Business challenges we solve and solution categories.
+- [SaaS Products](/saas-products): SaaS architecture, features, and custom build offerings.
+- [Contact](/contact): Contact form, email, location, and FAQ.
+
+## Services
+
+- [Website Development](/services/website-development): Corporate sites, landing pages, portals, and e-commerce.
+- [App Development](/services/app-development): iOS, Android, React Native, and PWA apps.
+- [SaaS Development](/services/saas-development): Multi-tenant SaaS platforms built for scale.
+- [E-Commerce](/services/ecommerce): Shopify and custom online stores.
+- [UI/UX Design](/services/ui-ux-design): Research, wireframing, and design systems.
+
+## Optional
+
+- [Privacy Policy](/privacy-policy)
+- [Terms of Service](/terms-of-service)

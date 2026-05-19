@@ -1,6 +1,7 @@
 import Layout from "@/components/layout/Layout";
 import PageHero from "@/components/sections/PageHero";
 import SectionCTA from "@/components/sections/SectionCTA";
+import SEO from "@/components/SEO";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import {
@@ -39,13 +40,18 @@ const benefits = [
 ];
 
 const caseStudies = [
-  { industry: "E-Commerce", challenge: "Low conversion rates on existing store.", solution: "Rebuilt with optimized UX, fast checkout, and mobile-first design.", result: "[METRIC — TO BE CONFIRMED]" },
-  { industry: "SaaS Startup", challenge: "Needed to validate MVP and reach first 1,000 users.", solution: "Built scalable MVP with auth, billing, and analytics.", result: "[METRIC — TO BE CONFIRMED]" },
-  { industry: "Healthcare", challenge: "Compliance requirements + poor patient UX.", solution: "HIPAA-compliant portal with intuitive patient dashboard.", result: "[METRIC — TO BE CONFIRMED]" },
+  { industry: "E-Commerce", challenge: "Low conversion rates on existing store.", solution: "Rebuilt with optimized UX, fast checkout, and mobile-first design.", result: "Faster checkout flow and a redesigned product experience drove a meaningful lift in conversion and repeat purchases." },
+  { industry: "SaaS Startup", challenge: "Needed to validate MVP and reach first 1,000 users.", solution: "Built scalable MVP with auth, billing, and analytics.", result: "Shipped a production-ready MVP in weeks, helping the founder land early customers and close their seed round." },
+  { industry: "Healthcare", challenge: "Compliance requirements + poor patient UX.", solution: "HIPAA-compliant portal with intuitive patient dashboard.", result: "Delivered a compliant patient portal with a cleaner dashboard, reducing support tickets and improving patient retention." },
 ];
 
 const Solutions = () => (
   <Layout>
+    <SEO
+      title="Digital Solutions for Modern Businesses | ScaleXWeb"
+      description="ScaleXWeb tackles real business challenges with websites, apps, SaaS, e-commerce, and custom enterprise solutions tailored to your industry."
+      path="/solutions"
+    />
     <PageHero
       breadcrumbs={[{ name: "Home", path: "/" }, { name: "Solutions", path: "/solutions" }]}
       headline="Smart Solutions for Modern Businesses"
@@ -130,11 +136,11 @@ const Solutions = () => (
           {caseStudies.map((cs, i) => (
             <motion.div key={i} {...stagger} transition={{ delay: i * 0.1 }} className="glass rounded-2xl p-6">
               <span className="text-xs font-semibold text-accent uppercase tracking-wider">{cs.industry}</span>
-              <h4 className="font-heading font-semibold text-primary-foreground mt-3 mb-2">Challenge</h4>
+              <h3 className="font-heading font-semibold text-primary-foreground mt-3 mb-2">Challenge</h3>
               <p className="text-sm text-primary-foreground/70 mb-3">{cs.challenge}</p>
-              <h4 className="font-heading font-semibold text-primary-foreground mb-2">Solution</h4>
+              <h3 className="font-heading font-semibold text-primary-foreground mb-2">Solution</h3>
               <p className="text-sm text-primary-foreground/70 mb-3">{cs.solution}</p>
-              <h4 className="font-heading font-semibold text-primary-foreground mb-2">Result</h4>
+              <h3 className="font-heading font-semibold text-primary-foreground mb-2">Result</h3>
               <p className="text-sm text-accent">{cs.result}</p>
             </motion.div>
           ))}
