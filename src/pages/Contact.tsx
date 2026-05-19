@@ -1,6 +1,7 @@
 import Layout from "@/components/layout/Layout";
 import PageHero from "@/components/sections/PageHero";
 import SectionCTA from "@/components/sections/SectionCTA";
+import SEO from "@/components/SEO";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -60,6 +61,46 @@ const Contact = () => {
 
   return (
     <Layout>
+      <SEO
+        title="Contact ScaleXWeb — Start Your Project Today"
+        description="Get in touch with ScaleXWeb Solution in Ahmedabad. Tell us about your website, app, or SaaS project — we respond within 24 business hours."
+        path="/contact"
+        jsonLd={[
+          {
+            "@context": "https://schema.org",
+            "@type": "LocalBusiness",
+            "name": "ScaleXWeb Solution",
+            "image": "https://scalexweb.lovable.app/logo.png",
+            "url": "https://scalexweb.lovable.app/contact",
+            "email": "scalexwebsolution@gmail.com",
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "Ahmedabad",
+              "addressRegion": "Gujarat",
+              "addressCountry": "IN",
+            },
+            "openingHoursSpecification": [{
+              "@type": "OpeningHoursSpecification",
+              "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
+              "opens": "09:00",
+              "closes": "18:00",
+            }],
+            "sameAs": [
+              "https://www.linkedin.com/company/scale-x-web-solution/",
+              "https://x.com/ScaleXWeb",
+            ],
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": faqs.map((f) => ({
+              "@type": "Question",
+              "name": f.q,
+              "acceptedAnswer": { "@type": "Answer", "text": f.a },
+            })),
+          },
+        ]}
+      />
       <PageHero
         breadcrumbs={[{ name: "Home", path: "/" }, { name: "Contact", path: "/contact" }]}
         headline="Let's Build Something Amazing Together"
@@ -146,11 +187,11 @@ const Contact = () => {
 
               <div className="flex gap-3 mb-8">
                 {[
-                  { icon: Linkedin, href: "https://www.linkedin.com/company/scale-x-web-solution/" },
-                  { icon: Twitter, href: "https://x.com/ScaleXWeb" },
-                  { icon: Instagram, href: "#" },
-                ].map(({ icon: Icon, href }, i) => (
-                  <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center hover:bg-primary/20 transition-colors">
+                  { icon: Linkedin, href: "https://www.linkedin.com/company/scale-x-web-solution/", label: "ScaleXWeb on LinkedIn" },
+                  { icon: Twitter, href: "https://x.com/ScaleXWeb", label: "ScaleXWeb on X (Twitter)" },
+                  { icon: Instagram, href: "#", label: "ScaleXWeb on Instagram" },
+                ].map(({ icon: Icon, href, label }, i) => (
+                  <a key={i} href={href} target="_blank" rel="noopener noreferrer" aria-label={label} className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center hover:bg-primary/20 transition-colors">
                     <Icon className="w-4 h-4 text-primary" />
                   </a>
                 ))}
