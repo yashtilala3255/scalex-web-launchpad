@@ -80,7 +80,7 @@ const Index = () => (
     {/* Hero */}
     <section className="relative min-h-screen flex items-center overflow-hidden">
       <div className="absolute inset-0">
-        <img src={heroBg} alt="" className="w-full h-full object-cover" />
+        <img src={heroBg} alt="" className="w-full h-full object-cover" fetchPriority="high" decoding="async" />
         <div className="absolute inset-0 bg-navy/70" />
       </div>
       <div className="container-tight relative z-10 pt-24 pb-16">

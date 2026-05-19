@@ -131,7 +131,7 @@ const About = () => (
           {values.map((v, i) => (
             <motion.div key={v.title} {...stagger} transition={{ delay: i * 0.1 }} className="p-6 rounded-2xl bg-card border border-border text-center">
               <v.icon className="w-10 h-10 text-primary mx-auto mb-4" />
-              <h4 className="font-heading font-semibold text-foreground mb-2">{v.title}</h4>
+              <h3 className="font-heading font-semibold text-foreground mb-2">{v.title}</h3>
               <p className="text-sm text-muted-foreground">{v.desc}</p>
             </motion.div>
           ))}
@@ -170,7 +170,7 @@ const About = () => (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {Object.entries(techStack).map(([category, techs], i) => (
             <motion.div key={category} {...stagger} transition={{ delay: i * 0.1 }} className="glass rounded-2xl p-6">
-              <h4 className="font-heading font-semibold text-primary-foreground mb-3">{category}</h4>
+              <h3 className="font-heading font-semibold text-primary-foreground mb-3">{category}</h3>
               <div className="flex flex-wrap gap-2">
                 {techs.map((t) => (
                   <span key={t} className="px-3 py-1 rounded-full text-xs bg-primary-foreground/10 text-primary-foreground/80">{t}</span>

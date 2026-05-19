@@ -93,7 +93,7 @@ const ServicePageTemplate = ({
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {Object.entries(techStack).map(([category, techs], i) => (
             <motion.div key={category} {...stagger} transition={{ delay: i * 0.1 }} className="glass rounded-2xl p-6">
-              <h4 className="font-heading font-semibold text-primary-foreground mb-3">{category}</h4>
+              <h3 className="font-heading font-semibold text-primary-foreground mb-3">{category}</h3>
               <div className="flex flex-wrap gap-2">
                 {techs.map((t) => (
                   <span key={t} className="px-3 py-1 rounded-full text-xs bg-primary-foreground/10 text-primary-foreground/80">{t}</span>
