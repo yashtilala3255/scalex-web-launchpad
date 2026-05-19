@@ -136,7 +136,7 @@ const Index = () => (
                 { title: "Scalable Architecture", desc: "Built to grow with your business" },
               ].map((item) => (
                 <div key={item.title} className="text-center sm:text-left">
-                  <h4 className="font-heading font-semibold text-foreground mb-1 text-sm">{item.title}</h4>
+                  <h3 className="font-heading font-semibold text-foreground mb-1 text-sm">{item.title}</h3>
                   <p className="text-xs text-muted-foreground">{item.desc}</p>
                 </div>
               ))}
