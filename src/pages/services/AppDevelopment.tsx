@@ -4,6 +4,9 @@ const AppDevelopment = () => (
   <ServicePageTemplate
     breadcrumbName="App Development"
     path="/services/app-development"
+    seoTitle="Mobile & Web App Development Services | ScaleXWeb"
+    seoDescription="Build powerful iOS, Android, and cross-platform apps with ScaleXWeb. React Native, Flutter, and progressive web apps engineered to scale."
+    serviceName="Mobile and Web App Development"
     headline="Custom Mobile & Web App Development"
     subheadline="Turn your idea into a powerful, scalable application — built for performance, designed for users."
     ctaText="Discuss Your App Idea"

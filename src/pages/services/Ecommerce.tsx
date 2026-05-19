@@ -4,6 +4,9 @@ const Ecommerce = () => (
   <ServicePageTemplate
     breadcrumbName="E-Commerce"
     path="/services/ecommerce"
+    seoTitle="E-Commerce Website Development Services | ScaleXWeb"
+    seoDescription="High-converting Shopify, WooCommerce, and custom e-commerce stores built by ScaleXWeb — optimized for SEO, UX, and revenue growth."
+    serviceName="E-Commerce Development"
     headline="End-to-End E-Commerce Solutions"
     subheadline="We build high-converting online stores that grow your revenue — from catalog to checkout to repeat purchase."
     ctaText="Build My Store"

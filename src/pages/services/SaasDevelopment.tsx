@@ -4,6 +4,9 @@ const SaasDevelopment = () => (
   <ServicePageTemplate
     breadcrumbName="SaaS Development"
     path="/services/saas-development"
+    seoTitle="SaaS Platform Development Services | ScaleXWeb"
+    seoDescription="End-to-end SaaS development by ScaleXWeb — multi-tenant architecture, subscription billing, and cloud-native platforms built from MVP to enterprise scale."
+    serviceName="SaaS Platform Development"
     headline="Custom SaaS Platform Development"
     subheadline="From MVP to enterprise-scale SaaS — we architect, build, and launch platforms that scale."
     ctaText="Start Your SaaS Project"
