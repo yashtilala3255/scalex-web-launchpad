@@ -1,4 +1,5 @@
 import Layout from "@/components/layout/Layout";
+import SEO from "@/components/SEO";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
@@ -77,6 +78,11 @@ const stats = [
 
 const Index = () => (
   <Layout>
+    <SEO
+      title="ScaleXWeb — Digital Agency for Web & App Development"
+      description="ScaleXWeb Solution is an Ahmedabad-based digital agency building custom websites, mobile apps, SaaS platforms, and e-commerce stores for ambitious businesses."
+      path="/"
+    />
     {/* Hero */}
     <section className="relative min-h-screen flex items-center overflow-hidden">
       <div className="absolute inset-0">

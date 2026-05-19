@@ -1,6 +1,7 @@
 import Layout from "@/components/layout/Layout";
 import PageHero from "@/components/sections/PageHero";
 import SectionCTA from "@/components/sections/SectionCTA";
+import SEO from "@/components/SEO";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import {
@@ -44,6 +45,11 @@ const techStack: Record<string, string[]> = {
 
 const About = () => (
   <Layout>
+    <SEO
+      title="About ScaleXWeb — Our Digital Agency Vision"
+      description="Meet ScaleXWeb Solution: an Ahmedabad-based digital agency led by Yash Patel, building scalable websites, apps, and SaaS for clients across India and globally."
+      path="/about"
+    />
     <PageHero
       breadcrumbs={[{ name: "Home", path: "/" }, { name: "About", path: "/about" }]}
       headline="Building the Future of Digital — One Solution at a Time."

@@ -1,6 +1,7 @@
 import Layout from "@/components/layout/Layout";
 import PageHero from "@/components/sections/PageHero";
 import SectionCTA from "@/components/sections/SectionCTA";
+import SEO from "@/components/SEO";
 import { motion } from "framer-motion";
 import {
   Shield, Server, Globe, Cloud, Lock, GitBranch,
@@ -37,6 +38,11 @@ const features = [
 
 const SaasProducts = () => (
   <Layout>
+    <SEO
+      title="SaaS Products & Custom SaaS Development | ScaleXWeb"
+      description="Explore ScaleXWeb's SaaS architecture and feature set, or partner with us to design and build your custom multi-tenant SaaS platform from MVP to scale."
+      path="/saas-products"
+    />
     <PageHero
       breadcrumbs={[{ name: "Home", path: "/" }, { name: "SaaS Products", path: "/saas-products" }]}
       headline="Modern SaaS Products Built for Scale"

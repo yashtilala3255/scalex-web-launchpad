@@ -1,6 +1,7 @@
 import Layout from "@/components/layout/Layout";
 import PageHero from "@/components/sections/PageHero";
 import SectionCTA from "@/components/sections/SectionCTA";
+import SEO from "@/components/SEO";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import {
@@ -46,6 +47,11 @@ const caseStudies = [
 
 const Solutions = () => (
   <Layout>
+    <SEO
+      title="Digital Solutions for Modern Businesses | ScaleXWeb"
+      description="ScaleXWeb tackles real business challenges with websites, apps, SaaS, e-commerce, and custom enterprise solutions tailored to your industry."
+      path="/solutions"
+    />
     <PageHero
       breadcrumbs={[{ name: "Home", path: "/" }, { name: "Solutions", path: "/solutions" }]}
       headline="Smart Solutions for Modern Businesses"
