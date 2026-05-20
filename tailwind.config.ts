@@ -8,14 +8,12 @@ export default {
     container: {
       center: true,
       padding: "2rem",
-      screens: {
-        "2xl": "1280px",
-      },
+      screens: { "2xl": "1280px" },
     },
     extend: {
       fontFamily: {
-        heading: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
-        body: ['"DM Sans"', 'system-ui', 'sans-serif'],
+        heading: ['"Plus Jakarta Sans"', "system-ui", "sans-serif"],
+        body: ['"DM Sans"', "system-ui", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -51,6 +49,10 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        success: {
+          DEFAULT: "hsl(142.1 76.2% 36.3%)",
+          foreground: "hsl(142.1 76.2% 96.3%)",
+        },
         navy: "hsl(var(--navy))",
         "navy-light": "hsl(var(--navy-light))",
         surface: "hsl(var(--surface))",
@@ -59,6 +61,18 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        "2xl": "1.25rem",
+        "3xl": "1.5rem",
+      },
+      backgroundImage: {
+        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+        "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        "mesh-primary":
+          "radial-gradient(ellipse 80% 60% at 10% 50%, rgba(59,130,246,0.18) 0%, transparent 60%), radial-gradient(ellipse 60% 50% at 85% 20%, rgba(139,92,246,0.14) 0%, transparent 55%)",
+      },
+      dropShadow: {
+        glow: ["0 0 20px rgba(59,130,246,0.35)", "0 0 60px rgba(59,130,246,0.15)"],
+        "glow-accent": ["0 0 20px rgba(139,92,246,0.35)", "0 0 60px rgba(139,92,246,0.15)"],
       },
       keyframes: {
         "accordion-down": {
@@ -69,17 +83,32 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        "float": {
+        float: {
           "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-10px)" },
+          "50%": { transform: "translateY(-16px)" },
+        },
+        "pulse-glow": {
+          "0%, 100%": { opacity: "0.3", transform: "scale(1)" },
+          "50%": { opacity: "0.6", transform: "scale(1.08)" },
+        },
+        marquee: {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
+        shimmer: {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "float": "float 6s ease-in-out infinite",
+        float: "float 9s ease-in-out infinite",
+        "pulse-glow": "pulse-glow 5s ease-in-out infinite",
+        marquee: "marquee 35s linear infinite",
+        shimmer: "shimmer 2s linear infinite",
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
 } satisfies Config;

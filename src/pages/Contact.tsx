@@ -1,9 +1,7 @@
 import Layout from "@/components/layout/Layout";
 import PageHero from "@/components/sections/PageHero";
-import SectionCTA from "@/components/sections/SectionCTA";
 import SEO from "@/components/SEO";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -12,9 +10,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { MapPin, Mail, Phone, Clock, Linkedin, Twitter, Instagram, ChevronDown } from "lucide-react";
+import { MapPin, Mail, Clock, Linkedin, Twitter, Instagram, ChevronDown, Send, ArrowRight, CheckCircle } from "lucide-react";
 
-const fadeUp = { initial: { opacity: 0, y: 30 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true }, transition: { duration: 0.5 } };
+const fadeUp = { initial: { opacity: 0, y: 30 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true }, transition: { duration: 0.55 } };
 
 const schema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -22,7 +20,6 @@ const schema = z.object({
   phone: z.string().optional(),
   company: z.string().optional(),
   service: z.string().optional(),
-  
   message: z.string().min(10, "Please describe your project"),
   source: z.string().optional(),
 });
@@ -37,7 +34,7 @@ const faqs = [
 ];
 
 const Contact = () => {
-  const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm<FormData>({
+  const { register, handleSubmit, formState: { errors, isSubmitting }, reset, setValue } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
 
@@ -70,43 +67,24 @@ const Contact = () => {
             "@context": "https://schema.org",
             "@type": "LocalBusiness",
             "name": "ScaleXWeb Solution",
-            "image": "https://scalexweb.lovable.app/logo.png",
             "url": "https://scalexweb.lovable.app/contact",
             "email": "scalexwebsolution@gmail.com",
-            "address": {
-              "@type": "PostalAddress",
-              "addressLocality": "Ahmedabad",
-              "addressRegion": "Gujarat",
-              "addressCountry": "IN",
-            },
-            "openingHoursSpecification": [{
-              "@type": "OpeningHoursSpecification",
-              "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
-              "opens": "09:00",
-              "closes": "18:00",
-            }],
-            "sameAs": [
-              "https://www.linkedin.com/company/scale-x-web-solution/",
-              "https://x.com/ScaleXWeb",
-            ],
+            "address": { "@type": "PostalAddress", "addressLocality": "Ahmedabad", "addressRegion": "Gujarat", "addressCountry": "IN" },
+            "openingHoursSpecification": [{ "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"], "opens": "09:00", "closes": "18:00" }],
+            "sameAs": ["https://www.linkedin.com/company/scale-x-web-solution/", "https://x.com/ScaleXWeb"],
           },
           {
             "@context": "https://schema.org",
             "@type": "FAQPage",
-            "mainEntity": faqs.map((f) => ({
-              "@type": "Question",
-              "name": f.q,
-              "acceptedAnswer": { "@type": "Answer", "text": f.a },
-            })),
+            "mainEntity": faqs.map((f) => ({ "@type": "Question", "name": f.q, "acceptedAnswer": { "@type": "Answer", "text": f.a } })),
           },
         ]}
       />
       <PageHero
         breadcrumbs={[{ name: "Home", path: "/" }, { name: "Contact", path: "/contact" }]}
         headline="Let's Build Something Amazing Together"
-        subheadline="Tell us about your project — we'll respond within 24 hours."
-        ctaText="Fill Out the Form Below"
-        ctaLink="#contact-form"
+        subheadline="Tell us about your project — we'll get back within 24 hours."
+        badge="Get In Touch"
       />
 
       <section id="contact-form" className="section-padding bg-background">
@@ -114,35 +92,38 @@ const Contact = () => {
           <div className="grid lg:grid-cols-5 gap-12">
             {/* Form */}
             <motion.div {...fadeUp} className="lg:col-span-3">
-              <h2 className="text-2xl font-heading font-bold text-foreground mb-6">Send Us a Message</h2>
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-                <div className="grid sm:grid-cols-2 gap-5">
-                  <div>
-                    <label className="text-sm font-medium text-foreground mb-1.5 block">Full Name *</label>
-                    <Input {...register("name")} placeholder="John Doe" />
-                    {errors.name && <p className="text-xs text-destructive mt-1">{errors.name.message}</p>}
+              <div className="gradient-border bg-card rounded-2xl p-8 md:p-10">
+                <h2 className="text-2xl font-heading font-bold text-foreground mb-2">Send Us a Message</h2>
+                <p className="text-sm text-muted-foreground mb-8">Fill in the form below and we'll get back to you within 24 hours.</p>
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+                  <div className="grid sm:grid-cols-2 gap-5">
+                    <div>
+                      <label className="text-sm font-medium text-foreground mb-1.5 block">Full Name *</label>
+                      <Input {...register("name")} placeholder="John Doe" className="bg-background/50 border-border/50 focus:border-primary/50" />
+                      {errors.name && <p className="text-xs text-destructive mt-1">{errors.name.message}</p>}
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-foreground mb-1.5 block">Email Address *</label>
+                      <Input {...register("email")} type="email" placeholder="john@company.com" className="bg-background/50 border-border/50 focus:border-primary/50" />
+                      {errors.email && <p className="text-xs text-destructive mt-1">{errors.email.message}</p>}
+                    </div>
                   </div>
-                  <div>
-                    <label className="text-sm font-medium text-foreground mb-1.5 block">Email Address *</label>
-                    <Input {...register("email")} type="email" placeholder="john@company.com" />
-                    {errors.email && <p className="text-xs text-destructive mt-1">{errors.email.message}</p>}
+                  <div className="grid sm:grid-cols-2 gap-5">
+                    <div>
+                      <label className="text-sm font-medium text-foreground mb-1.5 block">Phone Number</label>
+                      <Input {...register("phone")} placeholder="+91 XXXXX XXXXX" className="bg-background/50 border-border/50 focus:border-primary/50" />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-foreground mb-1.5 block">Company Name</label>
+                      <Input {...register("company")} placeholder="Your Company" className="bg-background/50 border-border/50 focus:border-primary/50" />
+                    </div>
                   </div>
-                </div>
-                <div className="grid sm:grid-cols-2 gap-5">
-                  <div>
-                    <label className="text-sm font-medium text-foreground mb-1.5 block">Phone Number</label>
-                    <Input {...register("phone")} placeholder="+91 XXXXX XXXXX" />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-foreground mb-1.5 block">Company Name</label>
-                    <Input {...register("company")} placeholder="Your Company" />
-                  </div>
-                </div>
-                <div className="grid sm:grid-cols-2 gap-5">
                   <div>
                     <label className="text-sm font-medium text-foreground mb-1.5 block">Service Interested In</label>
                     <Select onValueChange={(v) => setValue("service", v)}>
-                      <SelectTrigger><SelectValue placeholder="Select a service" /></SelectTrigger>
+                      <SelectTrigger className="bg-background/50 border-border/50">
+                        <SelectValue placeholder="Select a service" />
+                      </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="website">Website Development</SelectItem>
                         <SelectItem value="app">App Development</SelectItem>
@@ -153,48 +134,70 @@ const Contact = () => {
                       </SelectContent>
                     </Select>
                   </div>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-foreground mb-1.5 block">Project Description *</label>
-                  <Textarea {...register("message")} placeholder="Tell us about your project, goals, and timeline..." rows={5} />
-                  {errors.message && <p className="text-xs text-destructive mt-1">{errors.message.message}</p>}
-                </div>
-                <Button type="submit" variant="hero" size="lg" className="w-full sm:w-auto text-base px-8">Send My Request</Button>
-              </form>
+                  <div>
+                    <label className="text-sm font-medium text-foreground mb-1.5 block">Project Description *</label>
+                    <Textarea
+                      {...register("message")}
+                      placeholder="Tell us about your project, goals, timeline..."
+                      rows={5}
+                      className="bg-background/50 border-border/50 focus:border-primary/50 resize-none"
+                    />
+                    {errors.message && <p className="text-xs text-destructive mt-1">{errors.message.message}</p>}
+                  </div>
+                  <Button type="submit" variant="hero" size="lg" className="w-full gap-2" disabled={isSubmitting}>
+                    <Send className="w-4 h-4" />
+                    {isSubmitting ? "Sending..." : "Send My Request"}
+                  </Button>
+                </form>
+              </div>
             </motion.div>
 
-            {/* Contact Info */}
-            <motion.div {...fadeUp} transition={{ delay: 0.2 }} className="lg:col-span-2">
-              <h2 className="text-2xl font-heading font-bold text-foreground mb-6">Contact Information</h2>
-              <div className="space-y-5 mb-8">
+            {/* Info */}
+            <motion.div {...fadeUp} transition={{ delay: 0.15 }} className="lg:col-span-2 space-y-6">
+              <div>
+                <h2 className="text-2xl font-heading font-bold text-foreground mb-6">Contact Information</h2>
+                <div className="space-y-4">
+                  {[
+                    { icon: Mail, label: "Email", value: "scalexwebsolution@gmail.com" },
+                    { icon: MapPin, label: "Location", value: "Ahmedabad, Gujarat, India" },
+                    { icon: Clock, label: "Business Hours", value: "Mon–Fri: 9 AM – 6 PM IST" },
+                  ].map(({ icon: Icon, label, value }) => (
+                    <div key={label} className="gradient-border bg-card rounded-xl p-4 flex items-center gap-4">
+                      <div className="w-10 h-10 gradient-primary rounded-lg flex items-center justify-center flex-shrink-0">
+                        <Icon className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <p className="text-xs font-medium text-muted-foreground">{label}</p>
+                        <p className="text-sm font-medium text-foreground">{value}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex gap-3">
                 {[
-                  { icon: Mail, label: "Email", value: "scalexwebsolution@gmail.com" },
-                  
-                  { icon: MapPin, label: "Location", value: "Ahmedabad, Gujarat, India" },
-                  { icon: Clock, label: "Business Hours", value: "Mon–Fri: 9 AM – 6 PM IST" },
-                ].map(({ icon: Icon, label, value }) => (
-                  <div key={label} className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <Icon className="w-5 h-5 text-primary" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-foreground">{label}</p>
-                      <p className="text-sm text-muted-foreground">{value}</p>
-                    </div>
-                  </div>
+                  { icon: Linkedin, href: "https://www.linkedin.com/company/scale-x-web-solution/", label: "LinkedIn" },
+                  { icon: Twitter, href: "https://x.com/ScaleXWeb", label: "Twitter" },
+                  { icon: Instagram, href: "#", label: "Instagram" },
+                ].map(({ icon: Icon, href, label }) => (
+                  <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label}
+                    className="w-10 h-10 gradient-border bg-card rounded-xl flex items-center justify-center hover:bg-primary/10 transition-colors group">
+                    <Icon className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                  </a>
                 ))}
               </div>
 
-              <div className="flex gap-3 mb-8">
-                {[
-                  { icon: Linkedin, href: "https://www.linkedin.com/company/scale-x-web-solution/", label: "ScaleXWeb on LinkedIn" },
-                  { icon: Twitter, href: "https://x.com/ScaleXWeb", label: "ScaleXWeb on X (Twitter)" },
-                  { icon: Instagram, href: "#", label: "ScaleXWeb on Instagram" },
-                ].map(({ icon: Icon, href, label }, i) => (
-                  <a key={i} href={href} target="_blank" rel="noopener noreferrer" aria-label={label} className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center hover:bg-primary/20 transition-colors">
-                    <Icon className="w-4 h-4 text-primary" />
-                  </a>
-                ))}
+              {/* Promise cards */}
+              <div className="gradient-border bg-card rounded-xl p-6">
+                <p className="text-sm font-semibold text-foreground mb-4">What to expect</p>
+                <ul className="space-y-3">
+                  {["Response within 24 hours", "Free project consultation", "No commitment required", "Detailed project proposal"].map(p => (
+                    <li key={p} className="flex items-center gap-2.5 text-sm text-muted-foreground">
+                      <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" /> {p}
+                    </li>
+                  ))}
+                </ul>
               </div>
 
               {/* FAQ */}
@@ -202,12 +205,12 @@ const Contact = () => {
                 <h3 className="font-heading font-semibold text-foreground mb-4">Frequently Asked Questions</h3>
                 <div className="space-y-3">
                   {faqs.map((faq, i) => (
-                    <details key={i} className="group rounded-xl border border-border bg-card overflow-hidden">
-                      <summary className="px-4 py-3 text-sm font-medium text-foreground cursor-pointer flex items-center justify-between">
+                    <details key={i} className="gradient-border bg-card rounded-xl overflow-hidden group">
+                      <summary className="px-5 py-4 text-sm font-medium text-foreground cursor-pointer flex items-center justify-between list-none">
                         {faq.q}
-                        <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
+                        <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform flex-shrink-0" />
                       </summary>
-                      <div className="px-4 pb-3 text-sm text-muted-foreground">{faq.a}</div>
+                      <div className="px-5 pb-4 text-sm text-muted-foreground leading-relaxed">{faq.a}</div>
                     </details>
                   ))}
                 </div>

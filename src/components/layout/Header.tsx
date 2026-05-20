@@ -1,21 +1,23 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown, Globe, Smartphone, Cloud, ShoppingCart, Palette, Code } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
+import logoImg from "@/assets/logo.png";
 
-const services = [
-  { name: "Website Development", path: "/services/website-development" },
-  { name: "App Development", path: "/services/app-development" },
-  { name: "SaaS Development", path: "/services/saas-development" },
-  { name: "E-Commerce Solutions", path: "/services/ecommerce" },
-  { name: "UI/UX Design", path: "/services/ui-ux-design" },
+const serviceLinks = [
+  { name: "Website Development", path: "/services/website-development", icon: Globe, desc: "Custom, high-performance websites" },
+  { name: "App Development", path: "/services/app-development", icon: Smartphone, desc: "iOS, Android & cross-platform apps" },
+  { name: "SaaS Development", path: "/services/saas-development", icon: Cloud, desc: "End-to-end SaaS platforms" },
+  { name: "E-Commerce Solutions", path: "/services/ecommerce", icon: ShoppingCart, desc: "High-converting online stores" },
+  { name: "UI/UX Design", path: "/services/ui-ux-design", icon: Palette, desc: "Human-centered design" },
+  { name: "Full Stack Development", path: "/services/full-stack-development", icon: Code, desc: "End-to-end web app development" },
 ];
 
 const navLinks = [
   { name: "Home", path: "/" },
   { name: "About", path: "/about" },
-  { name: "Services", path: "/services", children: services },
+  { name: "Services", path: "/services", children: serviceLinks },
   { name: "Solutions", path: "/solutions" },
   { name: "SaaS Products", path: "/saas-products" },
   { name: "Contact", path: "/contact" },
@@ -34,21 +36,25 @@ const Header = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => {
-    setMobileOpen(false);
-  }, [location]);
+  useEffect(() => { setMobileOpen(false); }, [location]);
+
+  const isActive = (path: string) =>
+    path === "/" ? location.pathname === "/" : location.pathname.startsWith(path);
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "bg-card/95 shadow-lg backdrop-blur-md" : "bg-transparent"
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        scrolled
+          ? "bg-background/80 backdrop-blur-xl border-b border-border/50 shadow-lg shadow-black/20"
+          : "bg-transparent"
       }`}
     >
       <div className="container-tight flex items-center justify-between h-16 md:h-20">
-        <Link to="/" className="flex items-center gap-2">
-          <img src="/logo.png" alt="ScaleXWeb Logo" className="w-9 h-9 rounded-lg" />
-          <span className={`font-heading font-bold text-xl ${scrolled ? "text-foreground" : "text-primary-foreground md:text-foreground"}`}>
-            ScaleX<span className="gradient-text">Web</span>
+        {/* Logo */}
+        <Link to="/" className="flex items-center gap-2.5 group">
+          <img src={logoImg} alt="ScaleXWeb Logo" className="w-9 h-9 object-contain rounded-xl shadow-md group-hover:glow-sm transition-all duration-300" />
+          <span className="font-heading font-bold text-xl text-foreground">
+            Scale<span className="gradient-text">X</span>Web
           </span>
         </Link>
 
@@ -62,30 +68,43 @@ const Header = () => {
                 onMouseEnter={() => setServicesOpen(true)}
                 onMouseLeave={() => setServicesOpen(false)}
               >
-                <button className={`flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-lg transition-colors hover:bg-muted ${
-                  location.pathname.startsWith("/services") ? "text-primary" : "text-foreground/80"
-                }`}>
+                <button
+                  className={`flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-xl transition-all duration-200 hover:bg-muted/60 ${
+                    location.pathname.startsWith("/services")
+                      ? "text-primary"
+                      : "text-foreground/70 hover:text-foreground"
+                  }`}
+                >
                   {link.name}
-                  <ChevronDown className="w-4 h-4" />
+                  <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${servicesOpen ? "rotate-180" : ""}`} />
                 </button>
                 <AnimatePresence>
                   {servicesOpen && (
                     <motion.div
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 8 }}
+                      initial={{ opacity: 0, y: 10, scale: 0.97 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.97 }}
                       transition={{ duration: 0.15 }}
-                      className="absolute top-full left-0 mt-1 w-64 bg-card rounded-xl shadow-xl border border-border p-2"
+                      className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-80 bg-card/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-border/60 p-2 overflow-hidden"
                     >
+                      <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent rounded-2xl pointer-events-none" />
                       {link.children.map((child) => (
                         <Link
                           key={child.path}
                           to={child.path}
-                          className={`block px-4 py-2.5 text-sm rounded-lg transition-colors hover:bg-muted ${
-                            location.pathname === child.path ? "text-primary font-medium" : "text-foreground/80"
+                          className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group hover:bg-muted/60 ${
+                            location.pathname === child.path ? "bg-primary/10" : ""
                           }`}
                         >
-                          {child.name}
+                          <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center flex-shrink-0 group-hover:glow-sm transition-all">
+                            <child.icon className="w-4 h-4 text-white" />
+                          </div>
+                          <div>
+                            <p className={`text-sm font-medium ${location.pathname === child.path ? "text-primary" : "text-foreground"}`}>
+                              {child.name}
+                            </p>
+                            <p className="text-xs text-muted-foreground">{child.desc}</p>
+                          </div>
                         </Link>
                       ))}
                     </motion.div>
@@ -96,28 +115,30 @@ const Header = () => {
               <Link
                 key={link.name}
                 to={link.path}
-                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors hover:bg-muted ${
-                  location.pathname === link.path ? "text-primary" : "text-foreground/80"
+                className={`px-4 py-2 text-sm font-medium rounded-xl transition-all duration-200 hover:bg-muted/60 ${
+                  isActive(link.path) ? "text-primary" : "text-foreground/70 hover:text-foreground"
                 }`}
               >
                 {link.name}
               </Link>
             )
           )}
-          <Link to="/contact">
-            <Button variant="nav" size="sm" className="ml-2">Get a Free Quote</Button>
-          </Link>
         </nav>
 
-        {/* Mobile Toggle */}
-        <button
-          className="lg:hidden p-2 rounded-lg hover:bg-muted transition-colors"
-          onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label={mobileOpen ? "Close navigation menu" : "Open navigation menu"}
-          aria-expanded={mobileOpen}
-        >
-          {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
+        {/* Right Side */}
+        <div className="flex items-center gap-3">
+          <Link to="/contact" className="hidden lg:block">
+            <Button variant="nav" size="sm">Get Free Quote</Button>
+          </Link>
+          {/* Mobile Toggle */}
+          <button
+            className="lg:hidden w-9 h-9 rounded-xl border border-border/50 bg-muted/30 flex items-center justify-center hover:bg-muted transition-colors"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+          >
+            {mobileOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Nav */}
@@ -127,14 +148,15 @@ const Header = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-card border-t border-border overflow-hidden"
+            transition={{ duration: 0.25 }}
+            className="lg:hidden bg-card/95 backdrop-blur-xl border-t border-border/50 overflow-hidden"
           >
             <div className="container-tight py-4 flex flex-col gap-1">
               {navLinks.map((link) =>
                 link.children ? (
                   <div key={link.name}>
                     <button
-                      className="flex items-center justify-between w-full px-4 py-3 text-sm font-medium rounded-lg hover:bg-muted"
+                      className="flex items-center justify-between w-full px-4 py-3 text-sm font-medium rounded-xl hover:bg-muted/60 text-foreground/80"
                       onClick={() => setMobileServicesOpen(!mobileServicesOpen)}
                     >
                       {link.name}
@@ -152,8 +174,9 @@ const Header = () => {
                             <Link
                               key={child.path}
                               to={child.path}
-                              className="block px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted"
+                              className="flex items-center gap-3 px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground rounded-xl hover:bg-muted/60"
                             >
+                              <child.icon className="w-4 h-4 text-primary" />
                               {child.name}
                             </Link>
                           ))}
@@ -165,14 +188,16 @@ const Header = () => {
                   <Link
                     key={link.name}
                     to={link.path}
-                    className="px-4 py-3 text-sm font-medium rounded-lg hover:bg-muted"
+                    className={`px-4 py-3 text-sm font-medium rounded-xl hover:bg-muted/60 ${
+                      isActive(link.path) ? "text-primary" : "text-foreground/80"
+                    }`}
                   >
                     {link.name}
                   </Link>
                 )
               )}
               <Link to="/contact" className="mt-2">
-                <Button variant="nav" className="w-full">Get a Free Quote</Button>
+                <Button variant="hero" className="w-full">Get a Free Quote</Button>
               </Link>
             </div>
           </motion.div>

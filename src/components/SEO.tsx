@@ -5,12 +5,12 @@ const SITE = "https://scalexweb.lovable.app";
 interface SEOProps {
   title: string;
   description: string;
-  path: string;
+  path?: string;
   jsonLd?: object | object[];
 }
 
 const SEO = ({ title, description, path, jsonLd }: SEOProps) => {
-  const url = `${SITE}${path}`;
+  const url = path ? `${SITE}${path}` : SITE;
   const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
   return (
     <Helmet>
