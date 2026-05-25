@@ -76,8 +76,8 @@ const App = () => (
               <Route path="/services/full-stack-development" element={<FullStackDevelopment />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/terms-of-service" element={<TermsOfService />} />
-              <Route path="/admin" element={<AdminDashboard />} />
-              <Route path="/Admin" element={<AdminDashboard />} />
+              <Route path="/adminloginog" element={<AdminDashboard />} />
+              <Route path="/adminloginfk" element={<AdminDashboard />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
