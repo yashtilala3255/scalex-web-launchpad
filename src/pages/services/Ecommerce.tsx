@@ -58,6 +58,8 @@ type LeadData = z.infer<typeof leadSchema>;
 const fadeUp = { initial: { opacity: 0, y: 30 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true }, transition: { duration: 0.55 } };
 const stagger = (i: number) => ({ initial: { opacity: 0, y: 20 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true }, transition: { delay: i * 0.08, duration: 0.45 } });
 
+import ecommerceMockup from "@/assets/ecommerce_mockup.png";
+
 /* ─── Interactive Product Catalog Showcase ────────── */
 const EcomSimulator = () => {
   const [cart, setCart] = useState<{ id: number; name: string; price: number; qty: number }[]>([]);
@@ -97,12 +99,23 @@ const EcomSimulator = () => {
         </div>
       </div>
 
+      {/* Hero Banner Mockup */}
+      <div className="relative h-28 overflow-hidden border-b border-border/30 bg-slate-950">
+        <img src={ecommerceMockup} alt="Ecommerce Mockup Banner" loading="lazy" decoding="async" width={600} height={112} className="w-full h-full object-cover object-center opacity-90" />
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/40 to-transparent flex items-center px-6">
+          <div className="space-y-0.5">
+            <span className="text-[8px] bg-primary/20 text-primary border border-primary/20 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">Summer Sale</span>
+            <h4 className="text-sm font-heading font-black text-white">Up to 30% Off Gadgets</h4>
+          </div>
+        </div>
+      </div>
+
       {/* Simulator Content */}
-      <div className="p-6 md:p-8 bg-background/60 grid sm:grid-cols-2 gap-6 min-h-[320px]">
+      <div className="p-4 bg-background/60 grid sm:grid-cols-2 gap-4 min-h-[220px]">
         {/* Products Grid */}
-        <div className="space-y-4">
-          <h5 className="text-xs font-bold text-foreground uppercase tracking-wider mb-2">Featured Tech</h5>
-          <div className="space-y-3">
+        <div className="space-y-2">
+          <h5 className="text-[10px] font-bold text-foreground uppercase tracking-wider mb-1">Featured Tech</h5>
+          <div className="space-y-2">
             {products.map(p => (
               <div key={p.id} className="p-3 border border-border/40 rounded-xl bg-card/60 flex items-center justify-between hover:border-primary/40 transition-colors">
                 <div>
@@ -195,6 +208,38 @@ const Ecommerce = () => {
         title="Custom E-Commerce Web Design Services | ScaleXWeb"
         description="High-converting custom E-commerce website design. We construct fast checkout funnels, payment integrations, and automated inventory sync networks."
         path="/services/ecommerce"
+        jsonLd={[
+          {
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "name": "E-Commerce Solutions",
+            "description": "High-converting custom E-commerce website design. We construct fast checkout funnels, payment integrations, and automated inventory sync networks.",
+            "provider": {
+              "@type": "LocalBusiness",
+              "name": "ScaleXWeb Solutions",
+              "url": "https://scalexweb.lovable.app"
+            },
+            "areaServed": "IN"
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://scalexweb.lovable.app"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "E-Commerce Solutions",
+                "item": "https://scalexweb.lovable.app/services/ecommerce"
+              }
+            ]
+          }
+        ]}
       />
 
       {/* ── 1. Hero ─────────────────────────────────────── */}

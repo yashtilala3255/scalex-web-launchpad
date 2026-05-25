@@ -2,15 +2,7 @@ import { Link } from "react-router-dom";
 import { Linkedin, Twitter, Instagram, Mail, MapPin, Clock, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logoImg from "@/assets/logo.png";
-
-const serviceLinks = [
-  { name: "Website Development", path: "/services/website-development" },
-  { name: "App Development", path: "/services/app-development" },
-  { name: "SaaS Development", path: "/services/saas-development" },
-  { name: "E-Commerce Solutions", path: "/services/ecommerce" },
-  { name: "UI/UX Design", path: "/services/ui-ux-design" },
-  { name: "Full Stack Development", path: "/services/full-stack-development" },
-];
+import { useSiteData } from "@/context/SiteDataContext";
 
 const companyLinks = [
   { name: "About Us", path: "/about" },
@@ -24,13 +16,35 @@ const legalLinks = [
   { name: "Terms of Service", path: "/terms-of-service" },
 ];
 
-const socialLinks = [
-  { icon: Linkedin, href: "https://www.linkedin.com/company/scale-x-web-solution/", label: "LinkedIn" },
-  { icon: Twitter, href: "https://x.com/ScaleXWeb", label: "X (Twitter)" },
-  { icon: Instagram, href: "#", label: "Instagram" },
-];
+const Footer = () => {
+  const { services, settings } = useSiteData();
 
-const Footer = () => (
+  const displaySiteName = settings?.siteName || "ScaleXWeb";
+  const contactEmail = settings?.contactEmail || "scalexwebsolution@gmail.com";
+  const contactPhone = settings?.contactPhone || "+91 98765 43210";
+  const contactAddress = settings?.contactAddress || "Ahmedabad, Gujarat, India";
+
+  const navServices = [...(services || [])];
+  const hasFullStack = navServices.some((s) => s.path === "/services/full-stack-development");
+  if (!hasFullStack) {
+    navServices.push({
+      icon: "Layers",
+      name: "Full Stack Development",
+      desc: "End-to-end custom software and enterprise web applications.",
+      bullets: ["Custom Web Apps", "API Integrations", "Database Architecture"],
+      path: "/services/full-stack-development"
+    });
+  }
+
+  const serviceLinks = navServices;
+
+  const socialLinks = [
+    { icon: Linkedin, href: settings?.socialLinkedin || "https://www.linkedin.com/company/scale-x-web-solution", label: "LinkedIn" },
+    { icon: Twitter, href: settings?.socialTwitter || "https://twitter.com", label: "X (Twitter)" },
+    { icon: Instagram, href: settings?.socialInstagram || "https://www.instagram.com/scalexwebsolution/", label: "Instagram" },
+  ];
+
+  return (
   <footer className="relative bg-navy border-t border-border/30 overflow-hidden">
     {/* Background decoration */}
     <div className="absolute inset-0 mesh-bg opacity-40 pointer-events-none" />
@@ -63,9 +77,13 @@ const Footer = () => (
         {/* Brand */}
         <div className="lg:col-span-1">
           <Link to="/" className="flex items-center gap-2.5 mb-5">
-            <img src={logoImg} alt="ScaleXWeb Logo" className="w-9 h-9 object-contain rounded-xl shadow-md" />
+            <img src={settings?.logoUrl || logoImg} alt="ScaleXWeb Logo" className="w-9 h-9 object-contain rounded-xl shadow-md" />
             <span className="font-heading font-bold text-xl text-foreground">
-              Scale<span className="gradient-text">X</span>Web
+              {displaySiteName.includes("ScaleXWeb") ? (
+                <>Scale<span className="gradient-text">X</span>Web</>
+              ) : (
+                displaySiteName
+              )}
             </span>
           </Link>
           <p className="text-sm text-muted-foreground leading-relaxed mb-6">
@@ -129,8 +147,8 @@ const Footer = () => (
           <h4 className="font-heading font-semibold text-xs uppercase tracking-[0.15em] text-muted-foreground mb-5">Contact</h4>
           <ul className="space-y-4">
             {[
-              { icon: Mail, value: "scalexwebsolution@gmail.com" },
-              { icon: MapPin, value: "Ahmedabad, Gujarat, India" },
+              { icon: Mail, value: contactEmail },
+              { icon: MapPin, value: contactAddress },
               { icon: Clock, value: "Mon–Fri: 9 AM – 6 PM IST" },
             ].map(({ icon: Icon, value }) => (
               <li key={value} className="flex items-start gap-3">
@@ -145,7 +163,7 @@ const Footer = () => (
       {/* Bottom bar */}
       <div className="border-t border-border/30 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
         <p className="text-xs text-muted-foreground">
-          © {new Date().getFullYear()} ScaleXWeb Solution. All rights reserved.
+          © {new Date().getFullYear()} {displaySiteName}. All rights reserved.
         </p>
         <div className="flex gap-6">
           {legalLinks.map((l) => (
@@ -157,10 +175,12 @@ const Footer = () => (
               {l.name}
             </Link>
           ))}
+
         </div>
       </div>
     </div>
   </footer>
-);
+  );
+};
 
 export default Footer;

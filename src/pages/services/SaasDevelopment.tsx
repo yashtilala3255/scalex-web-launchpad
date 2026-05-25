@@ -56,6 +56,8 @@ type LeadData = z.infer<typeof leadSchema>;
 const fadeUp = { initial: { opacity: 0, y: 30 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true }, transition: { duration: 0.55 } };
 const stagger = (i: number) => ({ initial: { opacity: 0, y: 20 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true }, transition: { delay: i * 0.08, duration: 0.45 } });
 
+import saasMockup from "@/assets/saas_mockup.png";
+
 /* ─── Interactive SaaS Dashboard Preview ───────────── */
 const SaasPreview = () => {
   const [metricTab, setMetricTab] = useState("overview");
@@ -84,11 +86,19 @@ const SaasPreview = () => {
       </div>
 
       {/* Main SaaS Interface */}
-      <div className="p-6 md:p-8 bg-background/60">
+      <div className="p-4 bg-background/60 space-y-4">
+        {/* Render Mockup Image */}
+        <div className="relative rounded-xl overflow-hidden border border-border/40 bg-slate-950 shadow-md">
+          <img src={saasMockup} alt="SaaS Dashboard Mockup" loading="lazy" decoding="async" width={600} height={176} className="w-full h-44 object-cover object-top hover:scale-105 transition-transform duration-700" />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent flex items-end p-3">
+            <p className="text-[11px] font-bold text-white">Multi-Tenant Management Console</p>
+          </div>
+        </div>
+
         <AnimatePresence mode="wait">
           {metricTab === "overview" && (
-            <motion.div key="over" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-4">
-              <div className="grid grid-cols-3 gap-3">
+            <motion.div key="over" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-3">
+              <div className="grid grid-cols-3 gap-2">
                 {[
                   { label: "Active Tenants", val: "48", icon: Users },
                   { label: "MRR Growth", val: "+24%", icon: DollarSign },
@@ -96,7 +106,7 @@ const SaasPreview = () => {
                 ].map(metric => {
                   const Icon = metric.icon;
                   return (
-                    <div key={metric.label} className="p-3 border border-border/40 rounded-xl bg-card/60">
+                    <div key={metric.label} className="p-2 border border-border/40 rounded-xl bg-card/60">
                       <div className="flex justify-between items-center mb-1">
                         <span className="text-[9px] text-muted-foreground uppercase">{metric.label}</span>
                         <Icon className="w-3.5 h-3.5 text-primary" />
@@ -184,6 +194,38 @@ const SaasDevelopment = () => {
         title="SaaS Platform Development Company | ScaleXWeb"
         description="Launch your multi-tenant SaaS application with ScaleXWeb. We design subscription architectures, custom subdomains, Stripe billing integration, and secure backends."
         path="/services/saas-development"
+        jsonLd={[
+          {
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "name": "SaaS Development Services",
+            "description": "Launch your multi-tenant SaaS application with ScaleXWeb. We design subscription architectures, custom subdomains, Stripe billing integration, and secure backends.",
+            "provider": {
+              "@type": "LocalBusiness",
+              "name": "ScaleXWeb Solutions",
+              "url": "https://scalexweb.lovable.app"
+            },
+            "areaServed": "IN"
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://scalexweb.lovable.app"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "SaaS Development",
+                "item": "https://scalexweb.lovable.app/services/saas-development"
+              }
+            ]
+          }
+        ]}
       />
 
       {/* ── 1. Hero ─────────────────────────────────────── */}

@@ -9,7 +9,8 @@ import {
   Palette, Shield, Lightbulb, Heart, Star, Users, Award,
   CheckCircle, Linkedin, Twitter, Sparkles
 } from "lucide-react";
-import { stats, values, techStack, services } from "@/data";
+import { useSiteData } from "@/context/SiteDataContext";
+import { getIconComponent } from "@/components/ui/icon-helper";
 
 const fadeUp = {
   initial: { opacity: 0, y: 30 },
@@ -115,12 +116,33 @@ const CompanyIllustration = () => {
   );
 };
 
-const About = () => (
-  <Layout>
+const About = () => {
+  const { values, techStack, services } = useSiteData();
+
+  return (
+    <Layout>
     <SEO
       title="About ScaleXWeb — Our Digital Agency Vision"
       description="Meet ScaleXWeb Solution: an Ahmedabad-based digital agency led by Yash Patel, building scalable websites, apps, and SaaS for clients across India and globally."
       path="/about"
+      jsonLd={{
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://scalexweb.lovable.app"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "About",
+            "item": "https://scalexweb.lovable.app/about"
+          }
+        ]
+      }}
     />
     <PageHero
       breadcrumbs={[{ name: "Home", path: "/" }, { name: "About", path: "/about" }]}
@@ -205,14 +227,7 @@ const About = () => (
             <cite className="text-sm text-muted-foreground mt-4 block not-italic relative z-10">— Yash Patel, Founder &amp; CEO</cite>
           </blockquote>
 
-          <div className="flex justify-center gap-3">
-            <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center text-muted-foreground hover:text-primary transition-colors border border-border/40">
-              <Linkedin className="w-4 h-4" />
-            </a>
-            <a href="https://twitter.com" target="_blank" rel="noreferrer" className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center text-muted-foreground hover:text-primary transition-colors border border-border/40">
-              <Twitter className="w-4 h-4" />
-            </a>
-          </div>
+          
         </motion.div>
       </div>
     </section>
@@ -227,15 +242,18 @@ const About = () => (
           </h2>
         </motion.div>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
-          {values.map((v, i) => (
-            <motion.div key={v.title} {...stagger(i)} className="gradient-border bg-card rounded-2xl p-7 text-center group hover:glow-sm transition-all duration-500">
-              <div className="w-12 h-12 gradient-primary rounded-xl flex items-center justify-center mx-auto mb-5 group-hover:glow-sm transition-all">
-                <v.icon className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="font-heading font-semibold text-foreground mb-2">{v.title}</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed">{v.desc}</p>
-            </motion.div>
-          ))}
+          {values.map((v, i) => {
+            const Icon = getIconComponent(v.icon);
+            return (
+              <motion.div key={v.title} {...stagger(i)} className="gradient-border bg-card rounded-2xl p-7 text-center group hover:glow-sm transition-all duration-500">
+                <div className="w-12 h-12 gradient-primary rounded-xl flex items-center justify-center mx-auto mb-5 group-hover:glow-sm transition-all">
+                  <Icon className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="font-heading font-semibold text-foreground mb-2">{v.title}</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">{v.desc}</p>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -249,16 +267,19 @@ const About = () => (
           <p className="text-muted-foreground max-w-xl mx-auto">From concept to code, from wireframes to deployment — we handle the full lifecycle of your digital product.</p>
         </motion.div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          {services.map((svc, i) => (
-            <motion.div key={svc.name} {...stagger(i)}>
-              <Link to={svc.path} className="block h-full gradient-border bg-card rounded-2xl p-6 text-center hover:glow-sm transition-all duration-500 group">
-                <div className="w-12 h-12 gradient-primary rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:glow-sm transition-all">
-                  <svc.icon className="w-6 h-6 text-white" />
-                </div>
-                <p className="text-xs font-heading font-semibold text-foreground">{svc.name}</p>
-              </Link>
-            </motion.div>
-          ))}
+          {services.map((svc, i) => {
+            const Icon = getIconComponent(svc.icon);
+            return (
+              <motion.div key={svc.name} {...stagger(i)}>
+                <Link to={svc.path} className="block h-full gradient-border bg-card rounded-2xl p-6 text-center hover:glow-sm transition-all duration-500 group">
+                  <div className="w-12 h-12 gradient-primary rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:glow-sm transition-all">
+                    <Icon className="w-6 h-6 text-white" />
+                  </div>
+                  <p className="text-xs font-heading font-semibold text-foreground">{svc.name}</p>
+                </Link>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -292,6 +313,7 @@ const About = () => (
 
     <SectionCTA headline="Ready to Work Together?" subheadline="Let's discuss how ScaleXWeb can help you achieve your digital goals." primaryCTA="Start Your Project" primaryLink="/contact" secondaryCTA="View Our Services" secondaryLink="/services/website-development" />
   </Layout>
-);
+  );
+};
 
 export default About;

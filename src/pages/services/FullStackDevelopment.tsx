@@ -388,6 +388,38 @@ const FullStackDevelopment = () => {
         title="Full Stack Development Services | ScaleXWeb Solution"
         description="End-to-end full stack development by ScaleXWeb — custom web applications, enterprise software, AI/ML integration, and scalable digital products built with modern tech stacks."
         path="/services/full-stack-development"
+        jsonLd={[
+          {
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "name": "Full Stack Development Services",
+            "description": "End-to-end full stack development by ScaleXWeb — custom web applications, enterprise software, AI/ML integration, and scalable digital products built with modern tech stacks.",
+            "provider": {
+              "@type": "LocalBusiness",
+              "name": "ScaleXWeb Solutions",
+              "url": "https://scalexweb.lovable.app"
+            },
+            "areaServed": "IN"
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://scalexweb.lovable.app"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Full Stack Development",
+                "item": "https://scalexweb.lovable.app/services/full-stack-development"
+              }
+            ]
+          }
+        ]}
       />
 
       {/* ── 1. Hero ─────────────────────────────────────── */}

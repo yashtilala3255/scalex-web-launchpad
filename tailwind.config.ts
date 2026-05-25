@@ -68,11 +68,11 @@ export default {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
         "mesh-primary":
-          "radial-gradient(ellipse 80% 60% at 10% 50%, rgba(59,130,246,0.18) 0%, transparent 60%), radial-gradient(ellipse 60% 50% at 85% 20%, rgba(139,92,246,0.14) 0%, transparent 55%)",
+          "radial-gradient(ellipse 80% 60% at 10% 50%, hsl(var(--primary) / 0.18) 0%, transparent 60%), radial-gradient(ellipse 60% 50% at 85% 20%, hsl(var(--accent) / 0.14) 0%, transparent 55%)",
       },
       dropShadow: {
-        glow: ["0 0 20px rgba(59,130,246,0.35)", "0 0 60px rgba(59,130,246,0.15)"],
-        "glow-accent": ["0 0 20px rgba(139,92,246,0.35)", "0 0 60px rgba(139,92,246,0.15)"],
+        glow: ["0 0 20px hsl(var(--primary) / 0.35)", "0 0 60px hsl(var(--primary) / 0.15)"],
+        "glow-accent": ["0 0 20px hsl(var(--accent) / 0.35)", "0 0 60px hsl(var(--accent) / 0.15)"],
       },
       keyframes: {
         "accordion-down": {

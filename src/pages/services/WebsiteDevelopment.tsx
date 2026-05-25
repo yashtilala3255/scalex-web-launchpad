@@ -98,6 +98,8 @@ type LeadData = z.infer<typeof leadSchema>;
 const fadeUp = { initial: { opacity: 0, y: 30 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true }, transition: { duration: 0.55 } };
 const stagger = (i: number) => ({ initial: { opacity: 0, y: 20 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true }, transition: { delay: i * 0.08, duration: 0.45 } });
 
+import websiteMockup from "@/assets/website_mockup.png";
+
 /* ─── Interactive Web Mockup Component ────────────── */
 const InteractiveBrowser = () => {
   const [activeTab, setActiveTab] = useState("home");
@@ -120,25 +122,35 @@ const InteractiveBrowser = () => {
       </div>
 
       {/* Browser Content */}
-      <div className="p-6 md:p-8 bg-background/60 min-h-[320px] flex flex-col justify-between relative overflow-hidden">
+      <div className="p-4 bg-background/60 min-h-[320px] flex flex-col justify-between relative overflow-hidden">
         {/* Floating tech nodes */}
         <div className="absolute top-0 right-0 w-24 h-24 bg-primary/10 rounded-full blur-2xl" />
         <div className="absolute bottom-0 left-0 w-32 h-32 bg-accent/5 rounded-full blur-3xl" />
 
         <div className="relative z-10">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-primary/20 text-primary border border-primary/20">Active Dev</span>
-            <span className="text-xs text-muted-foreground">React + Tailwind v4</span>
+          <div className="flex items-center justify-between gap-2 mb-4 border-b border-border/20 pb-2">
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-primary/20 text-primary border border-primary/20">Active Dev</span>
+              <span className="text-xs text-muted-foreground">React + Tailwind v4</span>
+            </div>
+            <span className="text-[10px] text-muted-foreground uppercase font-semibold font-mono tracking-wider">{activeTab} preview</span>
           </div>
 
           <AnimatePresence mode="wait">
             {activeTab === "home" && (
               <motion.div key="home" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-4">
-                <h4 className="text-2xl md:text-3xl font-heading font-black text-foreground">Scale Your Business Online</h4>
-                <p className="text-sm text-muted-foreground max-w-lg">We create custom, high-speed corporate websites that turn passive traffic into active customers.</p>
-                <div className="flex gap-2">
-                  <div className="px-4 py-2 bg-primary rounded-lg text-white font-semibold text-xs shadow-sm">View Demo</div>
-                  <div className="px-4 py-2 border border-border/50 hover:bg-muted/50 rounded-lg text-foreground text-xs font-semibold">Pricing</div>
+                <div className="relative rounded-xl overflow-hidden border border-border/40 shadow-lg group bg-slate-950">
+                  <img src={websiteMockup} alt="ScaleXWeb Website Design" loading="lazy" decoding="async" width={600} height={176} className="w-full h-44 object-cover object-top hover:scale-105 transition-transform duration-700" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent flex items-end p-3">
+                    <p className="text-[11px] font-bold text-white">High-Fidelity Custom Layout</p>
+                  </div>
+                </div>
+                <div className="flex justify-between items-center bg-card/60 p-2.5 rounded-xl border border-border/30">
+                  <span className="text-[10px] text-muted-foreground">Designed in Figma, coded in React</span>
+                  <div className="flex gap-1.5">
+                    <div className="px-3 py-1 bg-primary rounded-lg text-white font-semibold text-[10px] shadow-sm">View Demo</div>
+                    <div className="px-3 py-1 border border-border/50 hover:bg-muted/50 rounded-lg text-foreground text-[10px] font-semibold">Pricing</div>
+                  </div>
                 </div>
               </motion.div>
             )}
@@ -201,10 +213,21 @@ const InteractiveBrowser = () => {
   );
 };
 
+import { useSiteData } from "@/context/SiteDataContext";
+
 const WebsiteDevelopment = () => {
+  const { addInquiry } = useSiteData();
   const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<LeadData>({ resolver: zodResolver(leadSchema) });
   const onSubmit = async (data: LeadData) => {
     try {
+      await addInquiry({
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        requirement: data.requirement,
+        service: "Website Development"
+      });
+
       const res = await fetch("https://formspree.io/f/mykdbezz", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...data, _subject: "Website Dev Inquiry" }) });
       if (res.ok) { toast.success("🚀 Request received! We'll reach out within 24 hours."); reset(); }
       else toast.error("Something went wrong. Please try again.");
@@ -217,6 +240,38 @@ const WebsiteDevelopment = () => {
         title="Custom Website Development Ahmedabad | ScaleXWeb"
         description="Premium custom web development services in Ahmedabad. We design fast, secure, SEO-optimized corporate websites and custom portals that scale your business."
         path="/services/website-development"
+        jsonLd={[
+          {
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "name": "Website Development Services",
+            "description": "Premium custom web development services in Ahmedabad. We design fast, secure, SEO-optimized corporate websites and custom portals that scale your business.",
+            "provider": {
+              "@type": "LocalBusiness",
+              "name": "ScaleXWeb Solutions",
+              "url": "https://scalexweb.lovable.app"
+            },
+            "areaServed": "IN"
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://scalexweb.lovable.app"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Website Development",
+                "item": "https://scalexweb.lovable.app/services/website-development"
+              }
+            ]
+          }
+        ]}
       />
 
       {/* ── 1. Hero ─────────────────────────────────────── */}

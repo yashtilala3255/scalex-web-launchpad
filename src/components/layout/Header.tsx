@@ -1,34 +1,44 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown, Globe, Smartphone, Cloud, ShoppingCart, Palette, Code } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import logoImg from "@/assets/logo.png";
+import { useSiteData } from "@/context/SiteDataContext";
+import { getIconComponent } from "@/components/ui/icon-helper";
 
-const serviceLinks = [
-  { name: "Website Development", path: "/services/website-development", icon: Globe, desc: "Custom, high-performance websites" },
-  { name: "App Development", path: "/services/app-development", icon: Smartphone, desc: "iOS, Android & cross-platform apps" },
-  { name: "SaaS Development", path: "/services/saas-development", icon: Cloud, desc: "End-to-end SaaS platforms" },
-  { name: "E-Commerce Solutions", path: "/services/ecommerce", icon: ShoppingCart, desc: "High-converting online stores" },
-  { name: "UI/UX Design", path: "/services/ui-ux-design", icon: Palette, desc: "Human-centered design" },
-  { name: "Full Stack Development", path: "/services/full-stack-development", icon: Code, desc: "End-to-end web app development" },
-];
 
-const navLinks = [
-  { name: "Home", path: "/" },
-  { name: "About", path: "/about" },
-  { name: "Services", path: "/services", children: serviceLinks },
-  { name: "Solutions", path: "/solutions" },
-  { name: "SaaS Products", path: "/saas-products" },
-  { name: "Contact", path: "/contact" },
-];
 
 const Header = () => {
+  const { services, settings } = useSiteData();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
   const location = useLocation();
+
+  const navServices = [...(services || [])];
+  const hasFullStack = navServices.some((s) => s.path === "/services/full-stack-development");
+  if (!hasFullStack) {
+    navServices.push({
+      icon: "Layers",
+      name: "Full Stack Development",
+      desc: "End-to-end custom software and enterprise web applications.",
+      bullets: ["Custom Web Apps", "API Integrations", "Database Architecture"],
+      path: "/services/full-stack-development"
+    });
+  }
+
+  const navLinks = [
+    { name: "Home", path: "/" },
+    { name: "About", path: "/about" },
+    { name: "Services", path: "/services", children: navServices },
+    { name: "Solutions", path: "/solutions" },
+    { name: "SaaS Products", path: "/saas-products" },
+    { name: "Contact", path: "/contact" },
+  ];
+
+  const displaySiteName = settings?.siteName || "ScaleXWeb";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -52,9 +62,13 @@ const Header = () => {
       <div className="container-tight flex items-center justify-between h-16 md:h-20">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5 group">
-          <img src={logoImg} alt="ScaleXWeb Logo" className="w-9 h-9 object-contain rounded-xl shadow-md group-hover:glow-sm transition-all duration-300" />
+          <img src={settings?.logoUrl || logoImg} alt="ScaleXWeb Logo" className="w-9 h-9 object-contain rounded-xl shadow-md group-hover:glow-sm transition-all duration-300" />
           <span className="font-heading font-bold text-xl text-foreground">
-            Scale<span className="gradient-text">X</span>Web
+            {displaySiteName.includes("ScaleXWeb") ? (
+              <>Scale<span className="gradient-text">X</span>Web</>
+            ) : (
+              displaySiteName
+            )}
           </span>
         </Link>
 
@@ -96,9 +110,14 @@ const Header = () => {
                             location.pathname === child.path ? "bg-primary/10" : ""
                           }`}
                         >
-                          <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center flex-shrink-0 group-hover:glow-sm transition-all">
-                            <child.icon className="w-4 h-4 text-white" />
-                          </div>
+                          {(() => {
+                            const Icon = getIconComponent(child.icon);
+                            return (
+                              <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center flex-shrink-0 group-hover:glow-sm transition-all">
+                                <Icon className="w-4 h-4 text-white" />
+                              </div>
+                            );
+                          })()}
                           <div>
                             <p className={`text-sm font-medium ${location.pathname === child.path ? "text-primary" : "text-foreground"}`}>
                               {child.name}
@@ -176,7 +195,10 @@ const Header = () => {
                               to={child.path}
                               className="flex items-center gap-3 px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground rounded-xl hover:bg-muted/60"
                             >
-                              <child.icon className="w-4 h-4 text-primary" />
+                              {(() => {
+                                const Icon = getIconComponent(child.icon);
+                                return <Icon className="w-4 h-4 text-primary" />;
+                              })()}
                               {child.name}
                             </Link>
                           ))}

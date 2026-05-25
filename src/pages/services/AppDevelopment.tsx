@@ -57,6 +57,8 @@ type LeadData = z.infer<typeof leadSchema>;
 const fadeUp = { initial: { opacity: 0, y: 30 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true }, transition: { duration: 0.55 } };
 const stagger = (i: number) => ({ initial: { opacity: 0, y: 20 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true }, transition: { delay: i * 0.08, duration: 0.45 } });
 
+import mobileMockup from "@/assets/mobile_mockup.png";
+
 /* ─── Interactive Mobile Simulator Component ───────── */
 const MobileSimulator = () => {
   const [activeScreen, setActiveScreen] = useState("dashboard");
@@ -69,11 +71,16 @@ const MobileSimulator = () => {
       </div>
 
       {/* Screen Content */}
-      <div className="flex-1 rounded-[28px] overflow-hidden bg-background relative p-4 pt-8 flex flex-col justify-between">
+      <div className="flex-1 rounded-[28px] overflow-hidden bg-background relative p-3 pt-8 flex flex-col justify-between">
         <div className="relative z-10 flex-1 flex flex-col justify-between">
           <AnimatePresence mode="wait">
             {activeScreen === "dashboard" && (
-              <motion.div key="dash" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-4">
+              <motion.div key="dash" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-3">
+                {/* Visual Header Mockup */}
+                <div className="relative rounded-xl overflow-hidden border border-border/40 bg-slate-950 shadow-md">
+                  <img src={mobileMockup} alt="Mobile App Mockup" loading="lazy" decoding="async" width={300} height={128} className="w-full h-32 object-cover object-center" />
+                </div>
+                
                 <div className="flex justify-between items-center">
                   <span className="text-[10px] text-muted-foreground">Welcome back,</span>
                   <span className="w-2.5 h-2.5 rounded-full bg-success" />
@@ -175,10 +182,21 @@ const MobileSimulator = () => {
   );
 };
 
+import { useSiteData } from "@/context/SiteDataContext";
+
 const AppDevelopment = () => {
+  const { addInquiry } = useSiteData();
   const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<LeadData>({ resolver: zodResolver(leadSchema) });
   const onSubmit = async (data: LeadData) => {
     try {
+      await addInquiry({
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        requirement: data.requirement,
+        service: "App Development"
+      });
+
       const res = await fetch("https://formspree.io/f/mykdbezz", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...data, _subject: "Mobile App Inquiry" }) });
       if (res.ok) { toast.success("🚀 App request logged! Team will reach out within 24h."); reset(); }
       else toast.error("Something went wrong. Please try again.");
@@ -191,6 +209,38 @@ const AppDevelopment = () => {
         title="Mobile App Development Services | ScaleXWeb"
         description="Hybrid and native app development for iOS & Android. We construct high-performance mobile apps with offline support, biometrics and push alerts."
         path="/services/app-development"
+        jsonLd={[
+          {
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "name": "Mobile App Development Services",
+            "description": "Hybrid and native app development for iOS & Android. We construct high-performance mobile apps with offline support, biometrics and push alerts.",
+            "provider": {
+              "@type": "LocalBusiness",
+              "name": "ScaleXWeb Solutions",
+              "url": "https://scalexweb.lovable.app"
+            },
+            "areaServed": "IN"
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://scalexweb.lovable.app"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "App Development",
+                "item": "https://scalexweb.lovable.app/services/app-development"
+              }
+            ]
+          }
+        ]}
       />
 
       {/* ── 1. Hero ─────────────────────────────────────── */}

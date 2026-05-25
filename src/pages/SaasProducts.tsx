@@ -5,56 +5,9 @@ import SectionCTA from "@/components/sections/SectionCTA";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import {
-  Shield, Server, Globe, Cloud, Lock, GitBranch,
-  UserCheck, CreditCard, Database, Users, BarChart3,
-  Bell, Webhook, Flag, Brush, ClipboardList, Headphones,
-  Download, Zap, CheckCircle, ArrowRight
-} from "lucide-react";
-
-/* ─── Data ───────────────────────────────────────────── */
-
-const architecture = [
-  { icon: Database, name: "Multi-Tenancy Scopes", desc: "Isolated data per tenant with shared underlying server instances for optimal compute cost efficiency." },
-  { icon: Server, name: "Microservices Layouts", desc: "Modular, independently deployable software layers for high resilience and zero-downtime upgrades." },
-  { icon: Globe, name: "API-First Integrations", desc: "Every feature fully exposed via secure REST/GraphQL API nodes for cross-platform expansion." },
-  { icon: Cloud, name: "Cloud-Native Hosting", desc: "Automated scaling on AWS, Docker cluster orchestrations, and CDNs providing 99.9% uptime SLA." },
-  { icon: Lock, name: "Security Standards", desc: "OWASP-compliant headers, role-based auth scopes, JWT sessions, and data-at-rest token encrypts." },
-  { icon: GitBranch, name: "CI/CD DevOps Setup", desc: "Automated GitHub Action triggers, lint checkups, Docker compilations, and static bundle push uploads." }
-];
-
-const features = [
-  { icon: UserCheck, name: "Authentication & SSO" },
-  { icon: CreditCard, name: "Subscription & Billing" },
-  { icon: Database, name: "Multi-Tenant Architecture" },
-  { icon: Users, name: "Role-Based Access Control" },
-  { icon: BarChart3, name: "Admin Dashboard & Analytics" },
-  { icon: Bell, name: "Notifications & Alerts" },
-  { icon: Webhook, name: "API Integrations & Webhooks" },
-  { icon: Flag, name: "Feature Flags & Metering" },
-  { icon: Brush, name: "White-Labeling & Themes" },
-  { icon: ClipboardList, name: "Audit Trail Logs" },
-  { icon: Headphones, name: "Support Module & Tickets" },
-  { icon: Download, name: "Data Export Reporting" }
-];
-
-const whyUs = [
-  {
-    number: "01",
-    title: "We've Done It Before — At Scale",
-    body: "Our team has architected and launched multi-tenant SaaS platforms serving thousands of concurrent users. We bring patterns that work, not experimentation on your dime."
-  },
-  {
-    number: "02",
-    title: "From Idea to Revenue-Ready MVP Fast",
-    body: "We ship your first production-grade version within weeks, not months — with real auth, billing, and dashboards — so you can start acquiring customers and validating revenue immediately."
-  },
-  {
-    number: "03",
-    title: "Built to Grow Without Rebuilding",
-    body: "Every architectural decision we make is designed to handle 10× your current load. You won't hit a ceiling that forces a painful rewrite when your user base explodes."
-  }
-];
+import { Zap, CheckCircle, ArrowRight } from "lucide-react";
+import { useSiteData } from "@/context/SiteDataContext";
+import { getIconComponent } from "@/components/ui/icon-helper";
 
 /* ─── Animations ─────────────────────────────────────── */
 const fadeUp = {
@@ -149,11 +102,31 @@ const ArchitectureBlueprint = () => {
 };
 
 export default function SaasProducts() {
+  const { saasArchitecture, saasFeatures, saasWhyUs } = useSiteData();
   return (
     <Layout>
       <SEO
         title="SaaS Products & Custom SaaS Development | ScaleXWeb"
         description="Proprietary SaaS offerings and custom platform development from MVP to enterprise. Multi-tenancy, microservices, billing, auth, and more — built by ScaleXWeb."
+        path="/saas-products"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://scalexweb.lovable.app"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "SaaS Products",
+              "item": "https://scalexweb.lovable.app/saas-products"
+            }
+          ]
+        }}
       />
 
       <PageHero
@@ -182,8 +155,8 @@ export default function SaasProducts() {
 
             {/* Right Details Grid */}
             <div className="lg:col-span-3 grid sm:grid-cols-2 gap-4">
-              {architecture.map((item, i) => {
-                const Icon = item.icon;
+              {(saasArchitecture || []).map((item, i) => {
+                const Icon = getIconComponent(item.icon);
                 return (
                   <motion.div
                     key={i}
@@ -221,8 +194,8 @@ export default function SaasProducts() {
           </motion.div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {features.map((feat, i) => {
-              const Icon = feat.icon;
+            {(saasFeatures || []).map((feat, i) => {
+              const Icon = getIconComponent(feat.icon);
               return (
                 <motion.div
                   key={i}
@@ -256,7 +229,7 @@ export default function SaasProducts() {
           </motion.div>
 
           <div className="grid md:grid-cols-3 gap-8 md:gap-6">
-            {whyUs.map((point, i) => (
+            {(saasWhyUs || []).map((point, i) => (
               <motion.div
                 key={i}
                 {...stagger(i)}

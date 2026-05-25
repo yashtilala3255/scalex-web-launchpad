@@ -60,9 +60,59 @@ const ServicePageTemplate = ({
   techStack,
   ctaHeadline,
   ctaSubheadline,
-}: ServicePageTemplateProps) => (
-  <Layout>
-    <SEO title={seoTitle} description={seoDescription} path={path} />
+}: ServicePageTemplateProps) => {
+  const serviceSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": serviceName,
+    "description": seoDescription,
+    "provider": {
+      "@type": "LocalBusiness",
+      "name": "ScaleXWeb Solutions",
+      "url": "https://scalexweb.lovable.app"
+    },
+    "areaServed": "IN",
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": serviceName,
+      "itemListElement": sections.map((s, idx) => ({
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": s.title,
+          "description": s.description
+        }
+      }))
+    }
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://scalexweb.lovable.app"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": breadcrumbName,
+        "item": `https://scalexweb.lovable.app${path}`
+      }
+    ]
+  };
+
+  return (
+    <Layout>
+      <SEO
+        title={seoTitle}
+        description={seoDescription}
+        path={path}
+        jsonLd={[serviceSchema, breadcrumbSchema]}
+      />
 
     {/* Hero */}
     <section className="relative pt-28 pb-20 md:pt-36 md:pb-28 overflow-hidden">
@@ -192,9 +242,9 @@ const ServicePageTemplate = ({
         </div>
       </div>
     </section>
-
     <SectionCTA headline={ctaHeadline} subheadline={ctaSubheadline} primaryCTA={ctaText} primaryLink="/contact" secondaryCTA="View All Services" secondaryLink="/services/website-development" />
   </Layout>
 );
+};
 
 export default ServicePageTemplate;

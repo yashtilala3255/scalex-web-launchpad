@@ -33,13 +33,24 @@ const faqs = [
   { q: "Can you work with our existing team?", a: "Absolutely. We frequently collaborate with in-house teams, providing dedicated developers or design resources as needed." },
 ];
 
+import { useSiteData } from "@/context/SiteDataContext";
+
 const Contact = () => {
+  const { addInquiry, settings } = useSiteData();
   const { register, handleSubmit, formState: { errors, isSubmitting }, reset, setValue } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
 
   const onSubmit = async (data: FormData) => {
     try {
+      await addInquiry({
+        name: data.name,
+        email: data.email,
+        phone: data.phone || "",
+        requirement: data.message,
+        service: data.service || "General Inquiry"
+      });
+
       const response = await fetch("https://formspree.io/f/mykdbezz", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -66,18 +77,36 @@ const Contact = () => {
           {
             "@context": "https://schema.org",
             "@type": "LocalBusiness",
-            "name": "ScaleXWeb Solution",
+            "name": settings?.siteName || "ScaleXWeb Solutions",
             "url": "https://scalexweb.lovable.app/contact",
-            "email": "scalexwebsolution@gmail.com",
+            "email": settings?.contactEmail || "scalexwebsolution@gmail.com",
             "address": { "@type": "PostalAddress", "addressLocality": "Ahmedabad", "addressRegion": "Gujarat", "addressCountry": "IN" },
             "openingHoursSpecification": [{ "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"], "opens": "09:00", "closes": "18:00" }],
-            "sameAs": ["https://www.linkedin.com/company/scale-x-web-solution/", "https://x.com/ScaleXWeb"],
+            "sameAs": [settings?.socialLinkedin || "https://www.linkedin.com/company/scale-x-web-solution/", settings?.socialTwitter || "https://x.com/ScaleXWeb"],
           },
           {
             "@context": "https://schema.org",
             "@type": "FAQPage",
             "mainEntity": faqs.map((f) => ({ "@type": "Question", "name": f.q, "acceptedAnswer": { "@type": "Answer", "text": f.a } })),
           },
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://scalexweb.lovable.app"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Contact",
+                "item": "https://scalexweb.lovable.app/contact"
+              }
+            ]
+          }
         ]}
       />
       <PageHero
@@ -158,8 +187,8 @@ const Contact = () => {
                 <h2 className="text-2xl font-heading font-bold text-foreground mb-6">Contact Information</h2>
                 <div className="space-y-4">
                   {[
-                    { icon: Mail, label: "Email", value: "scalexwebsolution@gmail.com" },
-                    { icon: MapPin, label: "Location", value: "Ahmedabad, Gujarat, India" },
+                    { icon: Mail, label: "Email", value: settings?.contactEmail || "scalexwebsolution@gmail.com" },
+                    { icon: MapPin, label: "Location", value: settings?.contactAddress || "Ahmedabad, Gujarat, India" },
                     { icon: Clock, label: "Business Hours", value: "Mon–Fri: 9 AM – 6 PM IST" },
                   ].map(({ icon: Icon, label, value }) => (
                     <div key={label} className="gradient-border bg-card rounded-xl p-4 flex items-center gap-4">
@@ -177,9 +206,9 @@ const Contact = () => {
 
               <div className="flex gap-3">
                 {[
-                  { icon: Linkedin, href: "https://www.linkedin.com/company/scale-x-web-solution/", label: "LinkedIn" },
-                  { icon: Twitter, href: "https://x.com/ScaleXWeb", label: "Twitter" },
-                  { icon: Instagram, href: "#", label: "Instagram" },
+                  { icon: Linkedin, href: settings?.socialLinkedin || "https://www.linkedin.com/company/scale-x-web-solution/", label: "LinkedIn" },
+                  { icon: Twitter, href: settings?.socialTwitter || "https://x.com/ScaleXWeb", label: "Twitter" },
+                  { icon: Instagram, href: settings?.socialInstagram || "https://www.instagram.com/scalexwebsolution/", label: "Instagram" },
                 ].map(({ icon: Icon, href, label }) => (
                   <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label}
                     className="w-10 h-10 gradient-border bg-card rounded-xl flex items-center justify-center hover:bg-primary/10 transition-colors group">

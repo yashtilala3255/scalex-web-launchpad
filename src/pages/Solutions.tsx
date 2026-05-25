@@ -7,59 +7,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import {
-  Globe, Smartphone, Cloud, ShoppingCart, Building2,
-  Palette, XCircle, CheckCircle, ArrowRight, ChevronDown, Check, Zap
+  XCircle, CheckCircle, ArrowRight, ChevronDown, Check, Zap
 } from "lucide-react";
-
-/* ─── Data ───────────────────────────────────────────── */
-
-const challenges = [
-  {
-    challenge: "Outdated website hurting credibility",
-    solution: "Modern, fast, conversion-optimized website",
-    detail: "We rebuild older websites using high-performance code, improving Google Lighthouse speeds, user conversions, and customer trust signals."
-  },
-  {
-    challenge: "Manual processes costing time and money",
-    solution: "Custom automation portal or ERP integration",
-    detail: "We build tailored web applications and portals to automate lead capture, invoicing, client ticketing, and database synchronization."
-  },
-  {
-    challenge: "No mobile presence",
-    solution: "Cross-platform mobile application",
-    detail: "We engineer React Native or Flutter mobile apps allowing you to reach both iOS and Android users with a single codebase framework."
-  },
-  {
-    challenge: "Failed SaaS product idea",
-    solution: "Validated MVP with scalable architecture",
-    detail: "We launch revenue-ready MVPs with Clerk auth, Stripe billing integration, and admin dashboards in under 8 weeks."
-  },
-  {
-    challenge: "Low online sales",
-    solution: "High-converting e-commerce store with SEO & UX",
-    detail: "We design custom Shopify or headless storefronts focused on loading speed, single-click checkouts, and easy product filters."
-  },
-  {
-    challenge: "Poor user experience driving churn",
-    solution: "UX audit + complete redesign",
-    detail: "We review your site's current heatmaps and user flow patterns to design clean, visual layouts that improve user onboarding."
-  }
-];
-
-const categories = [
-  { icon: Globe, name: "Website Solutions", desc: "Modern, responsive websites that convert visitors into customers." },
-  { icon: Smartphone, name: "Application Solutions", desc: "Native and cross-platform apps for iOS, Android, and web." },
-  { icon: Cloud, name: "SaaS & Platform Solutions", desc: "Multi-tenant SaaS platforms built for scale." },
-  { icon: ShoppingCart, name: "E-Commerce Solutions", desc: "End-to-end online stores with payment and inventory." },
-  { icon: Building2, name: "Industry-Specific Solutions", desc: "Tailored solutions for healthcare, education, fintech, and more." },
-  { icon: Palette, name: "Custom Enterprise Solutions", desc: "Enterprise portals, ERPs, and custom dashboards." }
-];
-
-const caseStudies = [
-  { industry: "E-Commerce", tag: "Revenue Growth", challenge: "Low conversion rates on existing store.", solution: "Rebuilt with optimized UX, fast checkout, and mobile-first design.", result: "Faster checkout flow drove a meaningful lift in conversion and repeat purchases." },
-  { industry: "SaaS Startup", tag: "MVP Launch", challenge: "Needed to validate MVP and reach first 1,000 users.", solution: "Built scalable MVP with auth, billing, and analytics.", result: "Shipped production-ready MVP in weeks, helping land early customers and close seed round." },
-  { industry: "Healthcare", tag: "Compliance", challenge: "Compliance requirements + poor patient UX.", solution: "HIPAA-compliant portal with intuitive patient dashboard.", result: "Delivered compliant portal with cleaner dashboard, reducing support tickets by 40." }
-];
+import { useSiteData } from "@/context/SiteDataContext";
+import { getIconComponent } from "@/components/ui/icon-helper";
 
 /* ─── Animations ─────────────────────────────────────── */
 const fadeUp = {
@@ -77,6 +28,7 @@ const stagger = (i: number) => ({
 });
 
 export default function Solutions() {
+  const { challenges, solutionCategories, caseStudies } = useSiteData();
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   const toggleIndex = (i: number) => {
@@ -88,6 +40,25 @@ export default function Solutions() {
       <SEO
         title="Solutions | ScaleXWeb — Smart Solutions for Modern Businesses"
         description="From outdated websites to complex SaaS platforms, ScaleXWeb solves your business challenges with the right technology. Explore our solution categories and real-world impact."
+        path="/solutions"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://scalexweb.lovable.app"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Solutions",
+              "item": "https://scalexweb.lovable.app/solutions"
+            }
+          ]
+        }}
       />
 
       <PageHero
@@ -115,7 +86,7 @@ export default function Solutions() {
           <div className="grid lg:grid-cols-5 gap-12 items-start">
             {/* Left Challenge List Accordion */}
             <div className="lg:col-span-3 space-y-3">
-              {challenges.map((item, i) => (
+              {(challenges || []).map((item, i) => (
                 <div
                   key={i}
                   className={`gradient-border rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 ${openIndex === i ? "bg-card/80 border-primary/40 shadow-sm" : "bg-card/40 hover:bg-card/65 border-border/40"}`}
@@ -203,8 +174,8 @@ export default function Solutions() {
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {categories.map((cat, i) => {
-              const Icon = cat.icon;
+            {(solutionCategories || []).map((cat, i) => {
+              const Icon = getIconComponent(cat.icon);
               return (
                 <motion.div
                   key={i}
@@ -253,7 +224,7 @@ export default function Solutions() {
           </motion.div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            {caseStudies.map((cs, i) => (
+            {(caseStudies || []).map((cs, i) => (
               <motion.div
                 key={i}
                 {...stagger(i)}
@@ -302,7 +273,14 @@ export default function Solutions() {
         </div>
       </section>
 
-      <SectionCTA />
+      <SectionCTA
+        headline="Ready to Build Your Custom Solution?"
+        subheadline="Let's discuss your business workflow challenges and architect a scalable solution together."
+        primaryCTA="Schedule a Call"
+        primaryLink="/contact"
+        secondaryCTA="Explore SaaS Products"
+        secondaryLink="/saas-products"
+      />
     </Layout>
   );
 }

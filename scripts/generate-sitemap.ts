@@ -21,6 +21,7 @@ const entries: SitemapEntry[] = [
   { path: "/services/saas-development", changefreq: "monthly", priority: "0.7" },
   { path: "/services/ecommerce", changefreq: "monthly", priority: "0.7" },
   { path: "/services/ui-ux-design", changefreq: "monthly", priority: "0.7" },
+  { path: "/services/full-stack-development", changefreq: "monthly", priority: "0.7" },
   { path: "/privacy-policy", changefreq: "yearly", priority: "0.3" },
   { path: "/terms-of-service", changefreq: "yearly", priority: "0.3" },
 ];
@@ -47,5 +48,22 @@ function generateSitemap(entries: SitemapEntry[]) {
   ].join("\n");
 }
 
+function generateRobots() {
+  return [
+    `User-agent: *`,
+    `Disallow: /admin`,
+    `Disallow: /admin/`,
+    `Allow: /`,
+    ``,
+    `Sitemap: ${BASE_URL}/sitemap.xml`,
+  ].join("\n");
+}
+
+// Write sitemap.xml
 writeFileSync(resolve("public/sitemap.xml"), generateSitemap(entries));
 console.log(`sitemap.xml written (${entries.length} entries)`);
+
+// Write robots.txt
+writeFileSync(resolve("public/robots.txt"), generateRobots());
+console.log(`robots.txt written`);
+

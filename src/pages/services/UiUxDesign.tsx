@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Layout from "@/components/layout/Layout";
 import SEO from "@/components/SEO";
+import uiuxMockup from "@/assets/uiux_mockup.png";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -51,7 +52,7 @@ type LeadData = z.infer<typeof leadSchema>;
 const fadeUp = { initial: { opacity: 0, y: 30 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true }, transition: { duration: 0.55 } };
 const stagger = (i: number) => ({ initial: { opacity: 0, y: 20 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true }, transition: { delay: i * 0.08, duration: 0.45 } });
 
-/* ─── Interactive Wireframe vs High-Fidelity Viewer ── */
+/* ─── Interactive Design Canvas Showcase ──────────── */
 const DesignSimulator = () => {
   const [stage, setStage] = useState<"wireframe" | "styled">("styled");
 
@@ -106,8 +107,8 @@ const DesignSimulator = () => {
             ) : (
               <motion.div key="style" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-4">
                 {/* Styled Mode */}
-                <div className="w-12 h-12 gradient-primary rounded-xl flex items-center justify-center shadow-md">
-                  <Sparkles className="w-5 h-5 text-white" />
+                <div className="relative rounded-xl overflow-hidden border border-border/40 shadow-md">
+                   <img src={uiuxMockup} alt="UI/UX Design Mockup" loading="lazy" decoding="async" width={300} height={128} className="w-full h-32 object-cover" />
                 </div>
                 <h5 className="text-xl font-heading font-extrabold text-foreground leading-tight">Interactive User Interfaces</h5>
                 <p className="text-xs text-muted-foreground leading-relaxed">We style high-end design assets in Figma using responsive auto-layouts, custom gradients and interactive components.</p>
@@ -139,6 +140,38 @@ const UiUxDesign = () => {
         title="UI/UX Design Company | ScaleXWeb Ahmedabad"
         description="Premium Figma UI/UX design services. We craft structured design systems, user wireframes, interactive prototypes, and high-fidelity product layouts."
         path="/services/ui-ux-design"
+        jsonLd={[
+          {
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "name": "UI/UX Design Services",
+            "description": "Premium Figma UI/UX design services. We craft structured design systems, user wireframes, interactive prototypes, and high-fidelity product layouts.",
+            "provider": {
+              "@type": "LocalBusiness",
+              "name": "ScaleXWeb Solutions",
+              "url": "https://scalexweb.lovable.app"
+            },
+            "areaServed": "IN"
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://scalexweb.lovable.app"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "UI/UX Design",
+                "item": "https://scalexweb.lovable.app/services/ui-ux-design"
+              }
+            ]
+          }
+        ]}
       />
 
       {/* ── 1. Hero ─────────────────────────────────────── */}

@@ -19,10 +19,8 @@ import {
   Code, TestTube, Send, Star, ArrowRight, CheckCircle,
   Brain, Zap, ShieldCheck, Users, Phone, Mail, User,
 } from "lucide-react";
-import {
-  stats, services, industries, trustPoints,
-  processSteps, testimonials, techMarqueeItems,
-} from "@/data";
+import { useSiteData } from "@/context/SiteDataContext";
+import { getIconComponent } from "@/components/ui/icon-helper";
 
 // ── AI Enterprise Form ──────────────────────────
 const aiFormSchema = z.object({
@@ -41,12 +39,21 @@ const aiPerks = [
 ];
 
 const AIEnterpriseForm = () => {
+  const { addInquiry } = useSiteData();
   const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<AIFormData>({
     resolver: zodResolver(aiFormSchema),
   });
 
   const onSubmit = async (data: AIFormData) => {
     try {
+      await addInquiry({
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        requirement: data.requirement,
+        service: "AI Enterprise Development"
+      });
+
       const res = await fetch("https://formspree.io/f/mykdbezz", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -245,12 +252,75 @@ const stagger = {
   viewport: { once: true },
 };
 
-const Index = () => (
-  <Layout>
+const Index = () => {
+  const {
+    stats, services, industries, trustPoints,
+    processSteps, testimonials, techMarqueeItems, settings
+  } = useSiteData();
+
+  if (!services || services.length < 5) return null;
+
+  return (
+    <Layout>
     <SEO
-      title="ScaleXWeb — Digital Agency for Web & App Development"
-      description="ScaleXWeb Solution is an Ahmedabad-based digital agency building custom websites, mobile apps, SaaS platforms, and e-commerce stores for ambitious businesses."
+      title="ScaleXWeb Solutions — Digital Agency for Web & App Development"
+      description="ScaleXWeb Solution is a premium digital agency building custom websites, mobile apps, SaaS platforms, and e-commerce stores for ambitious businesses."
       path="/"
+      jsonLd={[
+        {
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": settings?.siteName || "ScaleXWeb Solutions",
+          "url": "https://scalexweb.lovable.app",
+          "logo": settings?.logoUrl || "https://scalexweb.lovable.app/logo.png",
+          "email": settings?.contactEmail || "scalexwebsolution@gmail.com",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Ahmedabad",
+            "addressRegion": "Gujarat",
+            "addressCountry": "IN"
+          },
+          "sameAs": [
+            settings?.socialLinkedin || "https://www.linkedin.com/company/scale-x-web-solution/",
+            settings?.socialTwitter || "https://x.com/ScaleXWeb",
+            settings?.socialInstagram || "https://www.instagram.com/scalexwebsolution/"
+          ].filter(Boolean)
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          "name": settings?.siteName || "ScaleXWeb Solutions",
+          "url": "https://scalexweb.lovable.app"
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "LocalBusiness",
+          "name": settings?.siteName || "ScaleXWeb Solutions",
+          "image": settings?.logoUrl || "https://scalexweb.lovable.app/logo.png",
+          "@id": "https://scalexweb.lovable.app/#localbusiness",
+          "url": "https://scalexweb.lovable.app",
+          "telephone": settings?.contactPhone || "+919876543210",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": settings?.contactAddress || "Ahmedabad, Gujarat",
+            "addressLocality": "Ahmedabad",
+            "addressRegion": "Gujarat",
+            "postalCode": "380001",
+            "addressCountry": "IN"
+          },
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": 23.0225,
+            "longitude": 72.5714
+          },
+          "openingHoursSpecification": {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+            "opens": "09:00",
+            "closes": "18:00"
+          }
+        }
+      ]}
     />
 
     {/* ── Hero ──────────────────────────────────────── */}
@@ -260,6 +330,9 @@ const Index = () => (
         src={heroBg}
         alt=""
         aria-hidden="true"
+        loading="eager"
+        decoding="async"
+        fetchPriority="high"
         className="absolute inset-0 w-full h-full object-cover object-center"
       />
       {/* Dark overlay for readability */}
@@ -432,9 +505,14 @@ const Index = () => (
             transition={{ delay: 0 }}
             className="md:col-span-2 gradient-border rounded-2xl p-8 md:p-10 bg-card group hover:glow-sm transition-all duration-500"
           >
-            <div className="w-14 h-14 gradient-primary rounded-2xl flex items-center justify-center mb-6 group-hover:glow-primary transition-all duration-300">
-              <Globe className="w-7 h-7 text-white" />
-            </div>
+            {(() => {
+              const Icon = getIconComponent(services[0]?.icon);
+              return (
+                <div className="w-14 h-14 gradient-primary rounded-2xl flex items-center justify-center mb-6 group-hover:glow-primary transition-all duration-300">
+                  <Icon className="w-7 h-7 text-white" />
+                </div>
+              );
+            })()}
             <h3 className="text-2xl font-heading font-bold text-foreground mb-3">{services[0].name}</h3>
             <p className="text-muted-foreground mb-6 leading-relaxed max-w-lg">{services[0].desc} Every project is tailored to convert visitors into paying customers.</p>
             <ul className="space-y-2.5 mb-8">
@@ -451,9 +529,14 @@ const Index = () => (
 
           {/* App Dev */}
           <motion.div {...stagger} transition={{ delay: 0.1 }} className="gradient-border rounded-2xl p-7 bg-card group hover:glow-sm transition-all duration-500">
-            <div className="w-12 h-12 gradient-primary rounded-xl flex items-center justify-center mb-5 group-hover:glow-sm transition-all">
-              <Smartphone className="w-6 h-6 text-white" />
-            </div>
+            {(() => {
+              const Icon = getIconComponent(services[1]?.icon);
+              return (
+                <div className="w-12 h-12 gradient-primary rounded-xl flex items-center justify-center mb-5 group-hover:glow-sm transition-all">
+                  <Icon className="w-6 h-6 text-white" />
+                </div>
+              );
+            })()}
             <h3 className="text-xl font-heading font-bold text-foreground mb-2">{services[1].name}</h3>
             <p className="text-sm text-muted-foreground mb-5 leading-relaxed">{services[1].desc}</p>
             <Link to={services[1].path} className="inline-flex items-center gap-1.5 text-primary text-xs font-semibold group-hover:gap-2.5 transition-all">
@@ -463,9 +546,14 @@ const Index = () => (
 
           {/* SaaS Dev */}
           <motion.div {...stagger} transition={{ delay: 0.2 }} className="gradient-border rounded-2xl p-7 bg-card group hover:glow-sm transition-all duration-500">
-            <div className="w-12 h-12 gradient-primary rounded-xl flex items-center justify-center mb-5 group-hover:glow-sm transition-all">
-              <Cloud className="w-6 h-6 text-white" />
-            </div>
+            {(() => {
+              const Icon = getIconComponent(services[2]?.icon);
+              return (
+                <div className="w-12 h-12 gradient-primary rounded-xl flex items-center justify-center mb-5 group-hover:glow-sm transition-all">
+                  <Icon className="w-6 h-6 text-white" />
+                </div>
+              );
+            })()}
             <h3 className="text-xl font-heading font-bold text-foreground mb-2">{services[2].name}</h3>
             <p className="text-sm text-muted-foreground mb-5 leading-relaxed">{services[2].desc}</p>
             <Link to={services[2].path} className="inline-flex items-center gap-1.5 text-primary text-xs font-semibold group-hover:gap-2.5 transition-all">
@@ -475,9 +563,14 @@ const Index = () => (
 
           {/* E-Commerce */}
           <motion.div {...stagger} transition={{ delay: 0.3 }} className="gradient-border rounded-2xl p-7 bg-card group hover:glow-sm transition-all duration-500">
-            <div className="w-12 h-12 gradient-primary rounded-xl flex items-center justify-center mb-5 group-hover:glow-sm transition-all">
-              <ShoppingCart className="w-6 h-6 text-white" />
-            </div>
+            {(() => {
+              const Icon = getIconComponent(services[3]?.icon);
+              return (
+                <div className="w-12 h-12 gradient-primary rounded-xl flex items-center justify-center mb-5 group-hover:glow-sm transition-all">
+                  <Icon className="w-6 h-6 text-white" />
+                </div>
+              );
+            })()}
             <h3 className="text-xl font-heading font-bold text-foreground mb-2">{services[3].name}</h3>
             <p className="text-sm text-muted-foreground mb-5 leading-relaxed">{services[3].desc}</p>
             <Link to={services[3].path} className="inline-flex items-center gap-1.5 text-primary text-xs font-semibold group-hover:gap-2.5 transition-all">
@@ -485,11 +578,16 @@ const Index = () => (
             </Link>
           </motion.div>
 
-          {/* UI/UX — CTA card */}
+          {/* UI/UX card */}
           <motion.div {...stagger} transition={{ delay: 0.35 }} className="gradient-border rounded-2xl p-7 bg-card group hover:glow-sm transition-all duration-500">
-            <div className="w-12 h-12 gradient-primary rounded-xl flex items-center justify-center mb-5 group-hover:glow-sm transition-all">
-              <Palette className="w-6 h-6 text-white" />
-            </div>
+            {(() => {
+              const Icon = getIconComponent(services[4]?.icon);
+              return (
+                <div className="w-12 h-12 gradient-primary rounded-xl flex items-center justify-center mb-5 group-hover:glow-sm transition-all">
+                  <Icon className="w-6 h-6 text-white" />
+                </div>
+              );
+            })()}
             <h3 className="text-xl font-heading font-bold text-foreground mb-2">{services[4].name}</h3>
             <p className="text-sm text-muted-foreground mb-5 leading-relaxed">{services[4].desc}</p>
             <Link to={services[4].path} className="inline-flex items-center gap-1.5 text-primary text-xs font-semibold group-hover:gap-2.5 transition-all">
@@ -497,14 +595,37 @@ const Index = () => (
             </Link>
           </motion.div>
 
+          {/* Full Stack Development */}
+          {services[5] && (
+            <motion.div {...stagger} transition={{ delay: 0.38 }} className="gradient-border rounded-2xl p-7 bg-card group hover:glow-sm transition-all duration-500">
+              {(() => {
+                const Icon = getIconComponent(services[5]?.icon);
+                return (
+                  <div className="w-12 h-12 gradient-primary rounded-xl flex items-center justify-center mb-5 group-hover:glow-sm transition-all">
+                    <Icon className="w-6 h-6 text-white" />
+                  </div>
+                );
+              })()}
+              <h3 className="text-xl font-heading font-bold text-foreground mb-2">{services[5].name}</h3>
+              <p className="text-sm text-muted-foreground mb-5 leading-relaxed">{services[5].desc}</p>
+              <Link to={services[5].path} className="inline-flex items-center gap-1.5 text-primary text-xs font-semibold group-hover:gap-2.5 transition-all">
+                Learn More <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </motion.div>
+          )}
+
           {/* CTA card */}
-          <motion.div {...stagger} transition={{ delay: 0.4 }} className="gradient-primary rounded-2xl p-7 flex flex-col items-center justify-center text-center group hover:glow-primary transition-all duration-500 cursor-pointer">
-            <div className="w-14 h-14 bg-white/15 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-white/20 transition-colors">
-              <Rocket className="w-7 h-7 text-white" />
+          <motion.div {...stagger} transition={{ delay: 0.4 }} className={`gradient-primary rounded-2xl p-8 flex flex-col md:flex-row items-center justify-between gap-6 group hover:glow-primary transition-all duration-500 cursor-pointer text-center md:text-left ${services[5] ? "md:col-span-2" : ""}`}>
+            <div className="flex flex-col md:flex-row items-center gap-5">
+              <div className="w-14 h-14 bg-white/15 rounded-2xl flex items-center justify-center group-hover:bg-white/20 transition-colors flex-shrink-0">
+                <Rocket className="w-7 h-7 text-white" />
+              </div>
+              <div>
+                <h3 className="text-xl md:text-2xl font-heading font-bold text-white mb-1">Ready to Scale Your Business?</h3>
+                <p className="text-sm text-white/80">Get a free consultation and project plan.</p>
+              </div>
             </div>
-            <h3 className="text-xl font-heading font-bold text-white mb-2">Ready to Scale?</h3>
-            <p className="text-sm text-white/70 mb-6">Free consultation, no commitment</p>
-            <Button variant="hero-outline" size="sm" className="gap-1.5" asChild>
+            <Button variant="hero-outline" size="sm" className="gap-1.5 bg-white text-primary hover:bg-white/95 border-none shadow-lg px-6 py-2.5 flex-shrink-0" asChild>
               <Link to="/contact">
                 Get Free Quote <ArrowRight className="w-3.5 h-3.5" />
               </Link>
@@ -531,24 +652,30 @@ const Index = () => (
       {/* Row 1 */}
       <div className="marquee py-3 mb-3">
         <div className="marquee-inner gap-4 px-2">
-          {[...industries, ...industries].map((ind, i) => (
-            <div key={i} className="glass rounded-full px-5 py-3 flex items-center gap-3 whitespace-nowrap flex-shrink-0">
-              <ind.icon className="w-4 h-4 text-accent" />
-              <span className="text-sm font-medium text-foreground/80">{ind.name}</span>
-            </div>
-          ))}
+          {[...industries, ...industries].map((ind, i) => {
+            const Icon = getIconComponent(ind.icon);
+            return (
+              <div key={i} className="glass rounded-full px-5 py-3 flex items-center gap-3 whitespace-nowrap flex-shrink-0">
+                <Icon className="w-4 h-4 text-accent" />
+                <span className="text-sm font-medium text-foreground/80">{ind.name}</span>
+              </div>
+            );
+          })}
         </div>
       </div>
 
       {/* Row 2 — reverse */}
       <div className="marquee py-3">
         <div className="marquee-inner gap-4 px-2" style={{ animationDirection: "reverse" }}>
-          {[...industries, ...industries].map((ind, i) => (
-            <div key={i} className="glass-light rounded-full px-5 py-3 flex items-center gap-3 whitespace-nowrap flex-shrink-0">
-              <ind.icon className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium text-foreground/60">{ind.name}</span>
-            </div>
-          ))}
+          {[...industries, ...industries].map((ind, i) => {
+            const Icon = getIconComponent(ind.icon);
+            return (
+              <div key={i} className="glass-light rounded-full px-5 py-3 flex items-center gap-3 whitespace-nowrap flex-shrink-0">
+                <Icon className="w-4 h-4 text-primary" />
+                <span className="text-sm font-medium text-foreground/60">{ind.name}</span>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -564,20 +691,23 @@ const Index = () => (
           </h2>
         </motion.div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {trustPoints.map((tp, i) => (
-            <motion.div
-              key={tp.title}
-              {...stagger}
-              transition={{ delay: i * 0.08 }}
-              className="gradient-border rounded-2xl p-7 bg-card group hover:glow-sm transition-all duration-500"
-            >
-              <div className="w-12 h-12 gradient-primary rounded-xl flex items-center justify-center mb-5 group-hover:glow-sm transition-all duration-300">
-                <tp.icon className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="font-heading font-semibold text-foreground mb-2">{tp.title}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">{tp.desc}</p>
-            </motion.div>
-          ))}
+          {trustPoints.map((tp, i) => {
+            const Icon = getIconComponent(tp.icon);
+            return (
+              <motion.div
+                key={tp.title}
+                {...stagger}
+                transition={{ delay: i * 0.08 }}
+                className="gradient-border rounded-2xl p-7 bg-card group hover:glow-sm transition-all duration-500"
+              >
+                <div className="w-12 h-12 gradient-primary rounded-xl flex items-center justify-center mb-5 group-hover:glow-sm transition-all duration-300">
+                  <Icon className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="font-heading font-semibold text-foreground mb-2">{tp.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{tp.desc}</p>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -595,23 +725,26 @@ const Index = () => (
           </p>
         </motion.div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {processSteps.map((step, i) => (
-            <motion.div
-              key={step.title}
-              {...stagger}
-              transition={{ delay: i * 0.1 }}
-              className="gradient-border rounded-2xl p-7 bg-card group hover:glow-sm transition-all duration-500"
-            >
-              <div className="flex items-center gap-4 mb-5">
-                <div className="w-11 h-11 gradient-primary rounded-xl flex items-center justify-center text-white font-heading font-bold text-sm flex-shrink-0 group-hover:glow-sm transition-all">
-                  {step.step}
+          {processSteps.map((step, i) => {
+            const Icon = getIconComponent(step.icon);
+            return (
+              <motion.div
+                key={step.title}
+                {...stagger}
+                transition={{ delay: i * 0.1 }}
+                className="gradient-border rounded-2xl p-7 bg-card group hover:glow-sm transition-all duration-500"
+              >
+                <div className="flex items-center gap-4 mb-5">
+                  <div className="w-11 h-11 gradient-primary rounded-xl flex items-center justify-center text-white font-heading font-bold text-sm flex-shrink-0 group-hover:glow-sm transition-all">
+                    {step.step}
+                  </div>
+                  <Icon className="w-5 h-5 text-primary/70" />
                 </div>
-                <step.icon className="w-5 h-5 text-primary/70" />
-              </div>
-              <h3 className="font-heading font-semibold text-foreground mb-2">{step.title}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
-            </motion.div>
-          ))}
+                <h3 className="font-heading font-semibold text-foreground mb-2">{step.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -669,6 +802,7 @@ const Index = () => (
       secondaryLink="/services/website-development"
     />
   </Layout>
-);
+  );
+};
 
 export default Index;
