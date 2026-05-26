@@ -1,6 +1,4 @@
 User-agent: *
-Disallow: /admin
-Disallow: /admin/
 Allow: /
 
-Sitemap: https://scalexweb.lovable.app/sitemap.xml
+Sitemap: https://scalexwebsolution.vercel.app/sitemap.xml
