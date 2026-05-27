@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import SEO from "@/components/SEO";
-import { Clock, Mail, Phone, Lock, Calendar, Bell, MapPin } from "lucide-react";
+import { Clock, Mail, Phone, Lock, Calendar, Bell, MapPin, Linkedin, Twitter, Github, Instagram } from "lucide-react";
 import { useSiteData } from "@/context/SiteDataContext";
 import logoImg from "@/assets/logo.png";
 import { toast } from "sonner";
@@ -16,6 +16,13 @@ const ComingSoonPage = () => {
   const contactPhone = settings?.contactPhone || "+91 98765 43210";
   const contactAddress = settings?.contactAddress || "Ahmedabad, Gujarat, India";
   const launchDateTime = settings?.launchDateTime || "";
+
+  const socialLinks = [
+    { icon: Linkedin, href: settings?.socialLinkedin || "https://www.linkedin.com/company/scale-x-web-solution", label: "LinkedIn" },
+    { icon: Twitter, href: settings?.socialTwitter || "https://twitter.com/scalexweb", label: "Twitter" },
+    { icon: Github, href: settings?.socialGithub || "https://github.com/scalexweb", label: "GitHub" },
+    { icon: Instagram, href: settings?.socialInstagram || "https://www.instagram.com/scalexwebsolution/", label: "Instagram" },
+  ];
 
   // Countdown State
   const [timeLeft, setTimeLeft] = useState({
@@ -184,6 +191,25 @@ const ComingSoonPage = () => {
                 </div>
               </div>
             </form>
+          </div>
+
+          {/* Social Links */}
+          <div className="mt-8 pt-6 border-t border-white/5 flex flex-col items-center gap-3">
+            <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">Follow our journey</p>
+            <div className="flex gap-4">
+              {socialLinks.map(({ icon: Icon, href, label }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="w-9 h-9 rounded-xl border border-white/10 bg-slate-900/40 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/30 hover:scale-105 transition-all duration-300 shadow-sm"
+                >
+                  <Icon className="w-4 h-4" />
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       </main>

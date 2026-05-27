@@ -7,8 +7,8 @@ const MaintenancePage = () => {
   const { settings } = useSiteData();
 
   const displaySiteName = settings?.siteName || "ScaleXWeb";
-  const contactEmail = settings?.contactEmail || "info@scalexweb.com";
-  const contactPhone = settings?.contactPhone || "+91 98765 43210";
+  const contactEmail = settings?.contactEmail || "scalexwebsolution@gmail.com";
+  const contactPhone = settings?.contactPhone || "+91 12345 XXXXX";
 
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background">
