@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import Layout from "@/components/layout/Layout";
 import SEO from "@/components/SEO";
 import SectionCTA from "@/components/sections/SectionCTA";
@@ -5,7 +6,8 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { motion } from "framer-motion";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { motion, AnimatePresence } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -17,7 +19,7 @@ import {
   Truck, Factory, Plane, Scale, Rocket, Clock, MessageSquare,
   Layers, HeartHandshake, Target, Search, Lightbulb, PenTool,
   Code, TestTube, Send, Star, ArrowRight, CheckCircle,
-  Brain, Zap, ShieldCheck, Users, Phone, Mail, User,
+  Brain, Zap, ShieldCheck, Users, Phone, Mail, User, X
 } from "lucide-react";
 import { useSiteData } from "@/context/SiteDataContext";
 import { getIconComponent } from "@/components/ui/icon-helper";
@@ -30,6 +32,148 @@ const aiFormSchema = z.object({
   requirement: z.string().min(20, "Please describe your requirement (min 20 chars)"),
 });
 type AIFormData = z.infer<typeof aiFormSchema>;
+
+// ── Hero Inquiry Form ────────────────────────────
+const heroFormSchema = z.object({
+  name: z.string().min(2, "Name is required"),
+  email: z.string().email("Enter a valid email"),
+  phone: z.string().min(7, "Phone number is required"),
+  service: z.string().min(1, "Please select a service"),
+  requirement: z.string().min(15, "Please describe your requirement (min 15 chars)"),
+});
+type HeroFormData = z.infer<typeof heroFormSchema>;
+
+const HeroInquiryForm = ({ onClose }: { onClose?: () => void }) => {
+  const { addInquiry } = useSiteData();
+  const { register, handleSubmit, formState: { errors, isSubmitting }, reset, setValue } = useForm<HeroFormData>({
+    resolver: zodResolver(heroFormSchema),
+  });
+
+  const onSubmit = async (data: HeroFormData) => {
+    try {
+      await addInquiry({
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        requirement: data.requirement,
+        service: data.service
+      });
+
+      const res = await fetch("https://formspree.io/f/mykdbezz", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...data, _subject: `New Hero Inquiry: ${data.service}` }),
+      });
+      if (res.ok) {
+        toast.success("🚀 Request received! Yash or team will contact you within 24 hours.");
+        reset();
+        if (onClose) onClose();
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
+    } catch {
+      toast.error("Network error. Please try again later.");
+    }
+  };
+
+  return (
+    <div className="relative border border-border bg-card rounded-xl p-6 sm:p-8 shadow-sm">
+      {onClose && (
+        <button
+          onClick={onClose}
+          type="button"
+          className="absolute top-4 right-4 text-muted-foreground hover:text-foreground p-1 rounded-lg border border-border/40 hover:bg-muted/40 transition-colors"
+          aria-label="Close form"
+        >
+          <X className="w-4 h-4" />
+        </button>
+      )}
+      <div className="mb-6">
+        <h3 className="text-xl font-heading font-bold text-foreground mb-1">Get a Custom Proposal</h3>
+        <p className="text-xs text-muted-foreground">Describe your project — we'll reply with options and estimates within 24 hours.</p>
+      </div>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" id="hero-lead-form">
+        {/* Name */}
+        <div>
+          <label className="text-xs font-semibold text-foreground/80 mb-1 block">Your Name</label>
+          <Input
+            {...register("name")}
+            placeholder="John Doe"
+            className="bg-background/60 border-border/50 focus:border-primary/60 rounded-xl h-10 text-sm"
+          />
+          {errors.name && <p className="text-[11px] text-destructive mt-1">{errors.name.message}</p>}
+        </div>
+
+        {/* Email & Phone */}
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label className="text-xs font-semibold text-foreground/80 mb-1 block">Work Email</label>
+            <Input
+              {...register("email")}
+              type="email"
+              placeholder="you@company.com"
+              className="bg-background/60 border-border/50 focus:border-primary/60 rounded-xl h-10 text-sm"
+            />
+            {errors.email && <p className="text-[11px] text-destructive mt-1">{errors.email.message}</p>}
+          </div>
+          <div>
+            <label className="text-xs font-semibold text-foreground/80 mb-1 block">Phone Number</label>
+            <Input
+              {...register("phone")}
+              type="tel"
+              placeholder="+91 XXXXX XXXXX"
+              className="bg-background/60 border-border/50 focus:border-primary/60 rounded-xl h-10 text-sm"
+            />
+            {errors.phone && <p className="text-[11px] text-destructive mt-1">{errors.phone.message}</p>}
+          </div>
+        </div>
+
+        {/* Service dropdown */}
+        <div>
+          <label className="text-xs font-semibold text-foreground/80 mb-1 block">Interested In</label>
+          <Select onValueChange={(v) => setValue("service", v)}>
+            <SelectTrigger className="bg-background/60 border-border/50 focus:border-primary/60 rounded-xl h-10 text-sm">
+              <SelectValue placeholder="Select a service" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Website Development">Website Development</SelectItem>
+              <SelectItem value="Mobile App Development">Mobile App Development</SelectItem>
+              <SelectItem value="SaaS Platform Development">SaaS Platform Development</SelectItem>
+              <SelectItem value="E-Commerce Solutions">E-Commerce Solutions</SelectItem>
+              <SelectItem value="UI/UX Interface Design">UI/UX Interface Design</SelectItem>
+              <SelectItem value="Custom Enterprise Software">Custom Enterprise Software</SelectItem>
+            </SelectContent>
+          </Select>
+          {errors.service && <p className="text-[11px] text-destructive mt-1">{errors.service.message}</p>}
+        </div>
+
+        {/* Message */}
+        <div>
+          <label className="text-xs font-semibold text-foreground/80 mb-1 block">Describe Project & Timeline</label>
+          <Textarea
+            {...register("requirement")}
+            placeholder="Tell us about the pages, features, timeline, etc."
+            rows={3}
+            className="bg-background/60 border-border/50 focus:border-primary/60 rounded-xl resize-none text-sm"
+          />
+          {errors.requirement && <p className="text-[11px] text-destructive mt-1">{errors.requirement.message}</p>}
+        </div>
+
+        <Button
+          type="submit"
+          variant="default"
+          className="w-full gap-2 text-sm h-11 bg-primary hover:bg-primary/90 text-white rounded-xl font-semibold mt-2"
+          disabled={isSubmitting}
+        >
+          <Send className="w-3.5 h-3.5" />
+          {isSubmitting ? "Sending..." : "Submit Proposal Request"}
+        </Button>
+      </form>
+    </div>
+  );
+};
+
 
 const aiPerks = [
   { icon: Brain, title: "AI-First Architecture", desc: "LLM integrations, vector search, RAG pipelines, and intelligent automation built into your core product." },
@@ -254,6 +398,25 @@ const Index = () => {
     processSteps, testimonials, techMarqueeItems, settings
   } = useSiteData();
 
+  const [isFormOpen, setIsFormOpen] = useState(false);
+
+  // Automatically open the form popup on website load
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const hasClosed = sessionStorage.getItem("heroFormDismissed");
+      if (!hasClosed) {
+        setIsFormOpen(true);
+      }
+    }, 1200);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleCloseForm = () => {
+    setIsFormOpen(false);
+    sessionStorage.setItem("heroFormDismissed", "true");
+  };
+
   if (!services || services.length < 5) return null;
 
   return (
@@ -385,10 +548,13 @@ const Index = () => {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="flex flex-col sm:flex-row gap-4 mb-20"
         >
-          <Button variant="hero" size="lg" className="gap-2 text-sm font-semibold px-8 rounded-xl h-12 shadow-sm" asChild>
-            <Link to="/contact">
-              Start Your Project <ArrowRight className="w-4 h-4" />
-            </Link>
+          <Button
+            variant="hero"
+            size="lg"
+            className="gap-2 text-sm font-semibold px-8 rounded-xl h-12 shadow-sm"
+            onClick={() => setIsFormOpen(true)}
+          >
+            Start Your Project <ArrowRight className="w-4 h-4" />
           </Button>
           <Button variant="outline" size="lg" className="text-sm font-semibold px-8 border-border hover:bg-muted/40 rounded-xl h-12" asChild>
             <a href="#services">
@@ -778,6 +944,32 @@ const Index = () => {
 
     {/* ── AI Enterprise Form ───────────────────────── */}
     <AIEnterpriseForm />
+
+    <AnimatePresence>
+      {isFormOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-md">
+          {/* Dark backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 bg-slate-950/20 dark:bg-slate-950/40"
+            onClick={handleCloseForm}
+          />
+
+          {/* Modal Container */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 15 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 15 }}
+            transition={{ type: "spring", duration: 0.4 }}
+            className="relative z-10 w-full max-w-lg"
+          >
+            <HeroInquiryForm onClose={handleCloseForm} />
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
 
     {/* ── CTA ──────────────────────────────────────── */}
     <SectionCTA
