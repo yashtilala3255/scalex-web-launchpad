@@ -14,6 +14,10 @@ interface SEOProps {
   themeColor?: string;
   lang?: string;
   image?: string;
+  geoRegion?: string;
+  geoPlacename?: string;
+  geoPosition?: string;
+  icbm?: string;
 }
 
 const SEO = ({
@@ -26,6 +30,10 @@ const SEO = ({
   themeColor = "#fafafa", // Custom HSL light background color
   lang = "en",
   image = DEFAULT_IMAGE,
+  geoRegion = "IN-GJ",
+  geoPlacename = "Ahmedabad",
+  geoPosition = "23.022505;72.571362",
+  icbm = "23.022505, 72.571362",
 }: SEOProps) => {
   const url = path ? `${SITE}${path}` : SITE;
   const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
@@ -43,6 +51,13 @@ const SEO = ({
       <meta name="robots" content={robots} />
       <meta name="theme-color" content={themeColor} />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      
+      {/* Geo-Targeting / Local SEO */}
+      <meta name="geo.region" content={geoRegion} />
+      <meta name="geo.placename" content={geoPlacename} />
+      <meta name="geo.position" content={geoPosition} />
+      <meta name="ICBM" content={icbm} />
+
       <link rel="canonical" href={url} />
 
       {/* Open Graph / Facebook */}

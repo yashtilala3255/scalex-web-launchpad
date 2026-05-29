@@ -399,7 +399,24 @@ const FullStackDevelopment = () => {
             "provider": {
               "@type": "LocalBusiness",
               "name": "ScaleXWeb Solutions",
-              "url": "https://scalexweb.tech"
+              "url": "https://scalexweb.tech",
+              "telephone": "+919876543210",
+              "priceRange": "$$",
+              "image": "https://scalexweb.tech/logo.png",
+              "hasMap": "https://www.google.com/maps?q=ScaleXWeb+Solution+Ahmedabad+Gujarat+India",
+              "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "Ahmedabad, Gujarat",
+                "addressLocality": "Ahmedabad",
+                "addressRegion": "Gujarat",
+                "postalCode": "380001",
+                "addressCountry": "IN"
+              },
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": 23.0225,
+                "longitude": 72.5714
+              }
             },
             "areaServed": "IN"
           },

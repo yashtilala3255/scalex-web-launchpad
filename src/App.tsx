@@ -473,7 +473,12 @@ const MaintenanceGuard = ({ children }: { children: React.ReactNode }) => {
 };
 
 const App = () => {
-  const [initialLoading, setInitialLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(() => {
+    if (typeof window !== "undefined" && typeof navigator !== "undefined") {
+      return !/bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent);
+    }
+    return true;
+  });
 
   return (
     <ThemeProvider attribute="class" defaultTheme="light">

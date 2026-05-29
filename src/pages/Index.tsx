@@ -460,6 +460,8 @@ const Index = () => {
           "@id": "https://scalexweb.tech/#localbusiness",
           "url": "https://scalexweb.tech",
           "telephone": settings?.contactPhone || "+919876543210",
+          "priceRange": "$$",
+          "hasMap": "https://www.google.com/maps?q=ScaleXWeb+Solution+Ahmedabad+Gujarat+India",
           "address": {
             "@type": "PostalAddress",
             "streetAddress": settings?.contactAddress || "Ahmedabad, Gujarat",
@@ -478,7 +480,13 @@ const Index = () => {
             "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
             "opens": "09:00",
             "closes": "18:00"
-          }
+          },
+          "sameAs": [
+            settings?.socialLinkedin || "https://www.linkedin.com/company/scale-x-web-solution/",
+            settings?.socialTwitter || "https://x.com/ScaleXWeb",
+            settings?.socialInstagram || "https://www.instagram.com/scalexwebsolution/",
+            "https://www.google.com/maps?q=ScaleXWeb+Solution+Ahmedabad+Gujarat+India"
+          ].filter(Boolean)
         }
       ]}
     />

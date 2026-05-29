@@ -81,9 +81,37 @@ const Contact = () => {
             "name": settings?.siteName || "ScaleXWeb Solutions",
             "url": "https://scalexweb.tech/contact",
             "email": settings?.contactEmail || "scalexwebsolution@gmail.com",
-            "address": { "@type": "PostalAddress", "addressLocality": "Ahmedabad", "addressRegion": "Gujarat", "addressCountry": "IN" },
-            "openingHoursSpecification": [{ "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"], "opens": "09:00", "closes": "18:00" }],
-            "sameAs": [settings?.socialLinkedin || "https://www.linkedin.com/company/scale-x-web-solution/", settings?.socialTwitter || "https://x.com/ScaleXWeb"],
+            "telephone": settings?.contactPhone || "+919876543210",
+            "priceRange": "$$",
+            "image": settings?.logoUrl || "https://scalexweb.tech/logo.png",
+            "hasMap": "https://www.google.com/maps?q=ScaleXWeb+Solution+Ahmedabad+Gujarat+India",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": settings?.contactAddress || "Ahmedabad, Gujarat",
+              "addressLocality": "Ahmedabad",
+              "addressRegion": "Gujarat",
+              "postalCode": "380001",
+              "addressCountry": "IN"
+            },
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": 23.0225,
+              "longitude": 72.5714
+            },
+            "openingHoursSpecification": [
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+                "opens": "09:00",
+                "closes": "18:00"
+              }
+            ],
+            "sameAs": [
+              settings?.socialLinkedin || "https://www.linkedin.com/company/scale-x-web-solution/",
+              settings?.socialTwitter || "https://x.com/ScaleXWeb",
+              settings?.socialInstagram || "https://www.instagram.com/scalexwebsolution/",
+              "https://www.google.com/maps?q=ScaleXWeb+Solution+Ahmedabad+Gujarat+India"
+            ].filter(Boolean)
           },
           {
             "@context": "https://schema.org",

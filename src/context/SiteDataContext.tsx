@@ -96,22 +96,27 @@ const DEFAULT_SETTINGS: SiteSettings = {
 };
 
 export const SiteDataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState<any[]>([]);
-  const [services, setServices] = useState<any[]>([]);
-  const [industries, setIndustries] = useState<any[]>([]);
-  const [trustPoints, setTrustPoints] = useState<any[]>([]);
-  const [processSteps, setProcessSteps] = useState<any[]>([]);
-  const [testimonials, setTestimonials] = useState<any[]>([]);
-  const [values, setValues] = useState<any[]>([]);
-  const [techMarqueeItems, setTechMarqueeItems] = useState<string[]>([]);
-  const [challenges, setChallenges] = useState<any[]>([]);
-  const [solutionCategories, setSolutionCategories] = useState<any[]>([]);
-  const [caseStudies, setCaseStudies] = useState<any[]>([]);
-  const [saasArchitecture, setSaasArchitecture] = useState<any[]>([]);
-  const [saasFeatures, setSaasFeatures] = useState<any[]>([]);
-  const [saasWhyUs, setSaasWhyUs] = useState<any[]>([]);
-  const [techStack, setTechStack] = useState<Record<string, string[]>>({});
+  const [loading, setLoading] = useState(() => {
+    if (typeof window !== "undefined" && typeof navigator !== "undefined") {
+      return !/bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent);
+    }
+    return true;
+  });
+  const [stats, setStats] = useState<any[]>(defaultData.stats || []);
+  const [services, setServices] = useState<any[]>(defaultData.services || []);
+  const [industries, setIndustries] = useState<any[]>(defaultData.industries || []);
+  const [trustPoints, setTrustPoints] = useState<any[]>(defaultData.trustPoints || []);
+  const [processSteps, setProcessSteps] = useState<any[]>(defaultData.processSteps || []);
+  const [testimonials, setTestimonials] = useState<any[]>(defaultData.testimonials || []);
+  const [values, setValues] = useState<any[]>(defaultData.values || []);
+  const [techMarqueeItems, setTechMarqueeItems] = useState<string[]>(defaultData.techMarqueeItems || []);
+  const [challenges, setChallenges] = useState<any[]>(defaultData.challenges || []);
+  const [solutionCategories, setSolutionCategories] = useState<any[]>(defaultData.solutionCategories || []);
+  const [caseStudies, setCaseStudies] = useState<any[]>(defaultData.caseStudies || []);
+  const [saasArchitecture, setSaasArchitecture] = useState<any[]>(defaultData.saasArchitecture || []);
+  const [saasFeatures, setSaasFeatures] = useState<any[]>(defaultData.saasFeatures || []);
+  const [saasWhyUs, setSaasWhyUs] = useState<any[]>(defaultData.saasWhyUs || []);
+  const [techStack, setTechStack] = useState<Record<string, string[]>>(defaultData.techStack || {});
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [settings, setSettings] = useState<SiteSettings>(DEFAULT_SETTINGS);
   const [analytics, setAnalytics] = useState<any>(DEFAULT_ANALYTICS);
