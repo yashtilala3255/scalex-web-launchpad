@@ -23,7 +23,7 @@ const SEO = ({
   path,
   jsonLd,
   robots = "index, follow",
-  themeColor = "#03040b", // Custom HSL dark background color
+  themeColor = "#fafafa", // Custom HSL light background color
   lang = "en",
   image = DEFAULT_IMAGE,
 }: SEOProps) => {

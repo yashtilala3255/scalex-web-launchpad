@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown, Sun, Moon } from "lucide-react";
+import { useTheme } from "next-themes";
 import { AnimatePresence, motion } from "framer-motion";
 import logoImg from "@/assets/logo.png";
 import { useSiteData } from "@/context/SiteDataContext";
@@ -15,7 +16,13 @@ const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const location = useLocation();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const navServices = [...(services || [])];
   const hasFullStack = navServices.some((s) => s.path === "/services/full-stack-development");
@@ -55,7 +62,7 @@ const Header = () => {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
-          ? "bg-background/80 backdrop-blur-xl border-b border-border/50 shadow-lg shadow-black/20"
+          ? "bg-background/80 backdrop-blur-xl border-b border-border/50 shadow-sm shadow-zinc-200/40"
           : "bg-transparent"
       }`}
     >
@@ -99,9 +106,9 @@ const Header = () => {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.97 }}
                       transition={{ duration: 0.15 }}
-                      className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-80 bg-card/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-border/60 p-2 overflow-hidden"
+                      className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-80 bg-card/90 backdrop-blur-xl rounded-xl shadow-lg border border-border/50 p-2 overflow-hidden"
                     >
-                      <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent rounded-2xl pointer-events-none" />
+                      <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent rounded-xl pointer-events-none" />
                       {link.children.map((child) => (
                         <Link
                           key={child.path}
@@ -113,8 +120,8 @@ const Header = () => {
                           {(() => {
                             const Icon = getIconComponent(child.icon);
                             return (
-                              <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center flex-shrink-0 group-hover:glow-sm transition-all">
-                                <Icon className="w-4 h-4 text-white" />
+                              <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center flex-shrink-0 group-hover:bg-primary group-hover:text-white transition-all duration-200">
+                                <Icon className="w-4 h-4" />
                               </div>
                             );
                           })()}
@@ -146,6 +153,21 @@ const Header = () => {
 
         {/* Right Side */}
         <div className="flex items-center gap-3">
+          {/* Theme Toggle */}
+          <button
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            className="w-9 h-9 rounded-xl border border-border/50 bg-muted/30 flex items-center justify-center hover:bg-muted transition-colors text-foreground"
+            aria-label="Toggle theme"
+          >
+            {!mounted ? (
+              <div className="w-4 h-4" />
+            ) : theme === "dark" ? (
+              <Sun className="w-4 h-4 text-amber-500 animate-pulse" />
+            ) : (
+              <Moon className="w-4 h-4 text-indigo-600" />
+            )}
+          </button>
+
           <Link to="/contact" className="hidden lg:block">
             <Button variant="nav" size="sm">Get Free Quote</Button>
           </Link>

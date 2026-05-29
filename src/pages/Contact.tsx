@@ -72,6 +72,7 @@ const Contact = () => {
       <SEO
         title="Contact ScaleXWeb — Start Your Project Today"
         description="Get in touch with ScaleXWeb Solution in Ahmedabad. Tell us about your website, app, or SaaS project — we respond within 24 business hours."
+        keywords="hire web developers, contact ScaleXWeb, get a project quote, custom software estimates, web design agency contact number, Ahmedabad software company address"
         path="/contact"
         jsonLd={[
           {
@@ -121,7 +122,7 @@ const Contact = () => {
           <div className="grid lg:grid-cols-5 gap-12">
             {/* Form */}
             <motion.div {...fadeUp} className="lg:col-span-3">
-              <div className="gradient-border bg-card rounded-2xl p-8 md:p-10">
+              <div className="border border-border bg-card rounded-xl p-8 md:p-10">
                 <h2 className="text-2xl font-heading font-bold text-foreground mb-2">Send Us a Message</h2>
                 <p className="text-sm text-muted-foreground mb-8">Fill in the form below and we'll get back to you within 24 hours.</p>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
@@ -173,7 +174,7 @@ const Contact = () => {
                     />
                     {errors.message && <p className="text-xs text-destructive mt-1">{errors.message.message}</p>}
                   </div>
-                  <Button type="submit" variant="hero" size="lg" className="w-full gap-2" disabled={isSubmitting}>
+                  <Button type="submit" variant="default" size="lg" className="w-full gap-2 bg-primary hover:bg-primary/90 text-white rounded-xl" disabled={isSubmitting}>
                     <Send className="w-4 h-4" />
                     {isSubmitting ? "Sending..." : "Send My Request"}
                   </Button>
@@ -191,9 +192,9 @@ const Contact = () => {
                     { icon: MapPin, label: "Location", value: settings?.contactAddress || "Ahmedabad, Gujarat, India" },
                     { icon: Clock, label: "Business Hours", value: "Mon–Fri: 9 AM – 6 PM IST" },
                   ].map(({ icon: Icon, label, value }) => (
-                    <div key={label} className="gradient-border bg-card rounded-xl p-4 flex items-center gap-4">
-                      <div className="w-10 h-10 gradient-primary rounded-lg flex items-center justify-center flex-shrink-0">
-                        <Icon className="w-5 h-5 text-white" />
+                    <div key={label} className="border border-border bg-card rounded-xl p-4 flex items-center gap-4 hover:border-primary/20 transition-all duration-300">
+                      <div className="w-10 h-10 bg-primary/10 text-primary rounded-lg flex items-center justify-center flex-shrink-0">
+                        <Icon className="w-5 h-5" />
                       </div>
                       <div>
                         <p className="text-xs font-medium text-muted-foreground">{label}</p>
@@ -211,14 +212,14 @@ const Contact = () => {
                   { icon: Instagram, href: settings?.socialInstagram || "https://www.instagram.com/scalexwebsolution/", label: "Instagram" },
                 ].map(({ icon: Icon, href, label }) => (
                   <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label}
-                    className="w-10 h-10 gradient-border bg-card rounded-xl flex items-center justify-center hover:bg-primary/10 transition-colors group">
+                    className="w-10 h-10 border border-border bg-card rounded-xl flex items-center justify-center hover:bg-primary/10 hover:border-primary/30 transition-all duration-200 group">
                     <Icon className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
                   </a>
                 ))}
               </div>
 
               {/* Promise cards */}
-              <div className="gradient-border bg-card rounded-xl p-6">
+              <div className="border border-border bg-card rounded-xl p-6">
                 <p className="text-sm font-semibold text-foreground mb-4">What to expect</p>
                 <ul className="space-y-3">
                   {["Response within 24 hours", "Free project consultation", "No commitment required", "Detailed project proposal"].map(p => (
@@ -234,7 +235,7 @@ const Contact = () => {
                 <h3 className="font-heading font-semibold text-foreground mb-4">Frequently Asked Questions</h3>
                 <div className="space-y-3">
                   {faqs.map((faq, i) => (
-                    <details key={i} className="gradient-border bg-card rounded-xl overflow-hidden group">
+                    <details key={i} className="border border-border bg-card rounded-xl overflow-hidden group hover:border-primary/20 transition-all duration-300">
                       <summary className="px-5 py-4 text-sm font-medium text-foreground cursor-pointer flex items-center justify-between list-none">
                         {faq.q}
                         <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform flex-shrink-0" />

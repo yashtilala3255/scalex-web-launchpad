@@ -51,14 +51,14 @@ const PrivacyPolicy = () => (
     />
     <section className="section-padding bg-background">
       <div className="container-tight max-w-3xl mx-auto">
-        <motion.div {...fadeUp} className="gradient-border bg-card rounded-2xl p-8 mb-8">
+        <motion.div {...fadeUp} className="border border-border bg-card rounded-xl p-8 mb-8">
           <p className="text-muted-foreground leading-relaxed">
             ScaleXWeb Solution ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our services.
           </p>
         </motion.div>
         <div className="space-y-6">
           {sections.map((section, i) => (
-            <motion.div key={section.title} {...fadeUp} transition={{ delay: i * 0.06 }} className="gradient-border bg-card rounded-2xl p-7">
+            <motion.div key={section.title} {...fadeUp} transition={{ delay: i * 0.06 }} className="border border-border bg-card rounded-xl p-7 hover:border-primary/20 transition-all duration-300">
               <h2 className="text-xl font-heading font-bold text-foreground mb-3">{section.title}</h2>
               <p className="text-muted-foreground leading-relaxed">{section.content}</p>
             </motion.div>

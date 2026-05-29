@@ -139,9 +139,18 @@ const ServicePageTemplate = ({
             {serviceName}
           </div>
 
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-heading font-extrabold text-foreground leading-tight mb-5 max-w-4xl">
-            {headline}
-          </h1>
+          {(() => {
+            const words = headline.split(" ");
+            const splitIndex = Math.ceil(words.length / 2);
+            const firstPart = words.slice(0, splitIndex).join(" ");
+            const secondPart = words.slice(splitIndex).join(" ");
+            return (
+              <h1 className="text-4xl sm:text-6xl md:text-7xl leading-[0.9] tracking-tight mb-5 max-w-4xl">
+                <span className="font-heading font-extrabold text-foreground block">{firstPart}</span>
+                <span className="font-serif italic font-normal text-primary block mt-2 ml-4 sm:ml-8">{secondPart}</span>
+              </h1>
+            );
+          })()}
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mb-8 leading-relaxed">{subheadline}</p>
           <Link to="/contact">
             <Button variant="hero" size="lg" className="gap-2">
@@ -161,7 +170,7 @@ const ServicePageTemplate = ({
               key={section.title}
               {...fadeUp}
               transition={{ delay: i * 0.1 }}
-              className="gradient-border rounded-2xl p-8 md:p-10 bg-card"
+              className="border border-border rounded-xl p-8 md:p-10 bg-card hover:border-primary/30 transition-all duration-300"
             >
               <h2 className="text-2xl md:text-3xl font-heading font-bold text-foreground mb-4">{section.title}</h2>
               <p className="text-muted-foreground leading-relaxed mb-5">{section.description}</p>
@@ -186,8 +195,9 @@ const ServicePageTemplate = ({
       <div className="container-tight">
         <motion.div {...fadeUp} className="text-center mb-14">
           <span className="text-xs font-semibold text-primary uppercase tracking-[0.2em]">How We Work</span>
-          <h2 className="text-3xl md:text-4xl font-heading font-bold mt-3 mb-4">
-            Our <span className="gradient-text">Process</span>
+          <h2 className="text-4xl md:text-5xl tracking-tight mt-3 mb-4">
+            <span className="font-heading font-extrabold text-foreground block">Our</span>
+            <span className="font-serif italic font-normal text-primary block mt-2 md:translate-x-8">Process &amp; Methodology.</span>
           </h2>
         </motion.div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -196,9 +206,9 @@ const ServicePageTemplate = ({
               key={step.title}
               {...stagger}
               transition={{ delay: i * 0.1 }}
-              className="gradient-border rounded-2xl p-6 bg-card group hover:glow-sm transition-all duration-500"
+              className="border border-border rounded-xl p-6 bg-card group hover:border-primary/30 transition-all duration-300"
             >
-              <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center text-white font-heading font-bold text-sm mb-4">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-mono font-bold text-sm mb-4 group-hover:bg-primary group-hover:text-white transition-all duration-300">
                 {String(i + 1).padStart(2, "0")}
               </div>
               <h3 className="font-heading font-semibold text-foreground mb-2">{step.title}</h3>
@@ -214,8 +224,9 @@ const ServicePageTemplate = ({
       <div className="container-tight">
         <motion.div {...fadeUp} className="text-center mb-14">
           <span className="text-xs font-semibold text-accent uppercase tracking-[0.2em]">Technology</span>
-          <h2 className="text-3xl md:text-4xl font-heading font-bold mt-3">
-            Our <span className="gradient-text">Tech Stack</span>
+          <h2 className="text-4xl md:text-5xl tracking-tight mt-3">
+            <span className="font-heading font-extrabold text-foreground block">Our Trusted</span>
+            <span className="font-serif italic font-normal text-primary block mt-2 md:translate-x-8">Technology Stack.</span>
           </h2>
         </motion.div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -224,7 +235,7 @@ const ServicePageTemplate = ({
               key={category}
               {...stagger}
               transition={{ delay: i * 0.1 }}
-              className="gradient-border rounded-2xl p-6 bg-card"
+              className="border border-border rounded-xl p-6 bg-card hover:border-primary/20 transition-all duration-300"
             >
               <h3 className="font-heading font-semibold text-foreground mb-4 text-sm uppercase tracking-wider">{category}</h3>
               <div className="flex flex-wrap gap-2">

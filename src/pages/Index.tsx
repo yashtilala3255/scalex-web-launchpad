@@ -78,11 +78,11 @@ const AIEnterpriseForm = () => {
       <div className="absolute inset-0 dot-grid opacity-30" />
 
       {/* Orbs */}
-      <div className="orb w-[600px] h-[600px] bg-primary/12 -top-40 -right-40 animate-pulse-glow" />
-      <div className="orb w-[400px] h-[400px] bg-accent/10 -bottom-20 -left-20 animate-pulse-glow" style={{ animationDelay: "2s" }} />
+      <div className="orb w-[600px] h-[600px] bg-primary/8 -top-40 -right-40 animate-pulse-glow" />
+      <div className="orb w-[400px] h-[400px] bg-accent/8 -bottom-20 -left-20 animate-pulse-glow" style={{ animationDelay: "2s" }} />
 
       {/* Top border */}
-      <div className="absolute top-0 left-0 right-0 h-px gradient-primary opacity-50" />
+      <div className="absolute top-0 left-0 right-0 h-px border-t border-border opacity-50" />
 
       <div className="relative z-10 container-tight">
         <div className="grid lg:grid-cols-2 gap-16 items-start">
@@ -100,10 +100,9 @@ const AIEnterpriseForm = () => {
               AI-First Development
             </div>
 
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading font-extrabold text-foreground leading-tight mb-6">
-              Ready to Build{" "}
-              <span className="gradient-text">AI-First</span>{" "}
-              Enterprise Software?
+            <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-6">
+              <span className="font-heading font-extrabold text-foreground block">Ready to Build</span>
+              <span className="font-serif italic font-normal text-primary block mt-2 ml-6 sm:ml-10">AI-First Software.</span>
             </h2>
 
             <p className="text-lg text-muted-foreground leading-relaxed mb-10">
@@ -121,8 +120,8 @@ const AIEnterpriseForm = () => {
                   transition={{ delay: i * 0.1 }}
                   className="flex gap-4 items-start"
                 >
-                  <div className="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center flex-shrink-0 glow-sm">
-                    <perk.icon className="w-5 h-5 text-white" />
+                  <div className="w-10 h-10 bg-primary/10 text-primary rounded-xl flex items-center justify-center flex-shrink-0">
+                    <perk.icon className="w-5 h-5" />
                   </div>
                   <div>
                     <h3 className="font-heading font-semibold text-foreground text-sm mb-1">{perk.title}</h3>
@@ -149,10 +148,7 @@ const AIEnterpriseForm = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
-            <div className="relative gradient-border bg-card rounded-3xl p-8 md:p-10 glow-sm">
-              {/* Card glow orb */}
-              <div className="absolute -top-10 -right-10 w-40 h-40 bg-primary/20 rounded-full blur-3xl pointer-events-none" />
-
+            <div className="relative border border-border bg-card rounded-xl p-8 md:p-10">
               <div className="mb-8">
                 <h3 className="text-2xl font-heading font-bold text-foreground mb-2">Start the Conversation</h3>
                 <p className="text-sm text-muted-foreground">Fill in the form — our team will review and reach out within <span className="text-primary font-medium">24 business hours</span>.</p>
@@ -216,9 +212,9 @@ const AIEnterpriseForm = () => {
 
                 <Button
                   type="submit"
-                  variant="hero"
+                  variant="default"
                   size="lg"
-                  className="w-full gap-2 text-base h-12"
+                  className="w-full gap-2 text-base h-12 bg-primary hover:bg-primary/90 text-white rounded-xl"
                   disabled={isSubmitting}
                 >
                   <Send className="w-4 h-4" />
@@ -265,6 +261,7 @@ const Index = () => {
     <SEO
       title="ScaleXWeb Solutions — Digital Agency for Web & App Development"
       description="ScaleXWeb Solution is a premium digital agency building custom websites, mobile apps, SaaS platforms, and e-commerce stores for ambitious businesses."
+      keywords="web development agency, custom app development, SaaS solutions company, custom e-commerce stores, UI UX design Ahmedabad, web development services India, ScaleXWeb Solutions, Yash Patel Agency, digital agency Ahmedabad"
       path="/"
       jsonLd={[
         {
@@ -333,10 +330,10 @@ const Index = () => {
         loading="eager"
         decoding="async"
         fetchPriority="high"
-        className="absolute inset-0 w-full h-full object-cover object-center"
+        className="absolute inset-0 w-full h-full object-cover object-center opacity-10 dark:opacity-45"
       />
-      {/* Dark overlay for readability */}
-      <div className="absolute inset-0 bg-background/70" />
+      {/* Overlay for readability */}
+      <div className="absolute inset-0 bg-background/90 dark:bg-background/70" />
       {/* Mesh + dot grid on top */}
       <div className="absolute inset-0 mesh-bg opacity-80" />
       <div className="absolute inset-0 dot-grid opacity-30" />
@@ -348,16 +345,16 @@ const Index = () => {
       {/* Top accent line */}
       <div className="absolute top-0 left-0 right-0 h-px gradient-primary opacity-70" />
 
-      <div className="container-tight relative z-10 pt-24 pb-16">
+      <div className="container-tight relative z-10 pt-32 pb-20">
         {/* Badge */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="pill-badge mb-8 w-fit"
+          className="pill-badge mb-8 w-fit font-mono uppercase tracking-wider"
         >
           <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-          Trusted by 30+ businesses across India &amp; globally
+          Trusted globally &amp; across India
         </motion.div>
 
         {/* Headline */}
@@ -365,11 +362,10 @@ const Index = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-6xl sm:text-7xl md:text-8xl font-heading font-extrabold leading-[0.9] tracking-tight mb-6 max-w-5xl"
+          className="text-5xl sm:text-7xl md:text-8xl lg:text-[7.5rem] leading-[0.85] tracking-tight mb-8 max-w-5xl"
         >
-          Scale Smarter.
-          <br />
-          <span className="gradient-text">Build Better.</span>
+          <span className="font-heading font-extrabold text-foreground block">Scale Smarter.</span>
+          <span className="font-serif italic font-normal text-primary block mt-2 ml-8 sm:ml-16">Build Better.</span>
         </motion.h1>
 
         {/* Subheadline */}
@@ -377,7 +373,7 @@ const Index = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-xl md:text-2xl text-muted-foreground mb-10 max-w-2xl leading-relaxed"
+          className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl leading-relaxed"
         >
           ScaleXWeb Solution builds custom websites, applications, SaaS platforms, and e-commerce solutions that drive real business growth.
         </motion.p>
@@ -387,14 +383,14 @@ const Index = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="flex flex-col sm:flex-row gap-4 mb-16"
+          className="flex flex-col sm:flex-row gap-4 mb-20"
         >
-          <Button variant="hero" size="lg" className="gap-2 text-base px-8" asChild>
+          <Button variant="hero" size="lg" className="gap-2 text-sm font-semibold px-8 rounded-xl h-12 shadow-sm" asChild>
             <Link to="/contact">
               Start Your Project <ArrowRight className="w-4 h-4" />
             </Link>
           </Button>
-          <Button variant="outline" size="lg" className="text-base px-8 border-border/50 hover:bg-muted/40" asChild>
+          <Button variant="outline" size="lg" className="text-sm font-semibold px-8 border-border hover:bg-muted/40 rounded-xl h-12" asChild>
             <a href="#services">
               Explore Services
             </a>
@@ -406,12 +402,12 @@ const Index = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.45 }}
-          className="flex flex-wrap gap-8 md:gap-12"
+          className="grid grid-cols-2 md:flex md:flex-wrap gap-8 md:gap-14 border-t border-border pt-10 w-full"
         >
           {stats.map((s) => (
-            <div key={s.label}>
-              <div className="text-3xl md:text-4xl font-heading font-extrabold gradient-text">{s.value}</div>
-              <div className="text-xs md:text-sm text-muted-foreground mt-0.5">{s.label}</div>
+            <div key={s.label} className="border-l border-border pl-6 min-w-[120px]">
+              <div className="text-4xl md:text-5xl font-mono font-bold tracking-tight text-foreground">{s.value}</div>
+              <div className="text-[10px] uppercase font-mono tracking-widest text-muted-foreground mt-2 leading-relaxed">{s.label}</div>
             </div>
           ))}
         </motion.div>
@@ -439,9 +435,9 @@ const Index = () => {
           {/* Left */}
           <motion.div {...fadeUp}>
             <p className="text-xs font-semibold text-primary uppercase tracking-[0.2em] mb-3">About ScaleXWeb</p>
-            <h2 className="text-3xl md:text-5xl font-heading font-bold text-foreground mb-6 leading-tight">
-              Digital Solutions for <br />
-              <span className="gradient-text">Modern Businesses</span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-6">
+              <span className="font-heading font-extrabold text-foreground block">Digital Solutions for</span>
+              <span className="font-serif italic font-normal text-primary block mt-2 ml-4 sm:ml-8">Modern Businesses.</span>
             </h2>
             <p className="text-muted-foreground leading-relaxed mb-8">
               ScaleXWeb Solution is a full-service digital agency headquartered in Ahmedabad, India. We specialize in building custom digital products that drive real business growth — from responsive websites to complex SaaS platforms.
@@ -466,17 +462,13 @@ const Index = () => {
           {/* Right: Stats Grid */}
           <motion.div {...fadeUp} transition={{ delay: 0.15 }}>
             <div className="grid grid-cols-2 gap-4">
-              {stats.slice(0, 4).map((s, i) => (
+              {stats.slice(0, 4).map((s) => (
                 <div
                   key={s.label}
-                  className={`p-8 rounded-2xl text-center ${
-                    i % 2 === 0
-                      ? "gradient-primary glow-sm"
-                      : "gradient-border bg-card"
-                  }`}
+                  className="p-8 border border-border bg-card text-left flex flex-col justify-between h-full hover:border-primary/30 transition-colors"
                 >
-                  <div className={`text-4xl font-heading font-extrabold mb-2 ${i % 2 === 0 ? "text-white" : "gradient-text"}`}>{s.value}</div>
-                  <div className={`text-sm ${i % 2 === 0 ? "text-white/70" : "text-muted-foreground"}`}>{s.label}</div>
+                  <div className="text-5xl font-mono font-bold tracking-tight text-foreground mb-4">{s.value}</div>
+                  <div className="text-xs uppercase font-mono tracking-widest text-muted-foreground leading-snug">{s.label}</div>
                 </div>
               ))}
             </div>
@@ -490,10 +482,11 @@ const Index = () => {
       <div className="container-tight">
         <motion.div {...fadeUp} className="text-center mb-14">
           <p className="text-xs font-semibold text-primary uppercase tracking-[0.2em] mb-3">What We Do</p>
-          <h2 className="text-3xl md:text-5xl font-heading font-bold text-foreground mb-4">
-            Solutions That <span className="gradient-text">Scale</span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-4">
+            <span className="font-heading font-extrabold text-foreground block">What We Do</span>
+            <span className="font-serif italic font-normal text-primary block mt-2 md:translate-x-8">Services That Scale.</span>
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             From concept to code — end-to-end digital solutions tailored to your business goals.
           </p>
         </motion.div>
@@ -503,13 +496,13 @@ const Index = () => {
           <motion.div
             {...stagger}
             transition={{ delay: 0 }}
-            className="md:col-span-2 gradient-border rounded-2xl p-8 md:p-10 bg-card group hover:glow-sm transition-all duration-500"
+            className="md:col-span-2 border border-border rounded-xl p-8 md:p-10 bg-card group hover:border-primary/30 transition-all duration-300"
           >
             {(() => {
               const Icon = getIconComponent(services[0]?.icon);
               return (
-                <div className="w-14 h-14 gradient-primary rounded-2xl flex items-center justify-center mb-6 group-hover:glow-primary transition-all duration-300">
-                  <Icon className="w-7 h-7 text-white" />
+                <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mb-6 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                  <Icon className="w-7 h-7" />
                 </div>
               );
             })()}
@@ -528,12 +521,12 @@ const Index = () => {
           </motion.div>
 
           {/* App Dev */}
-          <motion.div {...stagger} transition={{ delay: 0.1 }} className="gradient-border rounded-2xl p-7 bg-card group hover:glow-sm transition-all duration-500">
+          <motion.div {...stagger} transition={{ delay: 0.1 }} className="border border-border rounded-xl p-7 bg-card group hover:border-primary/30 transition-all duration-300">
             {(() => {
               const Icon = getIconComponent(services[1]?.icon);
               return (
-                <div className="w-12 h-12 gradient-primary rounded-xl flex items-center justify-center mb-5 group-hover:glow-sm transition-all">
-                  <Icon className="w-6 h-6 text-white" />
+                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-5 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                  <Icon className="w-6 h-6" />
                 </div>
               );
             })()}
@@ -545,12 +538,12 @@ const Index = () => {
           </motion.div>
 
           {/* SaaS Dev */}
-          <motion.div {...stagger} transition={{ delay: 0.2 }} className="gradient-border rounded-2xl p-7 bg-card group hover:glow-sm transition-all duration-500">
+          <motion.div {...stagger} transition={{ delay: 0.2 }} className="border border-border rounded-xl p-7 bg-card group hover:border-primary/30 transition-all duration-300">
             {(() => {
               const Icon = getIconComponent(services[2]?.icon);
               return (
-                <div className="w-12 h-12 gradient-primary rounded-xl flex items-center justify-center mb-5 group-hover:glow-sm transition-all">
-                  <Icon className="w-6 h-6 text-white" />
+                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-5 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                  <Icon className="w-6 h-6" />
                 </div>
               );
             })()}
@@ -562,12 +555,12 @@ const Index = () => {
           </motion.div>
 
           {/* E-Commerce */}
-          <motion.div {...stagger} transition={{ delay: 0.3 }} className="gradient-border rounded-2xl p-7 bg-card group hover:glow-sm transition-all duration-500">
+          <motion.div {...stagger} transition={{ delay: 0.3 }} className="border border-border rounded-xl p-7 bg-card group hover:border-primary/30 transition-all duration-300">
             {(() => {
               const Icon = getIconComponent(services[3]?.icon);
               return (
-                <div className="w-12 h-12 gradient-primary rounded-xl flex items-center justify-center mb-5 group-hover:glow-sm transition-all">
-                  <Icon className="w-6 h-6 text-white" />
+                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-5 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                  <Icon className="w-6 h-6" />
                 </div>
               );
             })()}
@@ -579,12 +572,12 @@ const Index = () => {
           </motion.div>
 
           {/* UI/UX card */}
-          <motion.div {...stagger} transition={{ delay: 0.35 }} className="gradient-border rounded-2xl p-7 bg-card group hover:glow-sm transition-all duration-500">
+          <motion.div {...stagger} transition={{ delay: 0.35 }} className="border border-border rounded-xl p-7 bg-card group hover:border-primary/30 transition-all duration-300">
             {(() => {
               const Icon = getIconComponent(services[4]?.icon);
               return (
-                <div className="w-12 h-12 gradient-primary rounded-xl flex items-center justify-center mb-5 group-hover:glow-sm transition-all">
-                  <Icon className="w-6 h-6 text-white" />
+                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-5 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                  <Icon className="w-6 h-6" />
                 </div>
               );
             })()}
@@ -597,12 +590,12 @@ const Index = () => {
 
           {/* Full Stack Development */}
           {services[5] && (
-            <motion.div {...stagger} transition={{ delay: 0.38 }} className="gradient-border rounded-2xl p-7 bg-card group hover:glow-sm transition-all duration-500">
+            <motion.div {...stagger} transition={{ delay: 0.38 }} className="border border-border rounded-xl p-7 bg-card group hover:border-primary/30 transition-all duration-300">
               {(() => {
                 const Icon = getIconComponent(services[5]?.icon);
                 return (
-                  <div className="w-12 h-12 gradient-primary rounded-xl flex items-center justify-center mb-5 group-hover:glow-sm transition-all">
-                    <Icon className="w-6 h-6 text-white" />
+                  <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-5 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                    <Icon className="w-6 h-6" />
                   </div>
                 );
               })()}
@@ -615,22 +608,7 @@ const Index = () => {
           )}
 
           {/* CTA card */}
-          <motion.div {...stagger} transition={{ delay: 0.4 }} className={`gradient-primary rounded-2xl p-8 flex flex-col md:flex-row items-center justify-between gap-6 group hover:glow-primary transition-all duration-500 cursor-pointer text-center md:text-left ${services[5] ? "md:col-span-2" : ""}`}>
-            <div className="flex flex-col md:flex-row items-center gap-5">
-              <div className="w-14 h-14 bg-white/15 rounded-2xl flex items-center justify-center group-hover:bg-white/20 transition-colors flex-shrink-0">
-                <Rocket className="w-7 h-7 text-white" />
-              </div>
-              <div>
-                <h3 className="text-xl md:text-2xl font-heading font-bold text-white mb-1">Ready to Scale Your Business?</h3>
-                <p className="text-sm text-white/80">Get a free consultation and project plan.</p>
-              </div>
-            </div>
-            <Button variant="hero-outline" size="sm" className="gap-1.5 bg-white text-primary hover:bg-white/95 border-none shadow-lg px-6 py-2.5 flex-shrink-0" asChild>
-              <Link to="/contact">
-                Get Free Quote <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </Button>
-          </motion.div>
+         
         </div>
       </div>
     </section>
@@ -640,10 +618,11 @@ const Index = () => {
       <div className="container-tight">
         <motion.div {...fadeUp} className="text-center mb-14">
           <p className="text-xs font-semibold text-accent uppercase tracking-[0.2em] mb-3">Industries</p>
-          <h2 className="text-3xl md:text-5xl font-heading font-bold text-foreground mb-4">
-            Built for Your <span className="gradient-text">Industry</span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-4">
+            <span className="font-heading font-extrabold text-foreground block">Industries We Serve</span>
+            <span className="font-serif italic font-normal text-primary block mt-2 md:translate-x-8">Built for Your Domain.</span>
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             We deliver tailored solutions across diverse industries, understanding the unique challenges each sector faces.
           </p>
         </motion.div>
@@ -655,9 +634,9 @@ const Index = () => {
           {[...industries, ...industries].map((ind, i) => {
             const Icon = getIconComponent(ind.icon);
             return (
-              <div key={i} className="glass rounded-full px-5 py-3 flex items-center gap-3 whitespace-nowrap flex-shrink-0">
+              <div key={i} className="bg-card border border-border rounded-full px-6 py-3.5 flex items-center gap-3.5 whitespace-nowrap flex-shrink-0 shadow-[0_2px_8px_rgba(9,9,11,0.02)] hover:border-primary/30 transition-all duration-300">
                 <Icon className="w-4 h-4 text-accent" />
-                <span className="text-sm font-medium text-foreground/80">{ind.name}</span>
+                <span className="text-sm font-semibold text-foreground/80">{ind.name}</span>
               </div>
             );
           })}
@@ -670,9 +649,9 @@ const Index = () => {
           {[...industries, ...industries].map((ind, i) => {
             const Icon = getIconComponent(ind.icon);
             return (
-              <div key={i} className="glass-light rounded-full px-5 py-3 flex items-center gap-3 whitespace-nowrap flex-shrink-0">
+              <div key={i} className="bg-card border border-border rounded-full px-6 py-3.5 flex items-center gap-3.5 whitespace-nowrap flex-shrink-0 shadow-[0_2px_8px_rgba(9,9,11,0.02)] hover:border-primary/30 transition-all duration-300">
                 <Icon className="w-4 h-4 text-primary" />
-                <span className="text-sm font-medium text-foreground/60">{ind.name}</span>
+                <span className="text-sm font-semibold text-foreground/80">{ind.name}</span>
               </div>
             );
           })}
@@ -685,9 +664,9 @@ const Index = () => {
       <div className="container-tight">
         <motion.div {...fadeUp} className="text-center mb-14">
           <p className="text-xs font-semibold text-primary uppercase tracking-[0.2em] mb-3">Why Choose Us</p>
-          <h2 className="text-3xl md:text-5xl font-heading font-bold text-foreground mb-4">
-            Why 30+ Businesses Choose{" "}
-            <span className="gradient-text">ScaleXWeb</span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-4">
+            <span className="font-heading font-extrabold text-foreground block">Why 30+ Businesses</span>
+            <span className="font-serif italic font-normal text-primary block mt-2 md:translate-x-8">Choose ScaleXWeb.</span>
           </h2>
         </motion.div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -698,10 +677,10 @@ const Index = () => {
                 key={tp.title}
                 {...stagger}
                 transition={{ delay: i * 0.08 }}
-                className="gradient-border rounded-2xl p-7 bg-card group hover:glow-sm transition-all duration-500"
+                className="border border-border rounded-xl p-7 bg-card group hover:border-primary/30 transition-all duration-300"
               >
-                <div className="w-12 h-12 gradient-primary rounded-xl flex items-center justify-center mb-5 group-hover:glow-sm transition-all duration-300">
-                  <Icon className="w-6 h-6 text-white" />
+                <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-5 group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                  <Icon className="w-6 h-6" />
                 </div>
                 <h3 className="font-heading font-semibold text-foreground mb-2">{tp.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{tp.desc}</p>
@@ -717,10 +696,11 @@ const Index = () => {
       <div className="container-tight">
         <motion.div {...fadeUp} className="text-center mb-14">
           <p className="text-xs font-semibold text-primary uppercase tracking-[0.2em] mb-3">Our Process</p>
-          <h2 className="text-3xl md:text-5xl font-heading font-bold text-foreground mb-4">
-            From Strategy to <span className="gradient-text">Launch</span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-4">
+            <span className="font-heading font-extrabold text-foreground block">From Strategy</span>
+            <span className="font-serif italic font-normal text-primary block mt-2 md:translate-x-8">To Successful Launch.</span>
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             A proven, repeatable process that delivers quality on time, every time.
           </p>
         </motion.div>
@@ -732,13 +712,15 @@ const Index = () => {
                 key={step.title}
                 {...stagger}
                 transition={{ delay: i * 0.1 }}
-                className="gradient-border rounded-2xl p-7 bg-card group hover:glow-sm transition-all duration-500"
+                className="border border-border rounded-xl p-7 bg-card group hover:border-primary/30 transition-all duration-300"
               >
-                <div className="flex items-center gap-4 mb-5">
-                  <div className="w-11 h-11 gradient-primary rounded-xl flex items-center justify-center text-white font-heading font-bold text-sm flex-shrink-0 group-hover:glow-sm transition-all">
+                <div className="flex items-center justify-between mb-5">
+                  <div className="w-10 h-10 bg-primary/10 text-primary rounded-xl flex items-center justify-center font-mono font-bold text-sm flex-shrink-0 group-hover:bg-primary group-hover:text-white transition-all duration-300">
                     {step.step}
                   </div>
-                  <Icon className="w-5 h-5 text-primary/70" />
+                  <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center text-muted-foreground">
+                    <Icon className="w-4 h-4" />
+                  </div>
                 </div>
                 <h3 className="font-heading font-semibold text-foreground mb-2">{step.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
@@ -754,8 +736,9 @@ const Index = () => {
       <div className="container-tight">
         <motion.div {...fadeUp} className="text-center mb-14">
           <p className="text-xs font-semibold text-primary uppercase tracking-[0.2em] mb-3">Testimonials</p>
-          <h2 className="text-3xl md:text-5xl font-heading font-bold text-foreground mb-4">
-            What Our Clients <span className="gradient-text">Say</span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-4">
+            <span className="font-heading font-extrabold text-foreground block">What Our Clients</span>
+            <span className="font-serif italic font-normal text-primary block mt-2 md:translate-x-8">Say About Us.</span>
           </h2>
         </motion.div>
         <div className="grid md:grid-cols-3 gap-5">
@@ -764,18 +747,22 @@ const Index = () => {
               key={t.name}
               {...stagger}
               transition={{ delay: i * 0.1 }}
-              className="gradient-border rounded-2xl p-7 bg-card flex flex-col"
+              className="border border-border rounded-xl p-7 bg-card flex flex-col justify-between group hover:border-primary/30 transition-all duration-300"
             >
-              <div className="flex gap-1 mb-5">
-                {[...Array(5)].map((_, j) => (
-                  <Star key={j} className="w-4 h-4 fill-primary text-primary" />
-                ))}
+              <div>
+                <div className="flex gap-1 mb-5">
+                  {[...Array(5)].map((_, j) => (
+                    <Star key={j} className="w-3.5 h-3.5 fill-primary text-primary" />
+                  ))}
+                </div>
+                <div className="border-l-2 border-primary/20 pl-4 mb-6">
+                  <p className="text-sm text-muted-foreground leading-relaxed font-serif italic">
+                    &ldquo;{t.quote}&rdquo;
+                  </p>
+                </div>
               </div>
-              <p className="text-sm text-muted-foreground leading-relaxed italic mb-6 flex-1">
-                &ldquo;{t.quote}&rdquo;
-              </p>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full gradient-primary flex items-center justify-center text-white font-heading font-bold text-xs flex-shrink-0">
+              <div className="flex items-center gap-3 pt-4 border-t border-border/50">
+                <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-mono font-bold text-xs flex-shrink-0 group-hover:bg-primary group-hover:text-white transition-all duration-300">
                   {t.initials}
                 </div>
                 <div>

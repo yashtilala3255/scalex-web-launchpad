@@ -51,26 +51,6 @@ const Footer = () => {
     <div className="orb w-96 h-96 bg-primary/8 -bottom-32 -left-32 animate-pulse-glow" />
     <div className="orb w-64 h-64 bg-accent/8 -top-20 right-20 animate-pulse-glow" style={{ animationDelay: "2.5s" }} />
 
-    {/* Newsletter CTA strip */}
-    <div className="relative border-b border-border/30">
-      <div className="container-tight py-10">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-          <div>
-            <p className="text-xs font-semibold text-primary uppercase tracking-[0.2em] mb-1">Start Today</p>
-            <h3 className="text-2xl font-heading font-bold text-foreground">
-              Have a project in mind?{" "}
-              <span className="gradient-text">Let's build it.</span>
-            </h3>
-          </div>
-          <Link to="/contact" className="flex-shrink-0">
-            <Button variant="hero" size="lg" className="gap-2">
-              Start Free Consultation <ArrowRight className="w-4 h-4" />
-            </Button>
-          </Link>
-        </div>
-      </div>
-    </div>
-
     {/* Main Footer */}
     <div className="relative container-tight py-14">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-14">

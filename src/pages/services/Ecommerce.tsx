@@ -86,9 +86,9 @@ const EcomSimulator = () => {
   const total = cart.reduce((acc, curr) => acc + curr.price * curr.qty, 0);
 
   return (
-    <div className="w-full relative rounded-2xl border border-border/40 bg-card overflow-hidden glow-sm">
+    <div className="w-full relative rounded-xl border border-border bg-card overflow-hidden">
       {/* Browser Bar */}
-      <div className="flex items-center justify-between px-4 py-3 bg-secondary/40 border-b border-border/40">
+      <div className="flex items-center justify-between px-4 py-3 bg-secondary/40 border-b border-border">
         <div className="flex items-center gap-2">
           <ShoppingBag className="w-4 h-4 text-primary" />
           <span className="font-bold text-foreground text-xs">Aesthetic Store</span>
@@ -100,7 +100,7 @@ const EcomSimulator = () => {
       </div>
 
       {/* Hero Banner Mockup */}
-      <div className="relative h-28 overflow-hidden border-b border-border/30 bg-slate-950">
+      <div className="relative h-28 overflow-hidden border-b border-border bg-slate-950">
         <img src={ecommerceMockup} alt="Ecommerce Mockup Banner" loading="lazy" decoding="async" width={600} height={112} className="w-full h-full object-cover object-center opacity-90" />
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/40 to-transparent flex items-center px-6">
           <div className="space-y-0.5">
@@ -117,7 +117,7 @@ const EcomSimulator = () => {
           <h5 className="text-[10px] font-bold text-foreground uppercase tracking-wider mb-1">Featured Tech</h5>
           <div className="space-y-2">
             {products.map(p => (
-              <div key={p.id} className="p-3 border border-border/40 rounded-xl bg-card/60 flex items-center justify-between hover:border-primary/40 transition-colors">
+              <div key={p.id} className="p-3 border border-border rounded-xl bg-card/60 flex items-center justify-between hover:border-primary/40 transition-colors">
                 <div>
                   <div className="text-xs font-bold text-foreground">{p.name}</div>
                   <div className="flex items-center gap-1.5 mt-1 text-[10px]">
@@ -207,6 +207,7 @@ const Ecommerce = () => {
       <SEO
         title="Custom E-Commerce Web Design Services | ScaleXWeb"
         description="High-converting custom E-commerce website design. We construct fast checkout funnels, payment integrations, and automated inventory sync networks."
+        keywords="e-commerce website development, Shopify experts Ahmedabad, custom online stores, B2B wholesale platform, payment gateway integrations, WooCommerce theme design"
         path="/services/ecommerce"
         jsonLd={[
           {
@@ -245,7 +246,7 @@ const Ecommerce = () => {
       {/* ── 1. Hero ─────────────────────────────────────── */}
       <section className="relative pt-28 pb-20 md:pt-36 md:pb-28 overflow-hidden">
         {/* Background styling - specific to Ecom */}
-        <div className="absolute inset-0 bg-slate-950" />
+        <div className="absolute inset-0 bg-background" />
         <div className="absolute inset-0 bg-radial-gradient from-amber-500/10 via-transparent to-transparent opacity-60" />
         <div className="absolute inset-0 dot-grid opacity-30" />
         <div className="orb w-[550px] h-[550px] bg-amber-500/8 -bottom-40 left-20 animate-pulse-glow" style={{ animationDelay: "1.5s" }} />
@@ -261,23 +262,24 @@ const Ecommerce = () => {
                 <span className="text-foreground/80 font-medium">E-Commerce Solutions</span>
               </nav>
               <div className="pill-badge mb-6"><ShoppingCart className="w-3.5 h-3.5" />High-Converting Stores</div>
-              <h1 className="text-4xl sm:text-5xl md:text-6xl font-heading font-extrabold text-foreground leading-[0.95] mb-6">
-                Faster Page Loading.<br />More <span className="gradient-text text-amber-400">Transactions.</span>
+              <h1 className="text-4xl sm:text-5xl md:text-6xl tracking-tight leading-[1.1] mb-6">
+                <span className="font-heading font-extrabold text-foreground block">Faster Page Loading.</span>
+                <span className="font-serif italic font-normal text-primary block mt-2 ml-4 sm:ml-8">More Transactions.</span>
               </h1>
               <p className="text-lg text-muted-foreground mb-8 max-w-lg leading-relaxed">
                 We engineer customized shopping platforms built for lightning checkout speeds, zero-friction filtering, and absolute sync integrity with your backend systems.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button variant="hero" size="lg" className="bg-amber-500 hover:bg-amber-600 text-white gap-2" asChild>
+                <Button variant="hero" size="lg" className="gap-2" asChild>
                   <a href="#quote-form">Launch Your Store <ArrowRight className="w-4 h-4" /></a>
                 </Button>
                 <a href="#comparison" className="px-6 py-3 rounded-xl border border-border/50 text-sm font-semibold hover:bg-muted/50 text-foreground flex items-center justify-center">Custom vs Shopify</a>
               </div>
             </motion.div>
 
-            {/* Right: E-Commerce Simulator */}
-            <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.15 }}>
-              <EcomSimulator />
+            {/* Right: Mockup Image */}
+            <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.15 }} className="w-full flex justify-center">
+              <img src={ecommerceMockup} alt="E-Commerce Solutions Mockup" className="w-full max-w-[500px] h-auto object-contain rounded-xl border border-border bg-card shadow-sm" />
             </motion.div>
           </div>
         </div>
@@ -288,8 +290,9 @@ const Ecommerce = () => {
         <div className="container-tight">
           <motion.div {...fadeUp} className="text-center mb-14">
             <p className="text-xs font-semibold text-primary uppercase tracking-[0.2em] mb-3">Our Offerings</p>
-            <h2 className="text-3xl md:text-5xl font-heading font-bold text-foreground mb-5">
-              E-Commerce <span className="gradient-text">Platforms We Construct</span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-5">
+              <span className="font-heading font-extrabold text-foreground block">E-Commerce Platforms</span>
+              <span className="font-serif italic font-normal text-primary block mt-2 ml-4 sm:ml-8">We Construct.</span>
             </h2>
           </motion.div>
 
@@ -297,10 +300,10 @@ const Ecommerce = () => {
             {ecommerceFeatures.map((feat, i) => {
               const Icon = feat.icon;
               return (
-                <motion.div key={feat.title} {...stagger(i)} className="gradient-border bg-card rounded-2xl p-7 flex flex-col justify-between hover:glow-sm transition-all duration-500">
+                <motion.div key={feat.title} {...stagger(i)} className="border border-border bg-card rounded-xl p-7 flex flex-col justify-between hover:border-primary/30 transition-all duration-300 group">
                   <div>
-                    <div className="w-10 h-10 gradient-primary rounded-lg flex items-center justify-center mb-5 shadow-sm">
-                      <Icon className="w-5 h-5 text-white" />
+                    <div className="w-10 h-10 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-5 group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                      <Icon className="w-5 h-5" />
                     </div>
                     <h3 className="font-heading font-bold text-base text-foreground mb-2.5">{feat.title}</h3>
                     <p className="text-xs text-muted-foreground leading-relaxed">{feat.desc}</p>
@@ -318,8 +321,9 @@ const Ecommerce = () => {
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <motion.div {...fadeUp}>
               <p className="text-xs font-semibold text-primary uppercase tracking-[0.2em] mb-3">Margins Matter</p>
-              <h2 className="text-3xl md:text-5xl font-heading font-bold text-foreground mb-6 leading-tight">
-                Scale Profitably with <span className="gradient-text">Custom E-Commerce</span>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-6">
+                <span className="font-heading font-extrabold text-foreground block">Scale Profitably with</span>
+                <span className="font-serif italic font-normal text-primary block mt-2 ml-4 sm:ml-8">Custom E-Commerce.</span>
               </h2>
               <p className="text-muted-foreground leading-relaxed mb-6">
                 Most template engines charge monthly licensing and transaction rates that scale as your business grows. We deliver complete project codebases allowing you to host without hidden charges and customize your user metrics freely.
@@ -336,7 +340,7 @@ const Ecommerce = () => {
 
             {/* Right Comparison Block */}
             <motion.div {...fadeUp} transition={{ delay: 0.15 }}>
-              <div className="gradient-border bg-card rounded-2xl overflow-hidden p-6 md:p-8">
+              <div className="border border-border bg-card rounded-xl overflow-hidden p-6 md:p-8">
                 <h3 className="font-heading font-bold text-lg text-foreground mb-6">Custom vs Template Store</h3>
                 <div className="space-y-4">
                   {comparisons.map(c => (
@@ -366,14 +370,15 @@ const Ecommerce = () => {
         <div className="container-tight">
           <motion.div {...fadeUp} className="text-center mb-14">
             <p className="text-xs font-semibold text-primary uppercase tracking-[0.2em] mb-3">Our Roadmap</p>
-            <h2 className="text-3xl md:text-5xl font-heading font-bold text-foreground mb-5">
-              How We Deliver <span className="gradient-text">Your Store</span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-5">
+              <span className="font-heading font-extrabold text-foreground block">How We Deliver</span>
+              <span className="font-serif italic font-normal text-primary block mt-2 ml-4 sm:ml-8">Your Store.</span>
             </h2>
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {steps.map((st, i) => (
-              <motion.div key={st.title} {...stagger(i)} className="gradient-border bg-card rounded-2xl p-6 relative">
+              <motion.div key={st.title} {...stagger(i)} className="border border-border bg-card rounded-xl p-6 relative">
                 <span className="absolute top-4 right-4 text-[10px] font-bold text-primary/50">STAGE 0{i + 1}</span>
                 <h3 className="font-heading font-semibold text-sm text-foreground mb-2 mt-4">{st.title}</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed">{st.desc}</p>
@@ -390,8 +395,9 @@ const Ecommerce = () => {
           <div className="grid lg:grid-cols-2 gap-16 items-start">
             <motion.div {...fadeUp}>
               <div className="pill-badge mb-6"><Award className="w-3.5 h-3.5" />High Conversions</div>
-              <h2 className="text-3xl md:text-5xl font-heading font-bold text-foreground mb-6 leading-tight">
-                Build a Stronger <span className="gradient-text">E-Commerce Brand</span>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-6">
+                <span className="font-heading font-extrabold text-foreground block">Build a Stronger</span>
+                <span className="font-serif italic font-normal text-primary block mt-2 ml-4 sm:ml-8">E-Commerce Brand.</span>
               </h2>
               <p className="text-muted-foreground leading-relaxed mb-8">
                 Request an online discovery call. We will review layout specs, database structures, inventory integrations, and payment routing methods.
@@ -399,7 +405,7 @@ const Ecommerce = () => {
             </motion.div>
 
             <motion.div {...fadeUp} transition={{ delay: 0.15 }}>
-              <div className="gradient-border bg-card rounded-3xl p-8 md:p-10 glow-sm">
+              <div className="border border-border bg-card rounded-xl p-8 md:p-10">
                 <h3 className="text-xl font-heading font-bold text-foreground mb-2">Request Store Estimate</h3>
                 <p className="text-xs text-muted-foreground mb-6">Describe pages, expected transaction volumes, and custom features.</p>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" id="ecom-contact-form">
@@ -439,14 +445,15 @@ const Ecommerce = () => {
       <section className="section-padding bg-background">
         <div className="container-tight max-w-3xl mx-auto">
           <motion.div {...fadeUp} className="text-center mb-12">
-            <h2 className="text-2xl md:text-4xl font-heading font-bold text-foreground mb-4">
-              E-Commerce <span className="gradient-text">FAQs</span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-4">
+              <span className="font-heading font-extrabold text-foreground block">E-Commerce</span>
+              <span className="font-serif italic font-normal text-primary block mt-2 ml-4 sm:ml-8">FAQs.</span>
             </h2>
           </motion.div>
 
           <div className="space-y-3">
             {faqs.map((f, i) => (
-              <details key={i} className="gradient-border bg-card rounded-xl overflow-hidden group">
+              <details key={i} className="border border-border bg-card rounded-xl overflow-hidden group">
                 <summary className="px-6 py-4 font-semibold text-sm text-foreground/90 flex items-center justify-between cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden">
                   <span>{f.q}</span>
                   <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform duration-300 group-open:rotate-180" />

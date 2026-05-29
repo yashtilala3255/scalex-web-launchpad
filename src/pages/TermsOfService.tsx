@@ -59,14 +59,14 @@ const TermsOfService = () => (
     />
     <section className="section-padding bg-background">
       <div className="container-tight max-w-3xl mx-auto">
-        <motion.div {...fadeUp} className="gradient-border bg-card rounded-2xl p-8 mb-8">
+        <motion.div {...fadeUp} className="border border-border bg-card rounded-xl p-8 mb-8">
           <p className="text-muted-foreground leading-relaxed">
             Please read these Terms of Service carefully before using ScaleXWeb Solution's website or engaging our services. These terms constitute a legally binding agreement between you and ScaleXWeb Solution.
           </p>
         </motion.div>
         <div className="space-y-6">
           {sections.map((section, i) => (
-            <motion.div key={section.title} {...fadeUp} transition={{ delay: i * 0.05 }} className="gradient-border bg-card rounded-2xl p-7">
+            <motion.div key={section.title} {...fadeUp} transition={{ delay: i * 0.05 }} className="border border-border bg-card rounded-xl p-7 hover:border-primary/20 transition-all duration-300">
               <h2 className="text-xl font-heading font-bold text-foreground mb-3">{section.title}</h2>
               <p className="text-muted-foreground leading-relaxed">{section.content}</p>
             </motion.div>

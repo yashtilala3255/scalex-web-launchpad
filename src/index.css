@@ -4,8 +4,51 @@
 @tailwind utilities;
 
 @layer base {
-  /* ── Dark (default) theme ─────────────────────── */
+  /* ── Light (default) theme ────────────────────── */
   :root {
+    --background: 210 20% 99%;
+    --foreground: 215 40% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 215 40% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 40% 10%;
+
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 215 45% 97%;
+    --secondary-foreground: 215 40% 12%;
+
+    --muted: 215 45% 97%;
+    --muted-foreground: 215 15% 45%;
+
+    --accent: 262.1 83.3% 57.8%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 215 20% 90%;
+    --input: 215 20% 90%;
+    --ring: 221.2 83.2% 53.3%;
+
+    --radius: 0.875rem;
+
+    --navy: 215 35% 94%;
+    --navy-light: 215 20% 90%;
+    --surface: 0 0% 100%;
+    --gradient-start: 221.2 83.2% 53.3%;
+    --gradient-end: 262.1 83.3% 57.8%;
+    --cursor-glow-1: 215 95% 82%;
+    --cursor-glow-2: 262 95% 86%;
+    --cursor-glow-opacity-1: 0.28;
+    --cursor-glow-opacity-2: 0.18;
+  }
+
+  /* ── Dark theme ─────────────────────────────── */
+  .dark {
     --background: 232 60% 4%;
     --foreground: 232 32% 91%;
 
@@ -34,48 +77,13 @@
     --input: 232 25% 14%;
     --ring: 232 85% 58%;
 
-    --radius: 0.875rem;
-
     --navy: 232 60% 4%;
     --navy-light: 232 35% 12%;
     --surface: 232 45% 7%;
-    --gradient-start: 232 85% 58%;
-    --gradient-end: 275 100% 64%;
-  }
-
-  /* ── Light theme ─────────────────────────────── */
-  .light {
-    --background: 232 40% 98%;
-    --foreground: 232 47% 11%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 232 47% 11%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 232 47% 11%;
-
-    --primary: 232 85% 44%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 232 40% 95%;
-    --secondary-foreground: 232 47% 11%;
-
-    --muted: 232 40% 95%;
-    --muted-foreground: 232 16% 47%;
-
-    --accent: 275 100% 54%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 232 32% 88%;
-    --input: 232 32% 88%;
-    --ring: 232 85% 44%;
-
-    --navy: 232 47% 11%;
-    --navy-light: 232 33% 17%;
-    --surface: 232 40% 98%;
+    --cursor-glow-1: 232 85% 58%;
+    --cursor-glow-2: 275 100% 64%;
+    --cursor-glow-opacity-1: 0.12;
+    --cursor-glow-opacity-2: 0.08;
   }
 }
 
@@ -124,34 +132,34 @@
 
   /* ── Glow Effects ─────────────────────────────── */
   .glow-primary {
-    box-shadow: 0 0 25px hsl(var(--primary) / 0.4), 0 0 60px hsl(var(--primary) / 0.15);
+    box-shadow: 0 4px 20px hsl(var(--primary) / 0.08), 0 1px 3px hsl(var(--primary) / 0.04);
   }
 
   .glow-accent {
-    box-shadow: 0 0 25px hsl(var(--accent) / 0.4), 0 0 60px hsl(var(--accent) / 0.15);
+    box-shadow: 0 4px 20px hsl(var(--accent) / 0.08), 0 1px 3px hsl(var(--accent) / 0.04);
   }
 
   .glow-sm {
-    box-shadow: 0 0 20px hsl(var(--primary) / 0.2), 0 4px 30px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.01), 0 0 0 1px rgba(9, 9, 11, 0.04);
   }
 
   .glow-card {
-    box-shadow: 0 0 0 1px hsl(var(--primary) / 0.2), 0 8px 40px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.01), 0 0 0 1px rgba(9, 9, 11, 0.04);
   }
 
   /* ── Glassmorphism ────────────────────────────── */
   .glass {
-    background: rgba(255, 255, 255, 0.04);
+    background: rgba(255, 255, 255, 0.75);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(9, 9, 11, 0.08);
   }
 
   .glass-light {
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(9, 9, 11, 0.05);
   }
 
   /* ── Gradient Border Card ─────────────────────── */
@@ -167,39 +175,40 @@
     inset: -1px;
     border-radius: inherit;
     padding: 1px;
-    background: linear-gradient(135deg, hsl(var(--primary) / 0.5), hsl(var(--accent) / 0.5));
+    background: linear-gradient(135deg, hsl(var(--primary) / 0.25), hsl(var(--accent) / 0.25));
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
-    opacity: 0.4;
+    opacity: 0.7;
     transition: opacity 0.4s ease;
     z-index: -1;
   }
 
   .gradient-border:hover::before {
     opacity: 1;
+    background: linear-gradient(135deg, hsl(var(--primary) / 0.4), hsl(var(--accent) / 0.4));
   }
 
   /* ── Mesh Background ──────────────────────────── */
   .mesh-bg {
     background:
-      radial-gradient(ellipse 80% 60% at 10% 50%, hsl(var(--primary) / 0.18) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 50% at 85% 20%, hsl(var(--accent) / 0.14) 0%, transparent 55%),
-      radial-gradient(ellipse 50% 40% at 50% 90%, hsl(var(--primary) / 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse 80% 60% at 10% 50%, hsl(var(--primary) / 0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 85% 20%, hsl(var(--accent) / 0.05) 0%, transparent 55%),
+      radial-gradient(ellipse 50% 40% at 50% 90%, hsl(var(--primary) / 0.03) 0%, transparent 50%),
       hsl(var(--background));
   }
 
   /* ── Dot Grid ─────────────────────────────────── */
   .dot-grid {
-    background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
+    background-image: radial-gradient(circle, rgba(9,9,11,0.04) 1px, transparent 1px);
     background-size: 40px 40px;
   }
 
   /* ── Line Grid ────────────────────────────────── */
   .line-grid {
     background-image:
-      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      linear-gradient(rgba(9,9,11,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(9,9,11,0.02) 1px, transparent 1px);
     background-size: 60px 60px;
   }
 

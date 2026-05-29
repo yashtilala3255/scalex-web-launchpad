@@ -20,53 +20,63 @@ const SectionCTA = ({
   secondaryCTA,
   secondaryLink,
 }: SectionCTAProps) => (
-  <section className="relative overflow-hidden">
-    {/* Gradient background */}
-    <div className="absolute inset-0 gradient-primary opacity-90" />
-    <div className="absolute inset-0 dot-grid opacity-20" />
+  <section className="relative bg-[#09090B] overflow-hidden py-24 border-t border-white/5">
+    {/* Subtle dot grid overlay */}
+    <div className="absolute inset-0 bg-dot-grid opacity-10 pointer-events-none" />
 
-    {/* Decorative orbs */}
-    <div className="orb w-96 h-96 bg-white/10 -top-20 -right-20 animate-pulse-glow" />
-    <div className="orb w-64 h-64 bg-white/8 -bottom-10 -left-10 animate-pulse-glow" style={{ animationDelay: "2s" }} />
+    <div className="relative container-tight px-6 z-10">
+      <div className="grid lg:grid-cols-5 gap-12 items-center">
+        {/* Left column (col-span-3): Editorial Headline & Subheadline */}
+        <motion.div
+          className="lg:col-span-3 text-left space-y-4"
+          initial={{ opacity: 0, x: -30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <span className="font-mono text-xs text-[#2563EB] uppercase tracking-[0.25em] font-semibold block">
+            Let's Collaborate
+          </span>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif italic text-white leading-tight font-normal">
+            {headline}
+          </h2>
+          {subheadline && (
+            <p className="text-base md:text-lg text-zinc-400 max-w-xl leading-relaxed font-sans pt-1">
+              {subheadline}
+            </p>
+          )}
+        </motion.div>
 
-    <div className="relative container-tight py-20 md:py-28 text-center">
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-      >
-        <h2 className="text-3xl md:text-5xl font-heading font-extrabold text-white mb-5 max-w-3xl mx-auto leading-tight">
-          {headline}
-        </h2>
-        {subheadline && (
-          <p className="text-lg text-white/75 mb-10 max-w-xl mx-auto">{subheadline}</p>
-        )}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+        {/* Right column (col-span-2): Stacked Action Buttons */}
+        <motion.div
+          className="lg:col-span-2 flex flex-col sm:flex-row lg:flex-col gap-3 justify-end items-stretch sm:items-center lg:items-end"
+          initial={{ opacity: 0, x: 30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.15 }}
+        >
           {primaryCTA && (
-            <Link to={primaryLink}>
+            <Link to={primaryLink} className="w-full sm:w-auto lg:w-3/4">
               <Button
-                variant="hero-outline"
-                size="lg"
-                className="gap-2 border-white/40 text-white hover:bg-white/20 hover:border-white/60 text-base px-8"
+                variant="default"
+                className="w-full bg-[#2563EB] hover:bg-blue-600 text-white gap-2 text-sm font-semibold h-12 shadow-md rounded-xl"
               >
                 {primaryCTA} <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
           )}
           {secondaryCTA && secondaryLink && (
-            <Link to={secondaryLink}>
+            <Link to={secondaryLink} className="w-full sm:w-auto lg:w-3/4">
               <Button
-                variant="ghost"
-                size="lg"
-                className="text-white/80 hover:text-white hover:bg-white/10 text-base px-8"
+                variant="outline"
+                className="w-full border-zinc-800 text-zinc-300 hover:text-white hover:bg-zinc-900 hover:border-zinc-700 text-sm font-semibold h-12 rounded-xl"
               >
                 {secondaryCTA}
               </Button>
             </Link>
           )}
-        </div>
-      </motion.div>
+        </motion.div>
+      </div>
     </div>
   </section>
 );

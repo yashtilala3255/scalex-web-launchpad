@@ -10,6 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from "sonner";
 import { useState } from "react";
+import saasMockup from "@/assets/saas_mockup.png";
 import {
   ArrowRight, CheckCircle, Code, Database, Globe, Layers,
   Zap, HeartHandshake, Shield, Cpu, Wrench, Lightbulb,
@@ -245,9 +246,9 @@ const FullStackSimulator = () => {
   };
 
   return (
-    <div className="w-full max-w-[460px] rounded-2xl border border-border/40 bg-[#070b13]/90 shadow-2xl overflow-hidden font-mono text-xs text-foreground flex flex-col h-[380px] select-none text-left">
+    <div className="w-full max-w-[460px] rounded-xl border border-border bg-[#070b13]/90 shadow-2xl overflow-hidden font-mono text-xs text-foreground flex flex-col h-[380px] select-none text-left">
       {/* Console Title Bar */}
-      <div className="flex items-center justify-between px-4 py-3 bg-[#0d1525] border-b border-border/20">
+      <div className="flex items-center justify-between px-4 py-3 bg-[#0d1525] border-b border-border/30">
         <div className="flex items-center gap-2">
           <div className="flex gap-1">
             <span className="w-2 h-2 rounded-full bg-red-500/80" />
@@ -263,7 +264,7 @@ const FullStackSimulator = () => {
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-border/20 bg-[#0a101d]">
+      <div className="flex border-b border-border/30 bg-[#0a101d]">
         {[
           { id: "api", label: "API Layer" },
           { id: "db", label: "DB Engine" },
@@ -272,7 +273,7 @@ const FullStackSimulator = () => {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`px-4 py-2 border-r border-border/20 text-[10px] transition-colors ${activeTab === tab.id ? "bg-[#070b13] text-primary font-bold border-b border-b-primary" : "text-muted-foreground hover:bg-card/30"}`}
+            className={`px-4 py-2 border-r border-border/30 text-[10px] transition-colors ${activeTab === tab.id ? "bg-[#070b13] text-primary font-bold border-b border-b-primary" : "text-muted-foreground hover:bg-card/30"}`}
           >
             {tab.label}
           </button>
@@ -280,7 +281,7 @@ const FullStackSimulator = () => {
         <button
           onClick={startDeploy}
           disabled={deploying}
-          className="ml-auto px-3.5 bg-primary/10 text-primary border-l border-border/20 hover:bg-primary/20 text-[10px] font-bold transition-all flex items-center gap-1.5 disabled:opacity-50"
+          className="ml-auto px-3.5 bg-primary/10 text-primary border-l border-border/30 hover:bg-primary/20 text-[10px] font-bold transition-all flex items-center gap-1.5 disabled:opacity-50"
         >
           <Zap className="w-3 h-3" />
           {deploying ? `Deploying ${progress}%` : "Deploy Code"}
@@ -291,7 +292,7 @@ const FullStackSimulator = () => {
       <div className="flex-1 p-4 overflow-y-auto space-y-2 bg-[#05070c]">
         {activeTab === "api" && (
           <div className="space-y-2.5">
-            <div className="flex items-center justify-between border-b border-border/20 pb-2 mb-2">
+            <div className="flex items-center justify-between border-b border-border/30 pb-2 mb-2">
               <span className="text-[10px] text-muted-foreground uppercase">API Routes</span>
               <span className="text-[9px] bg-primary/20 text-primary px-1.5 py-0.5 rounded">Fastify</span>
             </div>
@@ -313,21 +314,21 @@ const FullStackSimulator = () => {
 
         {activeTab === "db" && (
           <div className="space-y-3">
-            <div className="flex items-center justify-between border-b border-border/20 pb-2 mb-2">
+            <div className="flex items-center justify-between border-b border-border/30 pb-2 mb-2">
               <span className="text-[10px] text-muted-foreground uppercase">Data Systems</span>
               <span className="text-[9px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded">Postgres + Redis</span>
             </div>
             <div className="grid grid-cols-2 gap-3 text-[10px]">
-              <div className="p-2.5 rounded-lg border border-border/20 bg-card/40">
+              <div className="p-2.5 rounded-lg border border-border/30 bg-card/40">
                 <span className="text-muted-foreground block text-[8px] uppercase font-mono">Postgres Connections</span>
                 <span className="text-base text-foreground font-bold font-heading">12 / 100</span>
               </div>
-              <div className="p-2.5 rounded-lg border border-border/20 bg-card/40">
+              <div className="p-2.5 rounded-lg border border-border/30 bg-card/40">
                 <span className="text-muted-foreground block text-[8px] uppercase font-mono">Cache Hit Rate</span>
                 <span className="text-base text-emerald-400 font-bold font-heading">98.4%</span>
               </div>
             </div>
-            <div className="flex justify-between items-center text-[10px] text-white/70 bg-card/20 p-2 rounded border border-border/10">
+            <div className="flex justify-between items-center text-[10px] text-white/70 bg-card/20 p-2 rounded border border-border/20">
               <span>Sync Status</span>
               <span className="text-success flex items-center gap-1"><span className="w-1.5 h-1.5 bg-success rounded-full animate-ping" />Synchronized</span>
             </div>
@@ -336,7 +337,7 @@ const FullStackSimulator = () => {
 
         {activeTab === "infra" && (
           <div className="space-y-3">
-            <div className="flex items-center justify-between border-b border-border/20 pb-2 mb-2">
+            <div className="flex items-center justify-between border-b border-border/30 pb-2 mb-2">
               <span className="text-[10px] text-muted-foreground uppercase">DevOps Cloud</span>
               <span className="text-[9px] bg-violet-500/20 text-violet-400 px-1.5 py-0.5 rounded">AWS (us-east-1)</span>
             </div>
@@ -351,7 +352,7 @@ const FullStackSimulator = () => {
                     <span>{stat.label}</span>
                     <span className="text-foreground font-medium">{stat.val}</span>
                   </div>
-                  <div className="h-1 bg-border/40 rounded-full overflow-hidden">
+                  <div className="h-1 bg-border/30 rounded-full overflow-hidden">
                     <div className={`h-full ${stat.color}`} style={{ width: `${stat.bar}%` }} />
                   </div>
                 </div>
@@ -361,9 +362,9 @@ const FullStackSimulator = () => {
         )}
 
         {/* Live logs console console box */}
-        <div className="pt-2 border-t border-border/20 mt-3">
+        <div className="pt-2 border-t border-border/30 mt-3">
           <span className="text-[9px] text-muted-foreground uppercase block mb-1">Build & Deployment Logs</span>
-          <div className="h-[95px] overflow-y-auto space-y-1 text-[10px] bg-black/60 p-2.5 rounded-lg border border-border/15 text-muted-foreground selection:bg-primary/20 selection:text-white">
+          <div className="h-[95px] overflow-y-auto space-y-1 text-[10px] bg-black/60 p-2.5 rounded-lg border border-border/20 text-muted-foreground selection:bg-primary/20 selection:text-white">
             {logs.slice(-4).map((log, idx) => (
               <div key={idx} className={log.startsWith(">>") ? "text-primary/95" : "text-white/80"}>
                 {log}
@@ -387,6 +388,7 @@ const FullStackDevelopment = () => {
       <SEO
         title="Full Stack Development Services | ScaleXWeb Solution"
         description="End-to-end full stack development by ScaleXWeb — custom web applications, enterprise software, AI/ML integration, and scalable digital products built with modern tech stacks."
+        keywords="full stack web services, Node.js React developers, hire dedicated software engineers, custom API developer, legacy database migration, scalable code architectures"
         path="/services/full-stack-development"
         jsonLd={[
           {
@@ -424,7 +426,7 @@ const FullStackDevelopment = () => {
 
       {/* ── 1. Hero ─────────────────────────────────────── */}
       <section className="relative pt-28 pb-24 md:pt-36 md:pb-32 overflow-hidden">
-        <div className="absolute inset-0 bg-neutral-950" />
+        <div className="absolute inset-0 bg-background" />
         <div className="absolute inset-0 bg-radial-gradient from-primary/10 via-transparent to-transparent opacity-60" />
         <div className="absolute inset-0 dot-grid opacity-30" />
         <div className="orb w-[550px] h-[550px] bg-primary/12 -top-40 -left-20 animate-pulse-glow" />
@@ -441,8 +443,9 @@ const FullStackDevelopment = () => {
                 <span className="text-foreground/80 font-medium">Full Stack Development</span>
               </nav>
               <div className="pill-badge mb-6"><span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />Full Stack Development</div>
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-extrabold text-foreground leading-[0.95] tracking-tight mb-6 max-w-2xl">
-                End-to-End Full Stack<br /><span className="gradient-text">Development Services</span>
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight leading-[1.1] mb-6 max-w-2xl">
+                <span className="font-heading font-extrabold text-foreground block">End-to-End Full Stack</span>
+                <span className="font-serif italic font-normal text-primary block mt-2 ml-4 sm:ml-8">Development Services.</span>
               </h1>
               <p className="text-lg text-muted-foreground mb-8 max-w-xl leading-relaxed">
                 From pixel-perfect frontends to battle-tested backends — we architect, build, and scale full-stack digital products that power ambitious businesses.
@@ -462,9 +465,9 @@ const FullStackDevelopment = () => {
               </div>
             </motion.div>
 
-            {/* Right: Cloud Console Simulator */}
+            {/* Right: Mockup Image */}
             <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.15 }} className="lg:col-span-5 flex justify-center w-full">
-              <FullStackSimulator />
+              <img src={saasMockup} alt="Full Stack Development Mockup" className="w-full max-w-[500px] h-auto object-contain rounded-xl border border-border bg-card shadow-sm" />
             </motion.div>
           </div>
         </div>
@@ -475,8 +478,9 @@ const FullStackDevelopment = () => {
         <div className="container-tight">
           <motion.div {...fadeUp} className="text-center mb-14">
             <p className="text-xs font-semibold text-primary uppercase tracking-[0.2em] mb-3">What We Deliver</p>
-            <h2 className="text-3xl md:text-5xl font-heading font-bold text-foreground mb-5">
-              End-to-End Full Stack <span className="gradient-text">Development Services</span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-5">
+              <span className="font-heading font-extrabold text-foreground block">End-to-End Full Stack</span>
+              <span className="font-serif italic font-normal text-primary block mt-2 ml-4 sm:ml-8">Development Services.</span>
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">From first wireframe to production deployment — every layer of your digital product, handled by one team with full accountability.</p>
           </motion.div>
@@ -484,9 +488,9 @@ const FullStackDevelopment = () => {
             {services.map((svc, i) => {
               const Icon = svc.icon;
               return (
-                <motion.div key={svc.title} {...stagger(i)} className="gradient-border bg-card rounded-2xl p-7 group hover:glow-sm transition-all duration-500">
-                  <div className="w-12 h-12 gradient-primary rounded-xl flex items-center justify-center mb-5 group-hover:glow-sm transition-all duration-300">
-                    <Icon className="w-6 h-6 text-white" />
+                <motion.div key={svc.title} {...stagger(i)} className="border border-border bg-card rounded-xl p-7 group hover:border-primary/30 transition-all duration-300">
+                  <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-5 group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                    <Icon className="w-6 h-6" />
                   </div>
                   <h3 className="font-heading font-bold text-lg text-foreground mb-3">{svc.title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">{svc.desc}</p>
@@ -502,8 +506,9 @@ const FullStackDevelopment = () => {
         <div className="container-tight">
           <motion.div {...fadeUp} className="text-center mb-12">
             <p className="text-xs font-semibold text-accent uppercase tracking-[0.2em] mb-3">Technical Depth</p>
-            <h2 className="text-3xl md:text-5xl font-heading font-bold text-foreground mb-5">
-              Our Extensive Expertise As A Leading<br /><span className="gradient-text">Full Stack Web Development Company</span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-5">
+              <span className="font-heading font-extrabold text-foreground block">Our Extensive Expertise As A</span>
+              <span className="font-serif italic font-normal text-primary block mt-2 ml-4 sm:ml-8">Full Stack Web Development Company.</span>
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">Deep proficiency across the entire stack — from interactive UIs to distributed backend systems and cloud infrastructure.</p>
           </motion.div>
@@ -516,7 +521,7 @@ const FullStackDevelopment = () => {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2.5 px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300 ${activeTab === tab.id ? "gradient-primary text-white glow-sm" : "glass text-muted-foreground hover:text-foreground border border-border/40"}`}
+                  className={`flex items-center gap-2.5 px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300 ${activeTab === tab.id ? "bg-primary text-white" : "bg-card text-muted-foreground hover:text-foreground border border-border"}`}
                 >
                   <Icon className="w-4 h-4" />{tab.label}
                 </button>
@@ -527,12 +532,12 @@ const FullStackDevelopment = () => {
           {/* Tab Content */}
           <AnimatePresence mode="wait">
             <motion.div key={activeTab} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }}>
-              <div className="gradient-border bg-card rounded-2xl p-8 md:p-10">
+              <div className="border border-border bg-card rounded-xl p-8 md:p-10">
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="w-12 h-12 gradient-primary rounded-xl flex items-center justify-center">
+                  <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center">
                     {(() => {
                       const Icon = activeExpertise.icon;
-                      return <Icon className="w-6 h-6 text-white" />;
+                      return <Icon className="w-6 h-6" />;
                     })()}
                   </div>
                   <div>
@@ -549,7 +554,7 @@ const FullStackDevelopment = () => {
                       </div>
                       <div className="h-2 bg-border/50 rounded-full overflow-hidden">
                         <motion.div
-                          className="h-full gradient-primary rounded-full"
+                          className="h-full bg-primary rounded-full"
                           initial={{ width: 0 }}
                           animate={{ width: `${item.level}%` }}
                           transition={{ duration: 0.8, ease: "easeOut" }}
@@ -569,14 +574,15 @@ const FullStackDevelopment = () => {
         <div className="container-tight">
           <motion.div {...fadeUp} className="text-center mb-14">
             <p className="text-xs font-semibold text-primary uppercase tracking-[0.2em] mb-3">Tech Stacks</p>
-            <h2 className="text-3xl md:text-5xl font-heading font-bold text-foreground mb-5">
-              Diverse Full Stack Combinations<br /><span className="gradient-text">Tailored for Your Business</span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-5">
+              <span className="font-heading font-extrabold text-foreground block">Diverse Full Stack Combinations</span>
+              <span className="font-serif italic font-normal text-primary block mt-2 ml-4 sm:ml-8">Tailored for Your Business.</span>
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">We don't force you into a cookie-cutter stack. We choose the best combination for your specific use case, team, and scale.</p>
           </motion.div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {stackCombinations.map((stack, i) => (
-              <motion.div key={stack.name} {...stagger(i)} className={`rounded-2xl p-6 border ${stack.border} bg-gradient-to-br ${stack.color} backdrop-blur-sm group hover:glow-sm transition-all duration-500`}>
+              <motion.div key={stack.name} {...stagger(i)} className={`rounded-xl p-6 border border-border bg-card hover:border-primary/20 transition-all duration-300`}>
                 <h3 className="font-heading font-bold text-xl text-foreground mb-4">{stack.name}</h3>
                 <div className="space-y-3 mb-5">
                   {[["Frontend", stack.front], ["Backend", stack.back], ["Database", stack.db]].map(([label, value]) => (
@@ -601,36 +607,37 @@ const FullStackDevelopment = () => {
         <div className="container-tight">
           <motion.div {...fadeUp} className="text-center mb-14">
             <p className="text-xs font-semibold text-accent uppercase tracking-[0.2em] mb-3">Engagement Models</p>
-            <h2 className="text-3xl md:text-5xl font-heading font-bold text-foreground mb-5">
-              Hire Full-Stack Development Team<br /><span className="gradient-text">As Per Your Need</span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-5">
+              <span className="font-heading font-extrabold text-foreground block">Hire Full-Stack Development Team</span>
+              <span className="font-serif italic font-normal text-primary block mt-2 ml-4 sm:ml-8">As Per Your Need.</span>
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">Three flexible engagement models to match your project stage, budget, and team structure.</p>
           </motion.div>
           <div className="grid md:grid-cols-3 gap-6">
             {pricingPlans.map((plan, i) => (
               <motion.div key={plan.name} {...stagger(i)}
-                className={`relative rounded-2xl p-8 flex flex-col transition-all duration-500 ${plan.featured ? "gradient-primary glow-primary" : "gradient-border bg-card hover:glow-sm"}`}
+                className={`relative rounded-xl p-8 flex flex-col transition-all duration-300 border ${plan.featured ? "border-primary bg-primary/[0.03] shadow-sm" : "border-border bg-card"}`}
               >
                 {plan.featured && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                    <span className="bg-white text-primary text-xs font-bold px-4 py-1.5 rounded-full shadow-lg">{plan.tag}</span>
+                    <span className="bg-primary text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-md">{plan.tag}</span>
                   </div>
                 )}
                 {!plan.featured && (
                   <span className="text-xs font-semibold text-primary uppercase tracking-widest mb-3 block">{plan.tag}</span>
                 )}
-                <h3 className={`font-heading font-bold text-2xl mb-1 ${plan.featured ? "text-white" : "text-foreground"}`}>{plan.name}</h3>
-                <p className={`text-xs mb-2 ${plan.featured ? "text-white/60" : "text-muted-foreground"}`}>{plan.period}</p>
-                <p className={`text-sm leading-relaxed mb-6 ${plan.featured ? "text-white/80" : "text-muted-foreground"}`}>{plan.desc}</p>
+                <h3 className="font-heading font-bold text-2xl mb-1 text-foreground">{plan.name}</h3>
+                <p className="text-xs mb-2 text-muted-foreground">{plan.period}</p>
+                <p className="text-sm leading-relaxed mb-6 text-muted-foreground">{plan.desc}</p>
                 <ul className="space-y-2.5 mb-8 flex-1">
                   {plan.highlights.map(h => (
                     <li key={h} className="flex items-center gap-2.5 text-sm">
-                      <CheckCircle className={`w-4 h-4 flex-shrink-0 ${plan.featured ? "text-white/80" : "text-primary"}`} />
-                      <span className={plan.featured ? "text-white/90" : "text-foreground/80"}>{h}</span>
+                      <CheckCircle className="w-4 h-4 flex-shrink-0 text-primary" />
+                      <span className="text-foreground/80">{h}</span>
                     </li>
                   ))}
                 </ul>
-                <Button variant={plan.featured ? "hero-outline" : "hero"} className="w-full gap-2" asChild>
+                <Button variant="hero" className="w-full gap-2" asChild>
                   <a href="#fullstack-lead-form">
                     {plan.cta} <ArrowRight className="w-4 h-4" />
                   </a>
@@ -652,8 +659,9 @@ const FullStackDevelopment = () => {
             {/* Left */}
             <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
               <div className="pill-badge mb-6"><Rocket className="w-3.5 h-3.5" />Let's Build Together</div>
-              <h2 className="text-4xl md:text-5xl font-heading font-extrabold text-foreground leading-tight mb-6">
-                Accelerate Your Business With{" "}<span className="gradient-text">Top-Tier Full Stack</span>{" "}Development
+              <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-6">
+                <span className="font-heading font-extrabold text-foreground block">Accelerate Your Business With</span>
+                <span className="font-serif italic font-normal text-primary block mt-2 ml-4 sm:ml-8">Top-Tier Full Stack Development.</span>
               </h2>
               <p className="text-lg text-muted-foreground leading-relaxed mb-8">
                 Tell us what you're building and we'll assemble the perfect team and architecture for it — in days, not weeks.
@@ -666,8 +674,8 @@ const FullStackDevelopment = () => {
                   { icon: TrendingUp, text: "ROI-focused delivery from Sprint 1" },
                 ].map(({ icon: Icon, text }) => (
                   <div key={text} className="flex items-center gap-3">
-                    <div className="w-9 h-9 gradient-primary rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Icon className="w-4 h-4 text-white" />
+                    <div className="w-9 h-9 bg-primary/10 text-primary rounded-xl flex items-center justify-center flex-shrink-0">
+                      <Icon className="w-4 h-4" />
                     </div>
                     <span className="text-foreground/80 text-sm">{text}</span>
                   </div>
@@ -676,7 +684,7 @@ const FullStackDevelopment = () => {
             </motion.div>
             {/* Right — Form */}
             <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.1 }}>
-              <div className="gradient-border bg-card rounded-3xl p-8 md:p-10 glow-sm relative">
+              <div className="border border-border bg-card rounded-xl p-8 md:p-10 relative">
                 <div className="absolute -top-8 -right-8 w-32 h-32 bg-primary/20 rounded-full blur-3xl pointer-events-none" />
                 <h3 className="text-2xl font-heading font-bold text-foreground mb-2">Start the Conversation</h3>
                 <p className="text-sm text-muted-foreground mb-7">Our tech lead will reach out within <span className="text-primary font-medium">24 business hours</span>.</p>
@@ -692,8 +700,9 @@ const FullStackDevelopment = () => {
         <div className="container-tight">
           <motion.div {...fadeUp} className="text-center mb-14">
             <p className="text-xs font-semibold text-primary uppercase tracking-[0.2em] mb-3">How We Work</p>
-            <h2 className="text-3xl md:text-5xl font-heading font-bold text-foreground mb-5">
-              Our Proven Full Stack <span className="gradient-text">Development Process</span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-5">
+              <span className="font-heading font-extrabold text-foreground block">Our Proven Full Stack</span>
+              <span className="font-serif italic font-normal text-primary block mt-2 ml-4 sm:ml-8">Development Process.</span>
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">A battle-tested, transparent delivery model that minimises risk and maximises speed-to-value.</p>
           </motion.div>
@@ -704,8 +713,8 @@ const FullStackDevelopment = () => {
               {processSteps.map((step, i) => {
                 const Icon = step.icon;
                 return (
-                  <motion.div key={step.step} {...stagger(i)} className="gradient-border bg-card rounded-2xl p-6 group hover:glow-sm transition-all duration-500 flex flex-col items-center text-center lg:items-start lg:text-left">
-                    <div className="w-12 h-12 gradient-primary rounded-xl flex items-center justify-center text-white font-heading font-bold text-sm mb-4 group-hover:glow-sm transition-all flex-shrink-0">
+                  <motion.div key={step.step} {...stagger(i)} className="border border-border bg-card rounded-xl p-6 group hover:border-primary/30 transition-all duration-300 flex flex-col items-center text-center lg:items-start lg:text-left">
+                    <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center font-mono font-bold text-sm mb-4 transition-all flex-shrink-0">
                       {step.step}
                     </div>
                     <Icon className="w-5 h-5 text-primary/70 mb-3" />
@@ -724,13 +733,14 @@ const FullStackDevelopment = () => {
         <div className="container-tight">
           <motion.div {...fadeUp} className="text-center mb-14">
             <p className="text-xs font-semibold text-accent uppercase tracking-[0.2em] mb-3">Case Studies</p>
-            <h2 className="text-3xl md:text-5xl font-heading font-bold text-foreground mb-5">
-              Our Full-Stack Development <span className="gradient-text">Success Stories</span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-5">
+              <span className="font-heading font-extrabold text-foreground block">Our Full-Stack Development</span>
+              <span className="font-serif italic font-normal text-primary block mt-2 ml-4 sm:ml-8">Success Stories.</span>
             </h2>
           </motion.div>
           <div className="grid md:grid-cols-3 gap-6">
             {successStories.map((story, i) => (
-              <motion.div key={story.industry} {...stagger(i)} className="glass rounded-2xl p-8 border border-white/10 flex flex-col group hover:border-primary/30 transition-all duration-500">
+              <motion.div key={story.industry} {...stagger(i)} className="border border-border bg-card rounded-xl p-8 flex flex-col group hover:border-primary/30 transition-all duration-300">
                 <div className="flex items-center justify-between mb-6">
                   <span className="pill-badge">{story.industry}</span>
                   <span className="text-xs font-bold text-primary bg-primary/10 border border-primary/25 px-3 py-1.5 rounded-full">{story.result}</span>
@@ -754,14 +764,15 @@ const FullStackDevelopment = () => {
         <div className="container-tight">
           <motion.div {...fadeUp} className="text-center mb-14">
             <p className="text-xs font-semibold text-primary uppercase tracking-[0.2em] mb-3">Stack Depth</p>
-            <h2 className="text-3xl md:text-5xl font-heading font-bold text-foreground mb-5">
-              Technical Proficiency of Our<br /><span className="gradient-text">Full-Stack Developers</span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-5">
+              <span className="font-heading font-extrabold text-foreground block">Technical Proficiency of Our</span>
+              <span className="font-serif italic font-normal text-primary block mt-2 ml-4 sm:ml-8">Full-Stack Developers.</span>
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">Our developers are specialists first, full-stackers second — deep expertise in each layer, not shallow generalists.</p>
           </motion.div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {techProficiency.map((cat, i) => (
-              <motion.div key={cat.category} {...stagger(i)} className="gradient-border bg-card rounded-2xl p-7">
+              <motion.div key={cat.category} {...stagger(i)} className="border border-border bg-card rounded-xl p-7 hover:border-primary/20 transition-all duration-300">
                 <h3 className={`font-heading font-bold text-sm uppercase tracking-wider mb-5 ${cat.color.split(" ")[0]}`}>{cat.category}</h3>
                 <div className="flex flex-wrap gap-2">
                   {cat.items.map(item => (
@@ -779,17 +790,18 @@ const FullStackDevelopment = () => {
         <div className="container-tight">
           <motion.div {...fadeUp} className="text-center mb-14">
             <p className="text-xs font-semibold text-primary uppercase tracking-[0.2em] mb-3">Why ScaleXWeb</p>
-            <h2 className="text-3xl md:text-5xl font-heading font-bold text-foreground mb-5">
-              What Makes ScaleXWeb Solution the Best<br /><span className="gradient-text">Full Stack Development Services Company?</span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-5">
+              <span className="font-heading font-extrabold text-foreground block">What Makes ScaleXWeb Solution the Best</span>
+              <span className="font-serif italic font-normal text-primary block mt-2 ml-4 sm:ml-8">Full Stack Development Company?</span>
             </h2>
           </motion.div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {whyUs.map((item, i) => {
               const Icon = item.icon;
               return (
-                <motion.div key={item.title} {...stagger(i)} className="gradient-border bg-card rounded-2xl p-7 group hover:glow-sm transition-all duration-500">
-                  <div className="w-12 h-12 gradient-primary rounded-xl flex items-center justify-center mb-5 group-hover:glow-sm transition-all">
-                    <Icon className="w-6 h-6 text-white" />
+                <motion.div key={item.title} {...stagger(i)} className="border border-border bg-card rounded-xl p-7 group hover:border-primary/30 transition-all duration-300">
+                  <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-5 group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                    <Icon className="w-6 h-6" />
                   </div>
                   <h3 className="font-heading font-bold text-lg text-foreground mb-3">{item.title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
@@ -805,14 +817,15 @@ const FullStackDevelopment = () => {
         <div className="container-tight max-w-3xl mx-auto">
           <motion.div {...fadeUp} className="text-center mb-14">
             <p className="text-xs font-semibold text-primary uppercase tracking-[0.2em] mb-3">FAQ</p>
-            <h2 className="text-3xl md:text-4xl font-heading font-bold text-foreground mb-5">
-              Frequently Asked <span className="gradient-text">Questions</span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-5">
+              <span className="font-heading font-extrabold text-foreground block">Frequently Asked</span>
+              <span className="font-serif italic font-normal text-primary block mt-2 ml-4 sm:ml-8">Questions.</span>
             </h2>
             <p className="text-muted-foreground">Everything you need to know before kicking off your full-stack project.</p>
           </motion.div>
           <div className="space-y-3">
             {faqs.map((faq, i) => (
-              <motion.div key={i} {...stagger(i)} className="gradient-border bg-card rounded-2xl overflow-hidden">
+              <motion.div key={i} {...stagger(i)} className="border border-border bg-card rounded-xl overflow-hidden">
                 <button
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
                   className="w-full flex items-center justify-between px-7 py-5 text-left group"

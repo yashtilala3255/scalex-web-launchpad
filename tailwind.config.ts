@@ -12,8 +12,10 @@ export default {
     },
     extend: {
       fontFamily: {
-        heading: ['"Plus Jakarta Sans"', "system-ui", "sans-serif"],
-        body: ['"DM Sans"', "system-ui", "sans-serif"],
+        heading: ["Inter", "system-ui", "sans-serif"],
+        body: ["Inter", "system-ui", "sans-serif"],
+        serif: ['"Instrument Serif"', "serif"],
+        mono: ['"IBM Plex Mono"', "monospace"],
       },
       colors: {
         border: "hsl(var(--border))",

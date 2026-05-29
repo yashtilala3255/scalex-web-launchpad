@@ -57,14 +57,14 @@ const DesignSimulator = () => {
   const [stage, setStage] = useState<"wireframe" | "styled">("styled");
 
   return (
-    <div className="w-full relative rounded-2xl border border-border/40 bg-card overflow-hidden glow-sm">
+    <div className="w-full relative rounded-xl border border-border bg-card overflow-hidden">
       {/* Design Header */}
-      <div className="px-4 py-3 bg-secondary/40 border-b border-border/40 flex justify-between items-center text-xs">
+      <div className="px-4 py-3 bg-secondary/40 border-b border-border flex justify-between items-center text-xs">
         <div className="flex items-center gap-2">
           <Palette className="w-4 h-4 text-primary" />
           <span className="font-bold text-foreground">Figma Canvas</span>
         </div>
-        <div className="flex items-center gap-1 bg-background/50 border border-border/30 rounded-md p-0.5">
+        <div className="flex items-center gap-1 bg-background/50 border border-border rounded-md p-0.5">
           <button
             onClick={() => setStage("wireframe")}
             className={`px-2.5 py-0.5 rounded text-[9px] uppercase font-bold transition-all ${stage === "wireframe" ? "bg-primary text-white" : "text-muted-foreground"}`}
@@ -91,23 +91,23 @@ const DesignSimulator = () => {
           <span>Yash (Designer)</span>
         </div>
 
-        <div className="w-full max-w-sm relative z-10 border border-border/40 bg-card rounded-2xl overflow-hidden p-6 shadow-md">
+        <div className="w-full max-w-sm relative z-10 border border-border bg-card rounded-2xl overflow-hidden p-6 shadow-md">
           <AnimatePresence mode="wait">
             {stage === "wireframe" ? (
               <motion.div key="wire" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-4">
                 {/* Wireframe Mode */}
                 <div className="w-12 h-12 bg-secondary/80 border-2 border-dashed border-muted rounded-xl flex items-center justify-center text-muted-foreground text-xs font-bold font-mono">IMG</div>
-                <div className="h-6 bg-secondary/80 border border-border/30 rounded w-3/4" />
+                <div className="h-6 bg-secondary/80 border border-border rounded w-3/4" />
                 <div className="space-y-2">
-                  <div className="h-3 bg-secondary/80 border border-border/30 rounded" />
-                  <div className="h-3 bg-secondary/80 border border-border/30 rounded w-5/6" />
+                  <div className="h-3 bg-secondary/80 border border-border rounded" />
+                  <div className="h-3 bg-secondary/80 border border-border rounded w-5/6" />
                 </div>
                 <div className="h-10 bg-secondary/80 border-2 border-dashed border-muted rounded-xl" />
               </motion.div>
             ) : (
               <motion.div key="style" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-4">
                 {/* Styled Mode */}
-                <div className="relative rounded-xl overflow-hidden border border-border/40 shadow-md">
+                <div className="relative rounded-xl overflow-hidden border border-border shadow-sm">
                    <img src={uiuxMockup} alt="UI/UX Design Mockup" loading="lazy" decoding="async" width={300} height={128} className="w-full h-32 object-cover" />
                 </div>
                 <h5 className="text-xl font-heading font-extrabold text-foreground leading-tight">Interactive User Interfaces</h5>
@@ -139,6 +139,7 @@ const UiUxDesign = () => {
       <SEO
         title="UI/UX Design Company | ScaleXWeb Ahmedabad"
         description="Premium Figma UI/UX design services. We craft structured design systems, user wireframes, interactive prototypes, and high-fidelity product layouts."
+        keywords="Figma UI UX designers, premium interface design, wireframing prototyping, website user experience audit, custom brand styling, design systems builder"
         path="/services/ui-ux-design"
         jsonLd={[
           {
@@ -177,7 +178,7 @@ const UiUxDesign = () => {
       {/* ── 1. Hero ─────────────────────────────────────── */}
       <section className="relative pt-28 pb-20 md:pt-36 md:pb-28 overflow-hidden">
         {/* Background styling - specific to UI/UX */}
-        <div className="absolute inset-0 bg-slate-950" />
+        <div className="absolute inset-0 bg-background" />
         <div className="absolute inset-0 bg-radial-gradient from-primary/10 via-transparent to-transparent opacity-60" />
         <div className="absolute inset-0 dot-grid opacity-30" />
         <div className="orb w-[550px] h-[550px] bg-primary/10 -bottom-40 right-20 animate-pulse-glow" style={{ animationDelay: "2s" }} />
@@ -193,8 +194,9 @@ const UiUxDesign = () => {
                 <span className="text-foreground/80 font-medium">UI/UX Design</span>
               </nav>
               <div className="pill-badge mb-6"><Palette className="w-3.5 h-3.5" />Figma Interface Design</div>
-              <h1 className="text-4xl sm:text-5xl md:text-6xl font-heading font-extrabold text-foreground leading-[0.95] mb-6">
-                Human-Centered.<br />Visual <span className="gradient-text">Masterpieces.</span>
+              <h1 className="text-4xl sm:text-5xl md:text-6xl tracking-tight leading-[1.1] mb-6">
+                <span className="font-heading font-extrabold text-foreground block">Human-Centered.</span>
+                <span className="font-serif italic font-normal text-primary block mt-2 ml-4 sm:ml-8">Visual Masterpieces.</span>
               </h1>
               <p className="text-lg text-muted-foreground mb-8 max-w-lg leading-relaxed">
                 We craft clean design systems, mockups, and prototypes in Figma that optimize user conversion rates and align with your brand's style preferences.
@@ -207,9 +209,9 @@ const UiUxDesign = () => {
               </div>
             </motion.div>
 
-            {/* Right Canvas simulator */}
-            <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.15 }}>
-              <DesignSimulator />
+            {/* Right: Mockup Image */}
+            <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.15 }} className="w-full flex justify-center">
+              <img src={uiuxMockup} alt="UI/UX Design Mockup" className="w-full max-w-[500px] h-auto object-contain rounded-xl border border-border bg-card shadow-sm" />
             </motion.div>
           </div>
         </div>
@@ -220,8 +222,9 @@ const UiUxDesign = () => {
         <div className="container-tight">
           <motion.div {...fadeUp} className="text-center mb-14">
             <p className="text-xs font-semibold text-primary uppercase tracking-[0.2em] mb-3">Our Core Assets</p>
-            <h2 className="text-3xl md:text-5xl font-heading font-bold text-foreground mb-5">
-              UI/UX Design <span className="gradient-text">Services</span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-5">
+              <span className="font-heading font-extrabold text-foreground block">UI/UX Design</span>
+              <span className="font-serif italic font-normal text-primary block mt-2 ml-4 sm:ml-8">Services.</span>
             </h2>
           </motion.div>
 
@@ -229,10 +232,10 @@ const UiUxDesign = () => {
             {designFeatures.map((feat, i) => {
               const Icon = feat.icon;
               return (
-                <motion.div key={feat.title} {...stagger(i)} className="gradient-border bg-card rounded-2xl p-7 flex flex-col justify-between hover:glow-sm transition-all duration-500">
+                <motion.div key={feat.title} {...stagger(i)} className="border border-border bg-card rounded-xl p-7 flex flex-col justify-between hover:border-primary/30 transition-all duration-300 group">
                   <div>
-                    <div className="w-10 h-10 gradient-primary rounded-lg flex items-center justify-center mb-5 shadow-sm">
-                      <Icon className="w-5 h-5 text-white" />
+                    <div className="w-10 h-10 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-5 group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                      <Icon className="w-5 h-5" />
                     </div>
                     <h3 className="font-heading font-bold text-base text-foreground mb-2.5">{feat.title}</h3>
                     <p className="text-xs text-muted-foreground leading-relaxed">{feat.desc}</p>
@@ -249,14 +252,15 @@ const UiUxDesign = () => {
         <div className="container-tight">
           <motion.div {...fadeUp} className="text-center mb-14">
             <p className="text-xs font-semibold text-primary uppercase tracking-[0.2em] mb-3">UX Strategy</p>
-            <h2 className="text-3xl md:text-5xl font-heading font-bold text-foreground mb-5">
-              Our User Experience <span className="gradient-text">Workflow</span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-5">
+              <span className="font-heading font-extrabold text-foreground block">Our User Experience</span>
+              <span className="font-serif italic font-normal text-primary block mt-2 ml-4 sm:ml-8">Workflow.</span>
             </h2>
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {designSteps.map((st, i) => (
-              <motion.div key={st.title} {...stagger(i)} className="gradient-border bg-card rounded-2xl p-6 relative">
+              <motion.div key={st.title} {...stagger(i)} className="border border-border bg-card rounded-xl p-6 relative">
                 <span className="absolute top-4 right-4 text-[10px] font-bold text-primary/50">STAGE 0{i + 1}</span>
                 <h3 className="font-heading font-semibold text-sm text-foreground mb-2 mt-4">{st.title}</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed">{st.desc}</p>
@@ -273,8 +277,9 @@ const UiUxDesign = () => {
           <div className="grid lg:grid-cols-2 gap-16 items-start">
             <motion.div {...fadeUp}>
               <div className="pill-badge mb-6"><Award className="w-3.5 h-3.5" />Figma Accredited</div>
-              <h2 className="text-3xl md:text-5xl font-heading font-bold text-foreground mb-6 leading-tight">
-                Design Your Brand's <span className="gradient-text">Digital Presence</span>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-6">
+                <span className="font-heading font-extrabold text-foreground block">Design Your Brand's</span>
+                <span className="font-serif italic font-normal text-primary block mt-2 ml-4 sm:ml-8">Digital Presence.</span>
               </h2>
               <p className="text-muted-foreground leading-relaxed mb-8">
                 Connect with our design lead. We will review branding assets, target user profiles, visual goals, and wireframe timelines.
@@ -290,7 +295,7 @@ const UiUxDesign = () => {
             </motion.div>
 
             <motion.div {...fadeUp} transition={{ delay: 0.15 }}>
-              <div className="gradient-border bg-card rounded-3xl p-8 md:p-10 glow-sm">
+              <div className="border border-border bg-card rounded-xl p-8 md:p-10">
                 <h3 className="text-xl font-heading font-bold text-foreground mb-2">Request Design Estimate</h3>
                 <p className="text-xs text-muted-foreground mb-6">Describe user personas, visual directions, or custom features.</p>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" id="uiux-contact-form">
@@ -330,14 +335,15 @@ const UiUxDesign = () => {
       <section className="section-padding bg-secondary/10">
         <div className="container-tight max-w-3xl mx-auto">
           <motion.div {...fadeUp} className="text-center mb-12">
-            <h2 className="text-2xl md:text-4xl font-heading font-bold text-foreground mb-4">
-              UI/UX Design <span className="gradient-text">FAQs</span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-4">
+              <span className="font-heading font-extrabold text-foreground block">UI/UX Design</span>
+              <span className="font-serif italic font-normal text-primary block mt-2 ml-4 sm:ml-8">FAQs.</span>
             </h2>
           </motion.div>
 
           <div className="space-y-3">
             {faqs.map((f, i) => (
-              <details key={i} className="gradient-border bg-card rounded-xl overflow-hidden group">
+              <details key={i} className="border border-border bg-card rounded-xl overflow-hidden group">
                 <summary className="px-6 py-4 font-semibold text-sm text-foreground/90 flex items-center justify-between cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden">
                   <span>{f.q}</span>
                   <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform duration-300 group-open:rotate-180" />

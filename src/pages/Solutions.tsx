@@ -40,6 +40,7 @@ export default function Solutions() {
       <SEO
         title="Solutions | ScaleXWeb — Smart Solutions for Modern Businesses"
         description="From outdated websites to complex SaaS platforms, ScaleXWeb solves your business challenges with the right technology. Explore our solution categories and real-world impact."
+        keywords="business process automation, custom ERP systems, custom web portals, corporate digital transformation, clinical healthcare portals, enterprise business solutions"
         path="/solutions"
         jsonLd={{
           "@context": "https://schema.org",
@@ -75,8 +76,9 @@ export default function Solutions() {
         <div className="container-tight relative z-10">
           <motion.div {...fadeUp} className="text-center mb-14">
             <span className="pill-badge mb-4 inline-block">Problem → Solution</span>
-            <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground">
-              Business Challenges <span className="gradient-text">We Solve</span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-4">
+              <span className="font-heading font-extrabold text-foreground block">Business Challenges</span>
+              <span className="font-serif italic font-normal text-primary block mt-2 md:translate-x-8">We Solve.</span>
             </h2>
             <p className="mt-4 text-muted-foreground max-w-2xl mx-auto text-base">
               Select a common business hurdle below to see how our engineering team delivers structural solutions.
@@ -89,7 +91,7 @@ export default function Solutions() {
               {(challenges || []).map((item, i) => (
                 <div
                   key={i}
-                  className={`gradient-border rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 ${openIndex === i ? "bg-card/80 border-primary/40 shadow-sm" : "bg-card/40 hover:bg-card/65 border-border/40"}`}
+                  className={`border rounded-xl overflow-hidden cursor-pointer transition-all duration-300 ${openIndex === i ? "border-primary bg-card/80 shadow-sm" : "border-border bg-card/40 hover:bg-card/60"}`}
                   onClick={() => toggleIndex(i)}
                 >
                   <div className="p-5 flex items-center justify-between gap-4">
@@ -124,8 +126,8 @@ export default function Solutions() {
 
             {/* Right Summary Graphic Visual */}
             <div className="lg:col-span-2">
-              <div className="gradient-border bg-card rounded-2xl p-6 md:p-8 relative overflow-hidden flex flex-col justify-between min-h-[360px] glow-sm">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-primary/10 rounded-full blur-2xl" />
+              <div className="border border-border bg-card rounded-xl p-6 md:p-8 relative overflow-hidden flex flex-col justify-between min-h-[360px]">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-2xl" />
                 <div className="relative z-10 space-y-6">
                   <div className="flex items-center gap-2">
                     <Zap className="w-4 h-4 text-primary" />
@@ -168,8 +170,9 @@ export default function Solutions() {
         <div className="container-tight">
           <motion.div {...fadeUp} className="text-center mb-14">
             <span className="pill-badge mb-4 inline-block">What We Offer</span>
-            <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground">
-              Our <span className="gradient-text">Solution Categories</span>
+            <h2 className="text-4xl md:text-5xl tracking-tight mt-3">
+              <span className="font-heading font-extrabold text-foreground block">Our Strategic</span>
+              <span className="font-serif italic font-normal text-primary block mt-2 md:translate-x-8">Solution Categories.</span>
             </h2>
           </motion.div>
 
@@ -180,10 +183,10 @@ export default function Solutions() {
                 <motion.div
                   key={i}
                   {...stagger(i)}
-                  className="gradient-border rounded-2xl p-6 bg-card group hover:glow-sm transition-all duration-500"
+                  className="border border-border rounded-xl p-6 bg-card group hover:border-primary/30 transition-all duration-300"
                 >
-                  <div className="w-12 h-12 gradient-primary rounded-xl flex items-center justify-center mb-4 group-hover:glow-sm transition-all">
-                    <Icon className="w-6 h-6 text-white" />
+                  <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                    <Icon className="w-6 h-6" />
                   </div>
                   <h3 className="font-heading font-bold text-lg text-foreground mb-2">
                     {cat.name}
@@ -197,7 +200,7 @@ export default function Solutions() {
           </div>
 
           <motion.div {...fadeUp} className="text-center mt-12">
-            <Button variant="glow" asChild>
+            <Button variant="default" asChild>
               <Link to="/services/website-development">
                 Explore All Services <ArrowRight className="ml-2 w-4 h-4" />
               </Link>
@@ -207,7 +210,7 @@ export default function Solutions() {
       </section>
 
       {/* ── 3. Case Studies ────────────────────────────── */}
-      <section className="section-padding bg-slate-950 relative overflow-hidden">
+      <section className="section-padding bg-secondary/30 relative overflow-hidden">
         {/* Decorative orbs */}
         <div className="orb w-96 h-96 bg-primary/10 -top-32 -left-32 absolute" />
         <div className="orb w-72 h-72 bg-accent/10 -bottom-20 -right-20 absolute" />
@@ -215,8 +218,9 @@ export default function Solutions() {
         <div className="container-tight relative z-10">
           <motion.div {...fadeUp} className="text-center mb-14">
             <span className="pill-badge mb-4 inline-block">Case Studies</span>
-            <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground">
-              Real-World <span className="gradient-text">Impact</span>
+            <h2 className="text-4xl md:text-5xl tracking-tight mt-3">
+              <span className="font-heading font-extrabold text-foreground block">Real-World</span>
+              <span className="font-serif italic font-normal text-primary block mt-2 md:translate-x-8">Impact &amp; Results.</span>
             </h2>
             <p className="mt-4 text-muted-foreground max-w-2xl mx-auto text-base">
               We measure success by the outcomes we help clients achieve — not just the code we ship.
@@ -228,7 +232,7 @@ export default function Solutions() {
               <motion.div
                 key={i}
                 {...stagger(i)}
-                className="glass rounded-2xl p-7 border border-white/10 flex flex-col gap-5 group hover:border-primary/30 transition-all duration-500"
+                className="border border-border bg-card rounded-xl p-7 flex flex-col gap-5 group hover:border-primary/30 transition-all duration-300 shadow-sm"
               >
                 {/* Industry badge */}
                 <div className="flex items-center justify-between flex-wrap gap-2">
@@ -259,7 +263,7 @@ export default function Solutions() {
                 </div>
 
                 {/* Result */}
-                <div className="mt-auto pt-4 border-t border-white/10">
+                <div className="mt-auto pt-4 border-t border-border/50">
                   <p className="text-[10px] font-bold uppercase tracking-widest text-primary mb-1">
                     Result
                   </p>

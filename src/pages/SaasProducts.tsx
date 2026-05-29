@@ -27,7 +27,7 @@ const stagger = (i: number) => ({
 /* ─── Custom Interactive SaaS Architecture Blueprint ─ */
 const ArchitectureBlueprint = () => {
   return (
-    <div className="w-full relative rounded-3xl border border-border/40 bg-card/60 p-6 md:p-8 overflow-hidden glow-sm flex items-center justify-center min-h-[340px]">
+    <div className="w-full relative rounded-3xl border border-border/40 bg-card/60 p-6 md:p-8 overflow-hidden flex items-center justify-center min-h-[340px]">
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808005_1px,transparent_1px),linear-gradient(to_bottom,#80808005_1px,transparent_1px)] bg-[size:32px_32px]" />
       <div className="absolute top-1/4 left-1/3 w-36 h-36 bg-primary/10 rounded-full blur-3xl" />
       
@@ -68,33 +68,33 @@ const ArchitectureBlueprint = () => {
 
         {/* Nodes */}
         {/* Node: Users */}
-        <rect x="10" y="145" width="50" height="60" rx="8" fill="#1e1b4b" stroke="#312e81" strokeWidth="2" />
-        <text x="35" y="170" fill="#f8fafc" fontSize="9" fontWeight="bold" textAnchor="middle">Global</text>
-        <text x="35" y="185" fill="#818cf8" fontSize="8" fontWeight="bold" textAnchor="middle">Users</text>
+        <rect x="10" y="145" width="50" height="60" rx="8" fill="hsl(var(--card))" stroke="#6366f1" strokeWidth="2" />
+        <text x="35" y="170" fill="hsl(var(--foreground))" fontSize="9" fontWeight="bold" textAnchor="middle">Global</text>
+        <text x="35" y="185" fill="#6366f1" fontSize="8" fontWeight="bold" textAnchor="middle">Users</text>
 
         {/* Node: Load Balancer */}
-        <rect x="140" y="145" width="70" height="60" rx="8" fill="#0f172a" stroke="#4f46e5" strokeWidth="2" />
-        <text x="175" y="170" fill="#f8fafc" fontSize="8" fontWeight="bold" textAnchor="middle">Nginx</text>
-        <text x="175" y="185" fill="#818cf8" fontSize="7" fontWeight="semibold" textAnchor="middle">Load Balancer</text>
+        <rect x="140" y="145" width="70" height="60" rx="8" fill="hsl(var(--card))" stroke="#4f46e5" strokeWidth="2" />
+        <text x="175" y="170" fill="hsl(var(--foreground))" fontSize="8" fontWeight="bold" textAnchor="middle">Nginx</text>
+        <text x="175" y="185" fill="#4f46e5" fontSize="7" fontWeight="semibold" textAnchor="middle">Load Balancer</text>
 
         {/* Node: API Gateway */}
-        <rect x="250" y="145" width="70" height="60" rx="8" fill="#1e293b" stroke="#818cf8" strokeWidth="2" />
-        <text x="285" y="170" fill="#f8fafc" fontSize="8" fontWeight="bold" textAnchor="middle">FastAPI</text>
-        <text x="285" y="185" fill="#a78bfa" fontSize="7" fontWeight="semibold" textAnchor="middle">API Gateway</text>
+        <rect x="250" y="145" width="70" height="60" rx="8" fill="hsl(var(--card))" stroke="#818cf8" strokeWidth="2" />
+        <text x="285" y="170" fill="hsl(var(--foreground))" fontSize="8" fontWeight="bold" textAnchor="middle">FastAPI</text>
+        <text x="285" y="185" fill="#818cf8" fontSize="7" fontWeight="semibold" textAnchor="middle">API Gateway</text>
 
         {/* Microservice Node 1 */}
-        <rect x="380" y="85" width="90" height="50" rx="6" fill="#020617" stroke="#a78bfa" strokeWidth="1.5" />
-        <text x="425" y="110" fill="#f1f5f9" fontSize="8" fontWeight="bold" textAnchor="middle">Auth &amp; Users</text>
+        <rect x="380" y="85" width="90" height="50" rx="6" fill="hsl(var(--card))" stroke="#a78bfa" strokeWidth="1.5" />
+        <text x="425" y="110" fill="hsl(var(--foreground))" fontSize="8" fontWeight="bold" textAnchor="middle">Auth &amp; Users</text>
         <text x="425" y="122" fill="#a78bfa" fontSize="6.5" fontStyle="italic" textAnchor="middle">clerk.js service</text>
 
         {/* Microservice Node 2 */}
-        <rect x="380" y="150" width="90" height="50" rx="6" fill="#020617" stroke="#f472b6" strokeWidth="1.5" />
-        <text x="425" y="175" fill="#f1f5f9" fontSize="8" fontWeight="bold" textAnchor="middle">Billing API</text>
+        <rect x="380" y="150" width="90" height="50" rx="6" fill="hsl(var(--card))" stroke="#f472b6" strokeWidth="1.5" />
+        <text x="425" y="175" fill="hsl(var(--foreground))" fontSize="8" fontWeight="bold" textAnchor="middle">Billing API</text>
         <text x="425" y="187" fill="#f472b6" fontSize="6.5" fontStyle="italic" textAnchor="middle">stripe webhooks</text>
 
         {/* Microservice Node 3 */}
-        <rect x="380" y="215" width="90" height="50" rx="6" fill="#020617" stroke="#38bdf8" strokeWidth="1.5" />
-        <text x="425" y="240" fill="#f1f5f9" fontSize="8" fontWeight="bold" textAnchor="middle">Analytics DB</text>
+        <rect x="380" y="215" width="90" height="50" rx="6" fill="hsl(var(--card))" stroke="#38bdf8" strokeWidth="1.5" />
+        <text x="425" y="240" fill="hsl(var(--foreground))" fontSize="8" fontWeight="bold" textAnchor="middle">Analytics DB</text>
         <text x="425" y="252" fill="#38bdf8" fontSize="6.5" fontStyle="italic" textAnchor="middle">isolated DB schemas</text>
       </svg>
     </div>
@@ -108,6 +108,7 @@ export default function SaasProducts() {
       <SEO
         title="SaaS Products & Custom SaaS Development | ScaleXWeb"
         description="Proprietary SaaS offerings and custom platform development from MVP to enterprise. Multi-tenancy, microservices, billing, auth, and more — built by ScaleXWeb."
+        keywords="custom SaaS development, multi tenant platform architecture, microservices SaaS build, SaaS MVP developers, subscription billing integrations, SaaS features"
         path="/saas-products"
         jsonLd={{
           "@context": "https://schema.org",
@@ -142,8 +143,9 @@ export default function SaasProducts() {
         <div className="container-tight relative z-10">
           <motion.div {...fadeUp} className="text-center mb-14">
             <span className="pill-badge mb-4 inline-block">Under the Hood</span>
-            <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground">
-              Modern SaaS <span className="gradient-text">Architecture</span>
+            <h2 className="text-4xl md:text-5xl tracking-tight mt-3">
+              <span className="font-heading font-extrabold text-foreground block">Modern SaaS</span>
+              <span className="font-serif italic font-normal text-primary block mt-2 md:translate-x-8">Architecture &amp; Stacks.</span>
             </h2>
           </motion.div>
 
@@ -161,10 +163,10 @@ export default function SaasProducts() {
                   <motion.div
                     key={i}
                     {...stagger(i)}
-                    className="gradient-border rounded-xl p-5 bg-card/60 group hover:glow-sm transition-all duration-500"
+                    className="border border-border rounded-xl p-5 bg-card/60 group hover:border-primary/30 transition-all duration-300"
                   >
-                    <div className="w-10 h-10 gradient-primary rounded-lg flex items-center justify-center mb-3.5 group-hover:glow-sm transition-all">
-                      <Icon className="w-5 h-5 text-white" />
+                    <div className="w-10 h-10 bg-primary/10 text-primary rounded-lg flex items-center justify-center mb-3.5 group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                      <Icon className="w-5 h-5" />
                     </div>
                     <h3 className="font-heading font-bold text-sm text-foreground mb-1.5">
                       {item.name}
@@ -185,8 +187,9 @@ export default function SaasProducts() {
         <div className="container-tight">
           <motion.div {...fadeUp} className="text-center mb-14">
             <span className="pill-badge mb-4 inline-block">Full Feature Set</span>
-            <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground">
-              SaaS Features <span className="gradient-text">We Build</span>
+            <h2 className="text-4xl md:text-5xl tracking-tight mt-3">
+              <span className="font-heading font-extrabold text-foreground block">SaaS Features</span>
+              <span className="font-serif italic font-normal text-primary block mt-2 md:translate-x-8">We Engineer &amp; Build.</span>
             </h2>
             <p className="mt-4 text-muted-foreground max-w-2xl mx-auto text-base">
               Every building block your SaaS needs to go from concept to a product customers love — and pay for.
@@ -200,10 +203,10 @@ export default function SaasProducts() {
                 <motion.div
                   key={i}
                   {...stagger(i)}
-                  className="gradient-border bg-card rounded-2xl p-5 flex items-center gap-3 hover:glow-sm transition-all duration-500 group"
+                  className="border border-border bg-card rounded-xl p-5 flex items-center gap-3 hover:border-primary/30 transition-all duration-300 group"
                 >
-                  <div className="w-9 h-9 gradient-primary rounded-lg flex items-center justify-center flex-shrink-0 group-hover:glow-sm transition-all">
-                    <Icon className="w-4 h-4 text-white" />
+                  <div className="w-9 h-9 bg-primary/10 text-primary rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                    <Icon className="w-4 h-4" />
                   </div>
                   <span className="text-xs font-semibold text-foreground leading-tight">
                     {feat.name}
@@ -216,15 +219,16 @@ export default function SaasProducts() {
       </section>
 
       {/* ── 3. Why Build SaaS with Us ────────────────────── */}
-      <section className="section-padding bg-slate-950 relative overflow-hidden">
+      <section className="section-padding bg-secondary/30 relative overflow-hidden">
         <div className="orb w-96 h-96 bg-accent/8 -bottom-32 -left-32 absolute" />
         <div className="orb w-64 h-64 bg-primary/10 top-10 right-10 absolute" />
 
         <div className="container-tight relative z-10">
           <motion.div {...fadeUp} className="text-center mb-16">
             <span className="pill-badge mb-4 inline-block">Why ScaleXWeb</span>
-            <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground">
-              Why Build Your SaaS <span className="gradient-text">with Us?</span>
+            <h2 className="text-4xl md:text-5xl tracking-tight mt-3">
+              <span className="font-heading font-extrabold text-foreground block">Why Build Your SaaS</span>
+              <span className="font-serif italic font-normal text-primary block mt-2 md:translate-x-8">With Our Engineers?</span>
             </h2>
           </motion.div>
 
@@ -256,11 +260,11 @@ export default function SaasProducts() {
           {/* Highlight strip */}
           <motion.div
             {...fadeUp}
-            className="mt-16 glass rounded-2xl p-8 border border-white/10 flex flex-col md:flex-row items-center justify-between gap-6"
+            className="mt-16 border border-border bg-card rounded-xl p-8 flex flex-col md:flex-row items-center justify-between gap-6"
           >
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 gradient-primary rounded-xl flex items-center justify-center glow-primary flex-shrink-0">
-                <Zap className="w-6 h-6 text-white" />
+              <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center flex-shrink-0">
+                <Zap className="w-6 h-6 text-primary" />
               </div>
               <div>
                 <p className="font-heading font-bold text-foreground text-sm">
@@ -271,7 +275,7 @@ export default function SaasProducts() {
                 </p>
               </div>
             </div>
-            <Button variant="glow" asChild className="flex-shrink-0">
+            <Button variant="default" asChild className="flex-shrink-0">
               <Link to="/contact">
                 Start Your SaaS <ArrowRight className="ml-2 w-4 h-4" />
               </Link>

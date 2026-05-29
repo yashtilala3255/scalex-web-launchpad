@@ -193,6 +193,7 @@ const SaasDevelopment = () => {
       <SEO
         title="SaaS Platform Development Company | ScaleXWeb"
         description="Launch your multi-tenant SaaS application with ScaleXWeb. We design subscription architectures, custom subdomains, Stripe billing integration, and secure backends."
+        keywords="SaaS software company, SaaS platform builder, multi tenant SaaS developers, build a SaaS startup MVP, Stripe billing integration"
         path="/services/saas-development"
         jsonLd={[
           {
@@ -231,7 +232,7 @@ const SaasDevelopment = () => {
       {/* ── 1. Hero ─────────────────────────────────────── */}
       <section className="relative pt-28 pb-20 md:pt-36 md:pb-28 overflow-hidden">
         {/* Background styling - specific to SaaS */}
-        <div className="absolute inset-0 bg-slate-950" />
+        <div className="absolute inset-0 bg-background" />
         <div className="absolute inset-0 bg-radial-gradient from-violet-500/10 via-transparent to-transparent opacity-60" />
         <div className="absolute inset-0 dot-grid opacity-30" />
         <div className="orb w-[550px] h-[550px] bg-primary/12 -top-40 -left-20 animate-pulse-glow" />
@@ -247,8 +248,9 @@ const SaasDevelopment = () => {
                 <span className="text-foreground/80 font-medium">SaaS Development</span>
               </nav>
               <div className="pill-badge mb-6"><Cloud className="w-3.5 h-3.5" />Multi-Tenant Products</div>
-              <h1 className="text-4xl sm:text-5xl md:text-6xl font-heading font-extrabold text-foreground leading-[0.95] mb-6">
-                SaaS Platforms Built For <span className="gradient-text">Scale.</span>
+              <h1 className="text-4xl sm:text-5xl md:text-6xl tracking-tight leading-[1.1] mb-6">
+                <span className="font-heading font-extrabold text-foreground block">SaaS Platforms Built</span>
+                <span className="font-serif italic font-normal text-primary block mt-2 ml-4 sm:ml-8">For Worldwide Scale.</span>
               </h1>
               <p className="text-lg text-muted-foreground mb-8 max-w-lg leading-relaxed">
                 We design and engineer secure, multi-tenant digital platforms from the ground up, incorporating automated billing, data isolation, and user controls.
@@ -261,9 +263,9 @@ const SaasDevelopment = () => {
               </div>
             </motion.div>
 
-            {/* Right: SaaS Simulator */}
-            <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.15 }}>
-              <SaasPreview />
+            {/* Right: Mockup Image */}
+            <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.15 }} className="w-full flex justify-center">
+              <img src={saasMockup} alt="SaaS Development Mockup" className="w-full max-w-[500px] h-auto object-contain rounded-xl border border-border bg-card shadow-sm" />
             </motion.div>
           </div>
         </div>
@@ -274,14 +276,15 @@ const SaasDevelopment = () => {
         <div className="container-tight">
           <motion.div {...fadeUp} className="text-center mb-14">
             <p className="text-xs font-semibold text-primary uppercase tracking-[0.2em] mb-3">Our Workscope</p>
-            <h2 className="text-3xl md:text-5xl font-heading font-bold text-foreground mb-5">
-              SaaS Development Solutions
+            <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-5">
+              <span className="font-heading font-extrabold text-foreground block">SaaS Development</span>
+              <span className="font-serif italic font-normal text-primary block mt-2 ml-4 sm:ml-8">Solutions.</span>
             </h2>
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
             {capabilities.map((cap, i) => (
-              <motion.div key={cap.title} {...stagger(i)} className="gradient-border bg-card rounded-2xl p-7 flex flex-col justify-between hover:glow-sm transition-all duration-500">
+              <motion.div key={cap.title} {...stagger(i)} className="border border-border bg-card rounded-xl p-7 flex flex-col justify-between hover:border-primary/30 transition-all duration-300">
                 <div>
                   <h3 className="font-heading font-bold text-base text-foreground mb-3">{cap.title}</h3>
                   <p className="text-xs text-muted-foreground leading-relaxed">{cap.desc}</p>
@@ -297,8 +300,9 @@ const SaasDevelopment = () => {
         <div className="container-tight">
           <motion.div {...fadeUp} className="text-center mb-14">
             <p className="text-xs font-semibold text-accent uppercase tracking-[0.2em] mb-3">Infrastructure</p>
-            <h2 className="text-3xl md:text-5xl font-heading font-bold text-foreground mb-5">
-              Enterprise Features <span className="gradient-text">Ready to Launch</span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-5">
+              <span className="font-heading font-extrabold text-foreground block">Enterprise Features</span>
+              <span className="font-serif italic font-normal text-primary block mt-2 ml-4 sm:ml-8">Ready to Launch.</span>
             </h2>
           </motion.div>
 
@@ -306,9 +310,9 @@ const SaasDevelopment = () => {
             {saasFeatures.map((feat, i) => {
               const Icon = feat.icon;
               return (
-                <motion.div key={feat.title} {...stagger(i)} className="gradient-border bg-card rounded-2xl p-6 flex gap-4">
-                  <div className="w-10 h-10 gradient-primary rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Icon className="w-5 h-5 text-white" />
+                <motion.div key={feat.title} {...stagger(i)} className="border border-border bg-card rounded-xl p-6 flex gap-4 hover:border-primary/20 transition-all duration-300 group">
+                  <div className="w-10 h-10 bg-primary/10 text-primary rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                    <Icon className="w-5 h-5" />
                   </div>
                   <div>
                     <h4 className="font-heading font-semibold text-foreground text-sm mb-1">{feat.title}</h4>
@@ -326,14 +330,15 @@ const SaasDevelopment = () => {
         <div className="container-tight">
           <motion.div {...fadeUp} className="text-center mb-14">
             <p className="text-xs font-semibold text-primary uppercase tracking-[0.2em] mb-3">Pricing Models</p>
-            <h2 className="text-3xl md:text-5xl font-heading font-bold text-foreground mb-5">
-              Flexible Development <span className="gradient-text">Frameworks</span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-5">
+              <span className="font-heading font-extrabold text-foreground block">Flexible Development</span>
+              <span className="font-serif italic font-normal text-primary block mt-2 ml-4 sm:ml-8">Frameworks.</span>
             </h2>
           </motion.div>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {pricingTiers.map((tier, i) => (
-              <motion.div key={tier.name} {...stagger(i)} className="gradient-border bg-card rounded-3xl p-8 relative flex flex-col justify-between hover:glow-sm transition-all duration-500">
+              <motion.div key={tier.name} {...stagger(i)} className="border border-border bg-card rounded-xl p-8 relative flex flex-col justify-between hover:border-primary/20 transition-all duration-300">
                 <div>
                   <span className="text-[10px] font-bold uppercase tracking-widest text-primary block mb-2">{tier.best}</span>
                   <h3 className="text-2xl font-heading font-bold text-foreground mb-3">{tier.name}</h3>
@@ -362,8 +367,9 @@ const SaasDevelopment = () => {
         <div className="container-tight relative z-10">
           <div className="grid lg:grid-cols-2 gap-16 items-start">
             <motion.div {...fadeUp}>
-              <h2 className="text-3xl md:text-5xl font-heading font-bold text-foreground mb-6 leading-tight">
-                Architect Your SaaS <span className="gradient-text">Product</span>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-6">
+                <span className="font-heading font-extrabold text-foreground block">Architect Your SaaS</span>
+                <span className="font-serif italic font-normal text-primary block mt-2 ml-4 sm:ml-8">Product.</span>
               </h2>
               <p className="text-muted-foreground leading-relaxed mb-8">
                 Send details about your SaaS concept. Our senior database engineers and system architects will prepare design briefs, structure blueprints, and pricing.
@@ -379,7 +385,7 @@ const SaasDevelopment = () => {
             </motion.div>
 
             <motion.div {...fadeUp} transition={{ delay: 0.15 }}>
-              <div className="gradient-border bg-card rounded-3xl p-8 md:p-10 glow-sm">
+              <div className="border border-border bg-card rounded-xl p-8 md:p-10">
                 <h3 className="text-xl font-heading font-bold text-foreground mb-2">Request SaaS Estimate</h3>
                 <p className="text-xs text-muted-foreground mb-6">Describe user flows, tiers, and technical details</p>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" id="saasdev-contact-form">
@@ -419,14 +425,15 @@ const SaasDevelopment = () => {
       <section className="section-padding bg-background">
         <div className="container-tight max-w-3xl mx-auto">
           <motion.div {...fadeUp} className="text-center mb-12">
-            <h2 className="text-2xl md:text-4xl font-heading font-bold text-foreground mb-4">
-              SaaS Development <span className="gradient-text">FAQs</span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-4">
+              <span className="font-heading font-extrabold text-foreground block">SaaS Development</span>
+              <span className="font-serif italic font-normal text-primary block mt-2 ml-4 sm:ml-8">FAQs.</span>
             </h2>
           </motion.div>
 
           <div className="space-y-3">
             {faqs.map((f, i) => (
-              <details key={i} className="gradient-border bg-card rounded-xl overflow-hidden group">
+              <details key={i} className="border border-border bg-card rounded-xl overflow-hidden group">
                 <summary className="px-6 py-4 font-semibold text-sm text-foreground/90 flex items-center justify-between cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden">
                   <span>{f.q}</span>
                   <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform duration-300 group-open:rotate-180" />

@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { SiteDataProvider, useSiteData } from "@/context/SiteDataContext";
 import { motion, AnimatePresence } from "framer-motion";
+import { ThemeProvider } from "next-themes";
 
 // Route-based code splitting for optimized loading
 const Index = lazy(() => import("./pages/Index"));
@@ -198,7 +199,7 @@ const PageLoader = ({ onComplete }: { onComplete?: () => void }) => {
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5, ease: "easeInOut" }}
-      className={`w-full flex flex-col items-center justify-center bg-[#03040b] text-white select-none overflow-hidden font-sans relative z-50 ${
+      className={`w-full flex flex-col items-center justify-center bg-background text-foreground select-none overflow-hidden font-sans relative z-50 ${
         isInitial ? "min-h-screen fixed inset-0" : "h-[70vh] rounded-2xl my-8"
       }`}
     >
@@ -256,7 +257,7 @@ const PageLoader = ({ onComplete }: { onComplete?: () => void }) => {
               cx="50"
               cy="50"
               r="44"
-              className="stroke-white/5"
+              className="stroke-foreground/5"
               strokeWidth="1.5"
               fill="transparent"
             />
@@ -369,7 +370,7 @@ const PageLoader = ({ onComplete }: { onComplete?: () => void }) => {
                 className={`text-2xl font-heading font-extrabold tracking-tight ${
                   char === "X"
                     ? "bg-gradient-to-tr from-[#304ce6] to-[#a72aff] bg-clip-text text-transparent"
-                    : "text-white"
+                    : "text-foreground"
                 }`}
                 initial={{ y: 32, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -397,7 +398,7 @@ const PageLoader = ({ onComplete }: { onComplete?: () => void }) => {
         {/* Console Logs Display */}
         {isInitial && (
           <motion.div 
-            className="w-full flex flex-col gap-1.5 h-[56px] justify-end overflow-hidden font-mono text-[9px] text-[#71717A] text-left px-2 select-none border-l border-white/5 py-1"
+            className="w-full flex flex-col gap-1.5 h-[56px] justify-end overflow-hidden font-mono text-[9px] text-[#71717A] text-left px-2 select-none border-l border-foreground/5 py-1"
             exit={{ opacity: 0, y: 15, transition: { duration: 0.25 } }}
           >
             <AnimatePresence mode="popLayout">
@@ -427,13 +428,13 @@ const PageLoader = ({ onComplete }: { onComplete?: () => void }) => {
             className="w-full space-y-3"
             exit={{ y: 20, opacity: 0, transition: { duration: 0.25 } }}
           >
-            <div className="w-full flex items-center justify-between text-[11px] font-mono text-[#71717A] px-1 border-t border-white/5 pt-3">
+            <div className="w-full flex items-center justify-between text-[11px] font-mono text-[#71717A] px-1 border-t border-foreground/5 pt-3">
               <span className="tracking-wider">SYSTEM LOADING</span>
               <span className="text-[#304ce6] font-bold tracking-widest">{String(progress).padStart(3, "0")}%</span>
             </div>
 
             {/* Mini progress line indicator */}
-            <div className="w-full h-[1.5px] bg-white/5 rounded-full overflow-hidden">
+            <div className="w-full h-[1.5px] bg-foreground/5 rounded-full overflow-hidden">
               <motion.div
                 className="h-full bg-gradient-to-r from-[#304ce6] to-[#a72aff]"
                 animate={{ width: `${progress}%` }}
@@ -475,50 +476,52 @@ const App = () => {
   const [initialLoading, setInitialLoading] = useState(true);
 
   return (
-    <SiteDataProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <AnimatePresence mode="wait">
-          {initialLoading ? (
-            <PageLoader key="loader" onComplete={() => setInitialLoading(false)} />
-          ) : (
-            <motion.div
-              key="content"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
-              className="bg-[#03040b] min-h-screen"
-            >
-              <BrowserRouter>
-                <MaintenanceGuard>
-                  <Suspense fallback={<PageLoader />}>
-                    <Routes>
-                      <Route path="/" element={<Index />} />
-                      <Route path="/about" element={<About />} />
-                      <Route path="/contact" element={<Contact />} />
-                      <Route path="/solutions" element={<Solutions />} />
-                      <Route path="/saas-products" element={<SaasProducts />} />
-                      <Route path="/services/website-development" element={<WebsiteDevelopment />} />
-                      <Route path="/services/app-development" element={<AppDevelopment />} />
-                      <Route path="/services/saas-development" element={<SaasDevelopment />} />
-                      <Route path="/services/ecommerce" element={<Ecommerce />} />
-                      <Route path="/services/ui-ux-design" element={<UiUxDesign />} />
-                      <Route path="/services/full-stack-development" element={<FullStackDevelopment />} />
-                      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                      <Route path="/terms-of-service" element={<TermsOfService />} />
-                      <Route path="/adminloginog" element={<AdminDashboard />} />
-                      <Route path="/adminloginfk" element={<AdminDashboard />} />
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
-                  </Suspense>
-                </MaintenanceGuard>
-              </BrowserRouter>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </TooltipProvider>
-    </SiteDataProvider>
+    <ThemeProvider attribute="class" defaultTheme="light">
+      <SiteDataProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <AnimatePresence mode="wait">
+            {initialLoading ? (
+              <PageLoader key="loader" onComplete={() => setInitialLoading(false)} />
+            ) : (
+              <motion.div
+                key="content"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                className="bg-background min-h-screen"
+              >
+                <BrowserRouter>
+                  <MaintenanceGuard>
+                    <Suspense fallback={<PageLoader />}>
+                      <Routes>
+                        <Route path="/" element={<Index />} />
+                        <Route path="/about" element={<About />} />
+                        <Route path="/contact" element={<Contact />} />
+                        <Route path="/solutions" element={<Solutions />} />
+                        <Route path="/saas-products" element={<SaasProducts />} />
+                        <Route path="/services/website-development" element={<WebsiteDevelopment />} />
+                        <Route path="/services/app-development" element={<AppDevelopment />} />
+                        <Route path="/services/saas-development" element={<SaasDevelopment />} />
+                        <Route path="/services/ecommerce" element={<Ecommerce />} />
+                        <Route path="/services/ui-ux-design" element={<UiUxDesign />} />
+                        <Route path="/services/full-stack-development" element={<FullStackDevelopment />} />
+                        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                        <Route path="/terms-of-service" element={<TermsOfService />} />
+                        <Route path="/adminloginog" element={<AdminDashboard />} />
+                        <Route path="/adminloginfk" element={<AdminDashboard />} />
+                        <Route path="*" element={<NotFound />} />
+                      </Routes>
+                    </Suspense>
+                  </MaintenanceGuard>
+                </BrowserRouter>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </TooltipProvider>
+      </SiteDataProvider>
+    </ThemeProvider>
   );
 };
 

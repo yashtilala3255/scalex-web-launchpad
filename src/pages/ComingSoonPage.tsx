@@ -20,7 +20,6 @@ const ComingSoonPage = () => {
   const socialLinks = [
     { icon: Linkedin, href: settings?.socialLinkedin || "https://www.linkedin.com/company/scale-x-web-solution", label: "LinkedIn" },
     { icon: Twitter, href: settings?.socialTwitter || "https://twitter.com/scalexweb", label: "Twitter" },
-    { icon: Github, href: settings?.socialGithub || "https://github.com/scalexweb", label: "GitHub" },
     { icon: Instagram, href: settings?.socialInstagram || "https://www.instagram.com/scalexwebsolution/", label: "Instagram" },
   ];
 
@@ -234,7 +233,7 @@ const ComingSoonPage = () => {
               <Mail className="w-4 h-4 text-primary" />
             </div>
             <div className="text-center md:text-left">
-              <p className="font-bold text-foreground mb-0.5">Email Support</p>
+              <p className="font-bold text-foresettings?.socialGithubground mb-0.5">Email Support</p>
               <a href={`mailto:${contactEmail}`} className="hover:text-primary transition-colors">{contactEmail}</a>
             </div>
           </div>

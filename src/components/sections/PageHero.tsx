@@ -69,17 +69,25 @@ const PageHero = ({ breadcrumbs, headline, subheadline, ctaText, ctaLink, badge 
         )}
 
         {/* Headline */}
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-heading font-extrabold text-foreground leading-tight mb-5 max-w-4xl">
-          {headline.split(" ").map((word, i, arr) =>
-            i >= arr.length - 2 ? (
-              <span key={i} className={i === arr.length - 2 ? " " : ""}>
-                {i === arr.length - 1 ? <span className="gradient-text">{word}</span> : word}{" "}
-              </span>
-            ) : (
-              <span key={i}>{word} </span>
-            )
-          )}
-        </h1>
+        {(() => {
+          const words = headline.split(" ");
+          if (words.length <= 1) {
+            return (
+              <h1 className="text-4xl sm:text-6xl md:text-7xl font-heading font-extrabold text-foreground leading-[1.1] mb-5 max-w-4xl">
+                {headline}
+              </h1>
+            );
+          }
+          const splitIndex = Math.ceil(words.length / 2);
+          const firstPart = words.slice(0, splitIndex).join(" ");
+          const secondPart = words.slice(splitIndex).join(" ");
+          return (
+            <h1 className="text-4xl sm:text-6xl md:text-7xl leading-[1.1] tracking-tight mb-5 max-w-4xl">
+              <span className="font-heading font-extrabold text-foreground block">{firstPart}</span>
+              <span className="font-serif italic font-normal text-primary block mt-2 ml-4 sm:ml-8">{secondPart}</span>
+            </h1>
+          );
+        })()}
 
         {/* Subheadline */}
         {subheadline && (
