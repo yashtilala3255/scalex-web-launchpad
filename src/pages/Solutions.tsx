@@ -50,13 +50,13 @@ export default function Solutions() {
               "@type": "ListItem",
               "position": 1,
               "name": "Home",
-              "item": "https://scalexweb.lovable.app"
+              "item": "https://scalexweb.tech"
             },
             {
               "@type": "ListItem",
               "position": 2,
               "name": "Solutions",
-              "item": "https://scalexweb.lovable.app/solutions"
+              "item": "https://scalexweb.tech/solutions"
             }
           ]
         }}

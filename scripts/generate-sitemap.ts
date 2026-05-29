@@ -1,7 +1,7 @@
 import { writeFileSync } from "fs";
 import { resolve } from "path";
 
-const BASE_URL = "https://scalexweb.lovable.app";
+const BASE_URL = "https://scalexweb.tech";
 
 interface SitemapEntry {
   path: string;

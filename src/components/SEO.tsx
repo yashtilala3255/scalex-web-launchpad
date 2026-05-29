@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet-async";
 
-const SITE = "https://scalexweb.lovable.app";
-const DEFAULT_IMAGE = "https://scalexweb.lovable.app/logo.png";
+const SITE = "https://scalexweb.tech";
+const DEFAULT_IMAGE = "https://scalexweb.tech/logo.png";
 const DEFAULT_KEYWORDS = "web development company, SaaS development company, mobile app development company, UI UX design agency, ecommerce development company, custom software development, full stack development services, digital agency Ahmedabad, ScaleXWeb Solutions";
 
 interface SEOProps {

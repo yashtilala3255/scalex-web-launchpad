@@ -218,7 +218,7 @@ const Ecommerce = () => {
             "provider": {
               "@type": "LocalBusiness",
               "name": "ScaleXWeb Solutions",
-              "url": "https://scalexweb.lovable.app"
+              "url": "https://scalexweb.tech"
             },
             "areaServed": "IN"
           },
@@ -230,13 +230,13 @@ const Ecommerce = () => {
                 "@type": "ListItem",
                 "position": 1,
                 "name": "Home",
-                "item": "https://scalexweb.lovable.app"
+                "item": "https://scalexweb.tech"
               },
               {
                 "@type": "ListItem",
                 "position": 2,
                 "name": "E-Commerce Solutions",
-                "item": "https://scalexweb.lovable.app/services/ecommerce"
+                "item": "https://scalexweb.tech/services/ecommerce"
               }
             ]
           }

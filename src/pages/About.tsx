@@ -134,13 +134,13 @@ const About = () => {
             "@type": "ListItem",
             "position": 1,
             "name": "Home",
-            "item": "https://scalexweb.lovable.app"
+            "item": "https://scalexweb.tech"
           },
           {
             "@type": "ListItem",
             "position": 2,
             "name": "About",
-            "item": "https://scalexweb.lovable.app/about"
+            "item": "https://scalexweb.tech/about"
           }
         ]
       }}

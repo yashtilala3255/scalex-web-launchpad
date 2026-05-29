@@ -79,7 +79,7 @@ const Contact = () => {
             "@context": "https://schema.org",
             "@type": "LocalBusiness",
             "name": settings?.siteName || "ScaleXWeb Solutions",
-            "url": "https://scalexweb.lovable.app/contact",
+            "url": "https://scalexweb.tech/contact",
             "email": settings?.contactEmail || "scalexwebsolution@gmail.com",
             "address": { "@type": "PostalAddress", "addressLocality": "Ahmedabad", "addressRegion": "Gujarat", "addressCountry": "IN" },
             "openingHoursSpecification": [{ "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"], "opens": "09:00", "closes": "18:00" }],
@@ -98,13 +98,13 @@ const Contact = () => {
                 "@type": "ListItem",
                 "position": 1,
                 "name": "Home",
-                "item": "https://scalexweb.lovable.app"
+                "item": "https://scalexweb.tech"
               },
               {
                 "@type": "ListItem",
                 "position": 2,
                 "name": "Contact",
-                "item": "https://scalexweb.lovable.app/contact"
+                "item": "https://scalexweb.tech/contact"
               }
             ]
           }

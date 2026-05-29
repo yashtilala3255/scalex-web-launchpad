@@ -431,8 +431,8 @@ const Index = () => {
           "@context": "https://schema.org",
           "@type": "Organization",
           "name": settings?.siteName || "ScaleXWeb Solutions",
-          "url": "https://scalexweb.lovable.app",
-          "logo": settings?.logoUrl || "https://scalexweb.lovable.app/logo.png",
+          "url": "https://scalexweb.tech",
+          "logo": settings?.logoUrl || "https://scalexweb.tech/logo.png",
           "email": settings?.contactEmail || "scalexwebsolution@gmail.com",
           "address": {
             "@type": "PostalAddress",
@@ -450,15 +450,15 @@ const Index = () => {
           "@context": "https://schema.org",
           "@type": "WebSite",
           "name": settings?.siteName || "ScaleXWeb Solutions",
-          "url": "https://scalexweb.lovable.app"
+          "url": "https://scalexweb.tech"
         },
         {
           "@context": "https://schema.org",
           "@type": "LocalBusiness",
           "name": settings?.siteName || "ScaleXWeb Solutions",
-          "image": settings?.logoUrl || "https://scalexweb.lovable.app/logo.png",
-          "@id": "https://scalexweb.lovable.app/#localbusiness",
-          "url": "https://scalexweb.lovable.app",
+          "image": settings?.logoUrl || "https://scalexweb.tech/logo.png",
+          "@id": "https://scalexweb.tech/#localbusiness",
+          "url": "https://scalexweb.tech",
           "telephone": settings?.contactPhone || "+919876543210",
           "address": {
             "@type": "PostalAddress",

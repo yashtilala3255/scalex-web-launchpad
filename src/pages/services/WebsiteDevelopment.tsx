@@ -250,7 +250,7 @@ const WebsiteDevelopment = () => {
             "provider": {
               "@type": "LocalBusiness",
               "name": "ScaleXWeb Solutions",
-              "url": "https://scalexweb.lovable.app"
+              "url": "https://scalexweb.tech"
             },
             "areaServed": "IN"
           },
@@ -262,13 +262,13 @@ const WebsiteDevelopment = () => {
                 "@type": "ListItem",
                 "position": 1,
                 "name": "Home",
-                "item": "https://scalexweb.lovable.app"
+                "item": "https://scalexweb.tech"
               },
               {
                 "@type": "ListItem",
                 "position": 2,
                 "name": "Website Development",
-                "item": "https://scalexweb.lovable.app/services/website-development"
+                "item": "https://scalexweb.tech/services/website-development"
               }
             ]
           }

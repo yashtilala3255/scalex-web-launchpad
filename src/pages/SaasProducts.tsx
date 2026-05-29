@@ -118,13 +118,13 @@ export default function SaasProducts() {
               "@type": "ListItem",
               "position": 1,
               "name": "Home",
-              "item": "https://scalexweb.lovable.app"
+              "item": "https://scalexweb.tech"
             },
             {
               "@type": "ListItem",
               "position": 2,
               "name": "SaaS Products",
-              "item": "https://scalexweb.lovable.app/saas-products"
+              "item": "https://scalexweb.tech/saas-products"
             }
           ]
         }}
