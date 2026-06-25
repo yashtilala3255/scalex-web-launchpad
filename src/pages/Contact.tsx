@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { MapPin, Mail, Clock, Linkedin, Twitter, Instagram, ChevronDown, Send, ArrowRight, CheckCircle } from "lucide-react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 const fadeUp = { initial: { opacity: 0, y: 30 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true }, transition: { duration: 0.55 } };
 
@@ -188,6 +189,7 @@ const Contact = () => {
                         <SelectItem value="saas">SaaS Development</SelectItem>
                         <SelectItem value="ecommerce">E-Commerce</SelectItem>
                         <SelectItem value="uiux">UI/UX Design</SelectItem>
+                        <SelectItem value="full-stack">Full Stack Development</SelectItem>
                         <SelectItem value="other">Other</SelectItem>
                       </SelectContent>
                     </Select>
@@ -261,17 +263,18 @@ const Contact = () => {
               {/* FAQ */}
               <div>
                 <h3 className="font-heading font-semibold text-foreground mb-4">Frequently Asked Questions</h3>
-                <div className="space-y-3">
+                <Accordion type="single" collapsible className="w-full space-y-3">
                   {faqs.map((faq, i) => (
-                    <details key={i} className="border border-border bg-card rounded-xl overflow-hidden group hover:border-primary/20 transition-all duration-300">
-                      <summary className="px-5 py-4 text-sm font-medium text-foreground cursor-pointer flex items-center justify-between list-none">
+                    <AccordionItem key={i} value={`faq-${i}`} className="border border-border bg-card rounded-xl overflow-hidden px-5 py-0 border-b-0 group hover:border-primary/20 transition-all duration-300">
+                      <AccordionTrigger className="text-sm font-medium text-foreground hover:no-underline py-4">
                         {faq.q}
-                        <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform flex-shrink-0" />
-                      </summary>
-                      <div className="px-5 pb-4 text-sm text-muted-foreground leading-relaxed">{faq.a}</div>
-                    </details>
+                      </AccordionTrigger>
+                      <AccordionContent className="text-sm text-muted-foreground leading-relaxed pt-2 pb-4">
+                        {faq.a}
+                      </AccordionContent>
+                    </AccordionItem>
                   ))}
-                </div>
+                </Accordion>
               </div>
             </motion.div>
           </div>

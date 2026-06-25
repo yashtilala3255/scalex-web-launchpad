@@ -18,6 +18,7 @@ import {
   Star, Rocket, Target, Clock, Users, Send, User, Mail, Phone,
   MessageSquare, TrendingUp, Award, Brain, GitBranch, BarChart3,
 } from "lucide-react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 /* ─── Data ───────────────────────────────────────────── */
 
@@ -380,7 +381,6 @@ const FullStackSimulator = () => {
 /* ─── Main Page ───────────────────────────────────── */
 const FullStackDevelopment = () => {
   const [activeTab, setActiveTab] = useState("frontend");
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
   const activeExpertise = expertise.find(e => e.id === activeTab)!;
 
   return (
@@ -830,7 +830,7 @@ const FullStackDevelopment = () => {
       </section>
 
       {/* ── 11. FAQ ─────────────────────────────────────── */}
-      <section className="section-padding bg-background">
+      <section className="section-padding bg-background scroll-mt-20 md:scroll-mt-24" id="faqs">
         <div className="container-tight max-w-3xl mx-auto">
           <motion.div {...fadeUp} className="text-center mb-14">
             <p className="text-xs font-semibold text-primary uppercase tracking-[0.2em] mb-3">FAQ</p>
@@ -840,31 +840,20 @@ const FullStackDevelopment = () => {
             </h2>
             <p className="text-muted-foreground">Everything you need to know before kicking off your full-stack project.</p>
           </motion.div>
-          <div className="space-y-3">
+          <Accordion type="single" collapsible className="w-full space-y-3">
             {faqs.map((faq, i) => (
-              <motion.div key={i} {...stagger(i)} className="border border-border bg-card rounded-xl overflow-hidden">
-                <button
-                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                  className="w-full flex items-center justify-between px-7 py-5 text-left group"
-                >
-                  <span className="font-heading font-semibold text-foreground text-sm pr-4">{faq.q}</span>
-                  <ChevronDown className={`w-5 h-5 text-muted-foreground flex-shrink-0 transition-transform duration-300 ${openFaq === i ? "rotate-180 text-primary" : ""}`} />
-                </button>
-                <AnimatePresence>
-                  {openFaq === i && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <div className="px-7 pb-6 text-sm text-muted-foreground leading-relaxed border-t border-border/40 pt-4">{faq.a}</div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+              <motion.div key={i} {...stagger(i)}>
+                <AccordionItem value={`faq-${i}`} className="border border-border bg-card rounded-xl overflow-hidden px-7 py-0 border-b-0 group">
+                  <AccordionTrigger className="font-heading font-semibold text-foreground text-sm hover:no-underline py-5">
+                    {faq.q}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-sm text-muted-foreground leading-relaxed pt-2 pb-6 border-t border-border/40">
+                    {faq.a}
+                  </AccordionContent>
+                </AccordionItem>
               </motion.div>
             ))}
-          </div>
+          </Accordion>
           <motion.div {...fadeUp} className="text-center mt-12">
             <p className="text-muted-foreground mb-4">Still have questions?</p>
             <Button variant="hero" size="lg" className="gap-2" asChild>

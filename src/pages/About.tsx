@@ -11,6 +11,9 @@ import {
 } from "lucide-react";
 import { useSiteData } from "@/context/SiteDataContext";
 import { getIconComponent } from "@/components/ui/icon-helper";
+import { HeroSection } from "@/components/ui/hero-section-2";
+import { GradientCard } from "@/components/ui/gradient-card";
+import logoImg from "@/assets/logo.png";
 
 const fadeUp = {
   initial: { opacity: 0, y: 30 },
@@ -26,98 +29,8 @@ const stagger = (i: number) => ({
   transition: { delay: i * 0.08, duration: 0.45 }
 });
 
-/* ─── Animated Custom Company SVG Illustration ───────── */
-const CompanyIllustration = () => {
-  return (
-    <div className="w-full relative rounded-xl border border-border bg-card/60 p-6 md:p-8 overflow-hidden flex items-center justify-center min-h-[300px]">
-      {/* Subtle Orbs behind SVG */}
-      <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-primary/5 rounded-full blur-2xl" />
-      <div className="absolute bottom-1/4 right-1/4 w-32 h-32 bg-accent/5 rounded-full blur-2xl" />
-
-      <svg viewBox="0 0 400 300" className="w-full max-w-sm relative z-10 filter drop-shadow-md">
-        {/* Animated Connection Lines */}
-        <motion.path
-          d="M 200,150 L 80,80 M 200,150 L 320,80 M 200,150 L 100,220 M 200,150 L 300,220"
-          stroke="rgba(99, 102, 241, 0.25)"
-          strokeWidth="2"
-          strokeDasharray="4 4"
-          fill="none"
-        />
-
-        {/* Pulse flow lights */}
-        <motion.circle r="3" fill="#818cf8"
-          animate={{
-            cx: [200, 80],
-            cy: [150, 80],
-            opacity: [1, 0]
-          }}
-          transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
-        />
-        <motion.circle r="3" fill="#a78bfa"
-          animate={{
-            cx: [200, 320],
-            cy: [150, 80],
-            opacity: [1, 0]
-          }}
-          transition={{ repeat: Infinity, duration: 3, ease: "easeInOut", delay: 0.5 }}
-        />
-        <motion.circle r="3" fill="#38bdf8"
-          animate={{
-            cx: [200, 100],
-            cy: [150, 220],
-            opacity: [1, 0]
-          }}
-          transition={{ repeat: Infinity, duration: 2.8, ease: "easeInOut", delay: 1 }}
-        />
-        <motion.circle r="3" fill="#f472b6"
-          animate={{
-            cx: [200, 300],
-            cy: [150, 220],
-            opacity: [1, 0]
-          }}
-          transition={{ repeat: Infinity, duration: 3.2, ease: "easeInOut", delay: 1.5 }}
-        />
-
-        {/* Nodes */}
-        {/* Central Hub: Ahmedabad HQ */}
-        <circle cx="200" cy="150" r="16" fill="url(#hqGrad)" />
-        <circle cx="200" cy="150" r="24" stroke="#818cf8" strokeWidth="1" fill="none" className="animate-ping opacity-30" />
-        <text x="200" y="185" fill="hsl(var(--foreground))" fontSize="10" fontWeight="bold" textAnchor="middle">Ahmedabad HQ</text>
-
-        {/* Node 1: North America */}
-        <circle cx="80" cy="80" r="8" fill="url(#nodeGrad)" />
-        <text x="80" y="60" fill="#94a3b8" fontSize="8" fontWeight="semibold" textAnchor="middle">North America</text>
-
-        {/* Node 2: Europe */}
-        <circle cx="320" cy="80" r="8" fill="url(#nodeGrad)" />
-        <text x="320" y="60" fill="#94a3b8" fontSize="8" fontWeight="semibold" textAnchor="middle">Europe</text>
-
-        {/* Node 3: UAE */}
-        <circle cx="100" cy="220" r="8" fill="url(#nodeGrad)" />
-        <text x="100" y="242" fill="#94a3b8" fontSize="8" fontWeight="semibold" textAnchor="middle">Middle East</text>
-
-        {/* Node 4: Asia Pacific */}
-        <circle cx="300" cy="220" r="8" fill="url(#nodeGrad)" />
-        <text x="300" y="242" fill="#94a3b8" fontSize="8" fontWeight="semibold" textAnchor="middle">Asia Pacific</text>
-
-        {/* Gradients */}
-        <defs>
-          <radialGradient id="hqGrad" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#818cf8" />
-            <stop offset="100%" stopColor="#4f46e5" />
-          </radialGradient>
-          <radialGradient id="nodeGrad" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#38bdf8" />
-            <stop offset="100%" stopColor="#0284c7" />
-          </radialGradient>
-        </defs>
-      </svg>
-    </div>
-  );
-};
-
 const About = () => {
-  const { values, techStack, services } = useSiteData();
+  const { values, techStack, services, settings } = useSiteData();
 
   return (
     <Layout>
@@ -154,84 +67,59 @@ const About = () => {
       ctaLink="/contact"
     />
 
-    {/* ── 1. Company Intro with SVG Map ───────────────── */}
-    <section className="section-padding bg-background relative overflow-hidden">
-      {/* Background radial layer specific to About */}
-      <div className="absolute inset-0 bg-radial-gradient from-secondary/40 via-background to-background" />
-
-      <div className="container-tight relative z-10">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          <motion.div {...fadeUp}>
-            <p className="text-xs font-semibold text-primary uppercase tracking-[0.2em] mb-3">Our Story</p>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-6">
-              <span className="font-heading font-extrabold text-foreground block">About</span>
-              <span className="font-serif italic font-normal text-primary block mt-2 md:translate-x-8">ScaleXWeb Solution.</span>
-            </h2>
-            <p className="text-muted-foreground leading-relaxed mb-4">
-              Founded with a vision to bridge the gap between business ambition and technology execution, ScaleXWeb Solution has grown into a trusted digital partner for startups and enterprises alike. Headquartered in Ahmedabad, Gujarat, we combine deep technical expertise with creative design thinking.
-            </p>
-            <p className="text-muted-foreground leading-relaxed">
-              Our team of engineers, designers, and strategists works collaboratively with clients across India and globally, bringing ideas to life through innovative web and mobile solutions. We believe in building technology that scales — not just in code, but in impact.
-            </p>
-          </motion.div>
-          <motion.div {...fadeUp} transition={{ delay: 0.15 }}>
-            <CompanyIllustration />
-          </motion.div>
+    {/* ── 1. Company Intro / Our Story using HeroSection ── */}
+    <HeroSection
+      logo={{
+        url: logoImg,
+        alt: settings?.siteName || "ScaleXWeb Solutions",
+        text: settings?.siteName || "ScaleXWeb"
+      }}
+      slogan="OUR STORY"
+      title={
+        <div className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] font-normal">
+          <span className="font-heading font-extrabold text-foreground block">About</span>
+          <span className="font-serif italic font-normal text-primary block mt-2 md:translate-x-8">ScaleXWeb Solution.</span>
         </div>
-      </div>
-    </section>
+      }
+      subtitle="Founded with a vision to bridge the gap between business ambition and technology execution, ScaleXWeb Solution has grown into a trusted digital partner for startups and enterprises alike. Headquartered in Ahmedabad, Gujarat, we combine deep technical expertise with creative design thinking. Our team of engineers, designers, and strategists works collaboratively with clients across India and globally, bringing ideas to life through innovative web and mobile solutions. We believe in building technology that scales — not just in code, but in impact."
+      callToAction={{
+        text: "START YOUR PROJECT",
+        href: "/contact"
+      }}
+      backgroundImage="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80"
+      contactInfo={{
+        website: settings?.siteUrl || "scalexweb.tech",
+        address: settings?.contactAddress || "Ahmedabad, Gujarat, India"
+      }}
+      className="border-b border-border/30"
+    />
 
     {/* ── 2. Vision & Mission ────────────────────────── */}
     <section className="section-padding bg-secondary/35 border-y border-border/30">
       <div className="container-tight">
         <div className="grid md:grid-cols-2 gap-6">
-          <motion.div {...fadeUp} className="border border-border rounded-xl p-10 bg-card">
-            <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-6">
-              <Star className="w-6 h-6 text-primary" />
-            </div>
-            <h3 className="text-2xl font-heading font-bold text-foreground mb-4">Our Vision</h3>
-            <p className="text-muted-foreground leading-relaxed">
-              To be India's most trusted digital transformation partner — empowering businesses of all sizes to compete in the digital economy with world-class technology solutions.
-            </p>
-          </motion.div>
-          <motion.div {...fadeUp} transition={{ delay: 0.1 }} className="border border-border rounded-xl p-10 bg-card">
-            <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-6 text-primary">
-              <Lightbulb className="w-6 h-6" />
-            </div>
-            <h3 className="text-2xl font-heading font-bold text-foreground mb-4">Our Mission</h3>
-            <p className="text-muted-foreground leading-relaxed">
-              To deliver innovative, scalable, and reliable digital products that drive measurable business outcomes — through expert engineering, design thinking, and relentless customer focus.
-            </p>
-          </motion.div>
+          <GradientCard
+            badgeText="Vision"
+            badgeColor="#8B5CF6"
+            title="Our Vision"
+            description="To be India's most trusted digital transformation partner — empowering businesses of all sizes to compete in the digital economy with world-class technology solutions."
+            ctaText="Explore Solutions"
+            ctaHref="/solutions"
+            gradient="purple"
+          />
+          <GradientCard
+            badgeText="Mission"
+            badgeColor="#10B981"
+            title="Our Mission"
+            description="To deliver innovative, scalable, and reliable digital products that drive measurable business outcomes — through expert engineering, design thinking, and relentless customer focus."
+            ctaText="Start Your Project"
+            ctaHref="/contact"
+            gradient="green"
+          />
         </div>
       </div>
     </section>
 
-    {/* ── 3. Founder Spotlight ────────────────────────── */}
-    <section className="section-padding bg-background">
-      <div className="container-tight">
-        <motion.div {...fadeUp} className="max-w-3xl mx-auto text-center">
-          <p className="text-xs font-semibold text-primary uppercase tracking-[0.2em] mb-8">Leadership</p>
-          <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-primary/10 text-primary border border-primary/20 flex items-center justify-center relative overflow-hidden group">
-            <Users className="w-10 h-10 group-hover:scale-110 transition-transform" />
-          </div>
-          <h3 className="text-3xl font-heading font-bold text-foreground mb-1">Yash Patel</h3>
-          <p className="text-sm text-muted-foreground mb-6">Founder &amp; CEO, ScaleXWeb Solution</p>
-          <p className="text-muted-foreground leading-relaxed mb-8">
-            Yash Patel founded ScaleXWeb Solution with a vision to bridge the gap between business ambition and technology execution. With deep expertise in software architecture and product strategy, he leads a passionate team committed to delivering digital excellence. Under his leadership, ScaleXWeb has delivered 50+ successful projects across 10+ industries.
-          </p>
-
-          <blockquote className="border border-border bg-card rounded-xl p-8 text-left relative overflow-hidden mb-6 border-l-4 border-l-primary/40 pl-8">
-            <p className="text-lg italic text-foreground/90 leading-relaxed font-serif relative z-10">
-              &ldquo;We don't just build websites — we build growth engines for ambitious businesses.&rdquo;
-            </p>
-            <cite className="text-sm text-muted-foreground mt-4 block not-italic relative z-10">— Yash Patel, Founder &amp; CEO</cite>
-          </blockquote>
-
-          
-        </motion.div>
-      </div>
-    </section>
 
     {/* ── 4. Values ──────────────────────────────────── */}
     <section className="section-padding bg-secondary/35 border-t border-border/30">

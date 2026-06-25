@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import Layout from "@/components/layout/Layout";
 import SEO from "@/components/SEO";
+import { WelcomeScreen } from "@/components/ui/onboarding-welcome-screen";
 import { useSiteData, Inquiry } from "@/context/SiteDataContext";
+import { InvoiceSystem } from "@/components/admin/invoices/InvoiceSystem";
 import { getIconComponent } from "@/components/ui/icon-helper";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,7 +18,7 @@ import {
   Lock, LayoutDashboard, FileText, Settings, Database,
   Users, TrendingUp, CheckCircle, Clock, AlertCircle,
   Plus, Trash2, Edit2, Save, Download, RefreshCw,
-  LogOut, Globe, Phone, Mail, MapPin, ExternalLink, HelpCircle, Activity
+  LogOut, Globe, Phone, Mail, MapPin, ExternalLink, HelpCircle, Activity, Receipt
 } from "lucide-react";
 
 export const AdminDashboard = () => {
@@ -36,9 +38,10 @@ export const AdminDashboard = () => {
   });
   const [usernameInput, setUsernameInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
+  const [showLoginForm, setShowLoginForm] = useState(false);
 
   // Tab State
-  const [activeTab, setActiveTab] = useState<"overview" | "content" | "inquiries" | "settings" | "analytics">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "content" | "inquiries" | "settings" | "analytics" | "invoices">("overview");
 
   // CMS Section Editing State
   const [selectedCmsSection, setSelectedCmsSection] = useState<
@@ -508,12 +511,22 @@ export const AdminDashboard = () => {
       "SaaS Development": 0,
       "E-Commerce Solutions": 0,
       "UI/UX Design": 0,
+      "Full Stack Development": 0,
       "AI Enterprise Development": 0,
       "General Inquiry": 0
     };
 
     inquiries.forEach(inq => {
-      const s = inq.service || "General Inquiry";
+      let s = inq.service || "General Inquiry";
+      if (s === "website") s = "Website Development";
+      else if (s === "app" || s === "Mobile App Development") s = "App Development";
+      else if (s === "saas" || s === "SaaS Platform Development") s = "SaaS Development";
+      else if (s === "ecommerce") s = "E-Commerce Solutions";
+      else if (s === "uiux" || s === "UI/UX Interface Design") s = "UI/UX Design";
+      else if (s === "full-stack") s = "Full Stack Development";
+      else if (s === "Custom Enterprise Software") s = "Full Stack Development";
+      else if (s === "other") s = "General Inquiry";
+
       if (servicesMap[s] !== undefined) {
         servicesMap[s]++;
       } else {
@@ -563,71 +576,107 @@ export const AdminDashboard = () => {
     return (
       <Layout>
         <SEO title="Admin Login | ScaleXWeb Control Center" description="Admin portal authentication screen" />
-        <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-          <div className="absolute inset-0 mesh-bg" />
-          <div className="absolute inset-0 dot-grid opacity-35" />
-          <div className="orb w-96 h-96 bg-primary/10 -top-20 -left-20 animate-pulse-glow" />
-          <div className="orb w-96 h-96 bg-accent/10 bottom-10 right-10 animate-pulse-glow" style={{ animationDelay: "2s" }} />
+        <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background py-10">
+          <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--foreground)/0.02)_1px,transparent_1px)] bg-[size:16px_16px]" />
+          <div className="orb w-[500px] h-[500px] bg-primary/5 -top-40 -left-40 rounded-full blur-3xl absolute -z-10" />
+          <div className="orb w-[300px] h-[300px] bg-accent/5 bottom-0 right-0 rounded-full blur-3xl absolute -z-10" />
 
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="w-full max-w-md p-6 sm:p-10 gradient-border bg-card rounded-3xl glow-sm relative z-10 mx-4"
-          >
-            <div className="w-14 h-14 gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-6 glow-sm">
-              <Lock className="w-6 h-6 text-white" />
-            </div>
-
-            <h2 className="text-2xl font-heading font-black text-center text-foreground mb-1">Control Panel Login</h2>
-            <p className="text-center text-xs text-muted-foreground mb-8">Authenticate to access sitemaps, inquiries, and CMS settings</p>
-
-            {lockoutTimeLeft > 0 ? (
-              <div className="bg-destructive/10 border border-destructive/20 rounded-2xl p-4 text-center text-xs space-y-2">
-                <p className="text-destructive font-bold">Too many failed login attempts.</p>
-                <p className="text-muted-foreground leading-relaxed text-[11px]">
-                  Lockout active. Please wait{" "}
-                  <span className="text-foreground font-bold font-mono">
-                    {Math.floor(lockoutTimeLeft / 60)}m {lockoutTimeLeft % 60}s
-                  </span>{" "}
-                  before trying again.
-                </p>
-              </div>
+          <AnimatePresence mode="wait">
+            {!showLoginForm ? (
+              <motion.div
+                key="welcome"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.4 }}
+                className="relative mx-auto h-[780px] w-[375px] max-w-sm overflow-hidden rounded-3xl border border-border shadow-lg bg-card z-10"
+              >
+                <WelcomeScreen
+                  imageUrl="https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                  title={
+                    <>
+                      Control <span className="text-primary font-heading font-black">Center</span>
+                    </>
+                  }
+                  description="Authenticate to manage sitemaps, track user inquiries, update website sections, and configure CMS settings."
+                  buttonText="Get Started"
+                  onButtonClick={() => setShowLoginForm(true)}
+                  secondaryActionText="Back to Homepage"
+                  onSecondaryActionClick={() => window.location.href = "/"}
+                />
+              </motion.div>
             ) : (
-              <form onSubmit={handleLogin} className="space-y-4">
-                <div>
-                  <label className="text-xs font-semibold text-foreground/80 mb-1.5 block">Username</label>
-                  <Input
-                    type="text"
-                    placeholder="admin"
-                    value={usernameInput}
-                    onChange={(e) => setUsernameInput(e.target.value)}
-                    className="bg-background/60 border-border/50 rounded-xl"
-                    required
-                  />
+              <motion.div
+                key="login-form"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.4 }}
+                className="w-full max-w-md p-6 sm:p-10 border border-border bg-card rounded-2xl shadow-sm relative z-10 mx-4"
+              >
+                <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center mx-auto mb-6">
+                  <Lock className="w-5 h-5 text-primary" />
                 </div>
-                <div>
-                  <label className="text-xs font-semibold text-foreground/80 mb-1.5 block">Password</label>
-                  <Input
-                    type="password"
-                    placeholder="••••••••"
-                    value={passwordInput}
-                    onChange={(e) => setPasswordInput(e.target.value)}
-                    className="bg-background/60 border-border/50 rounded-xl"
-                    required
-                  />
-                </div>
-                <Button type="submit" variant="hero" className="w-full h-11 rounded-xl mt-6">
-                  Log In
-                </Button>
-              </form>
-            )}
 
-            <p className="text-center text-[10px] text-muted-foreground mt-6 leading-relaxed">
-              Default password configured in local launchpad properties.<br />
-              Connected Mode: <span className={isSupabase ? "text-success font-bold" : "text-amber-500 font-bold"}>{isSupabase ? "Supabase Cloud" : "Local Mock Storage"}</span>
-            </p>
-          </motion.div>
+                <h2 className="text-2xl font-heading font-extrabold text-center text-foreground mb-1">Control Panel Login</h2>
+                <p className="text-center text-xs text-muted-foreground mb-8">Authenticate to access sitemaps, inquiries, and CMS settings</p>
+
+                {lockoutTimeLeft > 0 ? (
+                  <div className="bg-destructive/5 border border-destructive/10 rounded-xl p-4 text-center text-xs space-y-2">
+                    <p className="text-destructive font-bold">Too many failed login attempts.</p>
+                    <p className="text-muted-foreground leading-relaxed text-[11px]">
+                      Lockout active. Please wait{" "}
+                      <span className="text-foreground font-bold font-mono">
+                        {Math.floor(lockoutTimeLeft / 60)}m {lockoutTimeLeft % 60}s
+                      </span>{" "}
+                      before trying again.
+                    </p>
+                  </div>
+                ) : (
+                  <form onSubmit={handleLogin} className="space-y-4">
+                    <div>
+                      <label className="text-xs font-semibold text-foreground/80 mb-1.5 block">Username</label>
+                      <Input
+                         type="text"
+                         placeholder="admin"
+                         value={usernameInput}
+                         onChange={(e) => setUsernameInput(e.target.value)}
+                         className="bg-background border-border rounded-xl"
+                         required
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-semibold text-foreground/80 mb-1.5 block">Password</label>
+                      <Input
+                         type="password"
+                         placeholder="••••••••"
+                         value={passwordInput}
+                         onChange={(e) => setPasswordInput(e.target.value)}
+                         className="bg-background border-border rounded-xl"
+                         required
+                      />
+                    </div>
+                    <Button type="submit" variant="default" className="w-full h-11 rounded-xl mt-6">
+                      Log In
+                    </Button>
+                    <Button 
+                      type="button" 
+                      variant="ghost" 
+                      onClick={() => setShowLoginForm(false)} 
+                      className="w-full h-10 rounded-xl mt-2 text-xs text-muted-foreground"
+                    >
+                      Back to Welcome
+                    </Button>
+                  </form>
+                )}
+
+                <p className="text-center text-[10px] text-muted-foreground mt-6 leading-relaxed">
+                  Default password configured in local launchpad properties.<br />
+                  Connected Mode: <span className={isSupabase ? "text-success font-bold" : "text-amber-500 font-bold"}>{isSupabase ? "Supabase Cloud" : "Local Mock Storage"}</span>
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </section>
       </Layout>
     );
@@ -676,6 +725,7 @@ export const AdminDashboard = () => {
                 { id: "analytics", label: "Traffic Analytics", icon: Activity },
                 { id: "content", label: "Content Manager", icon: FileText },
                 { id: "inquiries", label: "Leads & Inquiries", icon: Users },
+                { id: "invoices", label: "Invoice System", icon: Receipt },
                 { id: "settings", label: "Settings & Setup", icon: Settings }
               ].map((tab) => {
                 const Icon = tab.icon;
@@ -2240,6 +2290,18 @@ CREATE POLICY "Allow public write content" ON public.site_content
                           </div>
                         </div>
                       </div>
+                    </motion.div>
+                  )}
+
+                  {activeTab === "invoices" && (
+                    <motion.div
+                      key="invoices"
+                      initial={{ opacity: 0, y: 15 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      className="space-y-6"
+                    >
+                      <InvoiceSystem />
                     </motion.div>
                   )}
                 </AnimatePresence>

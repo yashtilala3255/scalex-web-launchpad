@@ -14,6 +14,7 @@ import {
   Smartphone, Code, Cpu, Shield, Zap, RefreshCw,
   Bell, ChevronDown, Check, Send, MessageSquare, AppWindow, ArrowRight
 } from "lucide-react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 /* ─── Data ───────────────────────────────────────────── */
 
@@ -58,6 +59,31 @@ const fadeUp = { initial: { opacity: 0, y: 30 }, whileInView: { opacity: 1, y: 0
 const stagger = (i: number) => ({ initial: { opacity: 0, y: 20 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true }, transition: { delay: i * 0.08, duration: 0.45 } });
 
 import mobileMockup from "@/assets/mobile_mockup.png";
+import ElegantCarousel, { SlideData } from "@/components/ui/elegant-carousel";
+
+const appSlides: SlideData[] = [
+  {
+    title: "iOS Applications",
+    subtitle: "Native Apple Dev",
+    description: "Stunning Swift & SwiftUI applications leveraging native frameworks, widgets, and Apple Pay.",
+    accent: "hsl(var(--primary))",
+    imageUrl: mobileMockup
+  },
+  {
+    title: "Android Apps",
+    subtitle: "Google Play Dev",
+    description: "Bespoke Kotlin apps built for performance, screen diversity, and modern Material design.",
+    accent: "#10B981",
+    imageUrl: mobileMockup
+  },
+  {
+    title: "Cross-Platform",
+    subtitle: "Flutter & React Native",
+    description: "Reach both platforms with a single codebase, reducing time-to-market by 50% without quality loss.",
+    accent: "hsl(var(--accent))",
+    imageUrl: mobileMockup
+  }
+];
 
 /* ─── Interactive Mobile Simulator Component ───────── */
 const MobileSimulator = () => {
@@ -447,7 +473,7 @@ const AppDevelopment = () => {
       </section>
 
       {/* ── 6. FAQ Accordion ────────────────────────────── */}
-      <section className="section-padding bg-background">
+      <section className="section-padding bg-background scroll-mt-20 md:scroll-mt-24" id="faqs">
         <div className="container-tight max-w-3xl mx-auto">
           <motion.div {...fadeUp} className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-4">
@@ -456,19 +482,18 @@ const AppDevelopment = () => {
             </h2>
           </motion.div>
 
-          <div className="space-y-3">
+          <Accordion type="single" collapsible className="w-full space-y-3">
             {faqs.map((f, i) => (
-              <details key={i} className="border border-border bg-card rounded-xl overflow-hidden group">
-                <summary className="px-6 py-4 font-semibold text-sm text-foreground/90 flex items-center justify-between cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden">
-                  <span>{f.q}</span>
-                  <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform duration-300 group-open:rotate-180" />
-                </summary>
-                <div className="px-6 pb-5 pt-2 text-xs text-muted-foreground border-t border-border/30 leading-relaxed">
+              <AccordionItem key={i} value={`faq-${i}`} className="border border-border bg-card rounded-xl overflow-hidden px-6 py-0 border-b-0 group">
+                <AccordionTrigger className="font-semibold text-sm text-foreground/90 hover:no-underline py-4">
+                  {f.q}
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground leading-relaxed pt-2 pb-5 text-xs">
                   {f.a}
-                </div>
-              </details>
+                </AccordionContent>
+              </AccordionItem>
             ))}
-          </div>
+          </Accordion>
         </div>
       </section>
     </Layout>

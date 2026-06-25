@@ -104,6 +104,27 @@ export const testimonials = [
     company: "EduLeap",
     initials: "AD",
   },
+  {
+    quote: "The team's expertise in Next.js and Tailwind is top-tier. They streamlined our complex enterprise workflows into a beautiful, lightning-fast application.",
+    name: "Sanjay Mehta",
+    role: "Head of Product",
+    company: "Aura Retail Group",
+    initials: "SM",
+  },
+  {
+    quote: "ScaleXWeb helped us launch our fintech MVP in record time. Their architectural decisions saved us months of rework later.",
+    name: "Karan Johar",
+    role: "VP of Engineering",
+    company: "PayVantage",
+    initials: "KJ",
+  },
+  {
+    quote: "Their custom e-commerce solution boosted our conversion rate by 45%. The performance benchmarks on mobile are outstanding.",
+    name: "Deepa Nair",
+    role: "Marketing Director",
+    company: "StyleZen India",
+    initials: "DN",
+  },
 ];
 
 export const techStack: Record<string, string[]> = {

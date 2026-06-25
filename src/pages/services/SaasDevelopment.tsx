@@ -15,6 +15,7 @@ import {
   ArrowRight, Layers,
   Terminal, Database, BarChart3, Users, DollarSign, Activity
 } from "lucide-react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 /* ─── Data ───────────────────────────────────────────── */
 
@@ -343,37 +344,99 @@ const SaasDevelopment = () => {
       </section>
 
       {/* ── 4. Packages Section ────────────────────────── */}
-      <section id="packages" className="section-padding bg-background">
-        <div className="container-tight">
-          <motion.div {...fadeUp} className="text-center mb-14">
-            <p className="text-xs font-semibold text-primary uppercase tracking-[0.2em] mb-3">Pricing Models</p>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-5">
-              <span className="font-heading font-extrabold text-foreground block">Flexible Development</span>
-              <span className="font-serif italic font-normal text-primary block mt-2 ml-4 sm:ml-8">Frameworks.</span>
-            </h2>
-          </motion.div>
+      <section id="packages" className="relative py-20 w-full flex justify-center bg-purple-950/[0.03] border-t border-border/30 overflow-hidden">
+        <div className="absolute top-0 z-[0] h-full w-full bg-[radial-gradient(ellipse_20%_80%_at_50%_-20%,rgba(120,119,198,0.15),rgba(255,255,255,0))]"></div>
 
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {pricingTiers.map((tier, i) => (
-              <motion.div key={tier.name} {...stagger(i)} className="border border-border bg-card rounded-xl p-8 relative flex flex-col justify-between hover:border-primary/20 transition-all duration-300">
-                <div>
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-primary block mb-2">{tier.best}</span>
-                  <h3 className="text-2xl font-heading font-bold text-foreground mb-3">{tier.name}</h3>
-                  <p className="text-xs text-muted-foreground leading-relaxed mb-6">{tier.desc}</p>
-                  <ul className="space-y-3 mb-8">
-                    {tier.features.map(f => (
-                      <li key={f} className="flex items-center gap-2.5 text-xs text-foreground/80">
-                        <Check className="w-4 h-4 text-primary flex-shrink-0" />
-                        <span>{f}</span>
+        <div className="container-tight max-w-screen-xl mx-auto px-4 md:px-8 relative z-10">
+          <div className="relative max-w-xl space-y-3 px-4 md:px-0 text-left">
+            <p className="text-purple-600 dark:text-purple-400 font-semibold tracking-wider uppercase text-xs">Pricing Models</p>
+            <h2 className="text-4xl sm:text-5xl font-geist font-normal tracking-tighter dark:text-white/90 text-black">
+              Flexible Development <br className="hidden sm:inline lg:hidden" /> Frameworks.
+            </h2>
+            <div className="max-w-xl text-sm text-muted-foreground leading-relaxed">
+              <p>
+                Choose the right engagement model to launch your SaaS platform. We design and deliver custom software from validated MVP to fully scaled enterprise solutions.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-16 justify-between gap-12 md:flex">
+            {/* Left side: Core SaaS Features list */}
+            <ul className="flex-1 max-w-md space-y-10 px-4 md:px-0">
+              {saasFeatures.map((item, idx) => {
+                const Icon = item.icon;
+                return (
+                  <li key={idx} className="flex gap-x-4">
+                    <div className="flex-none w-12 h-12 rounded-full bg-transparent border border-border dark:[border:1px_solid_rgba(255,255,255,.1)] dark:[box-shadow:0_-20px_80px_-20px_#8686f01f_inset] text-purple-600 dark:text-purple-400 flex items-center justify-center">
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h4 className="text-lg dark:text-gray-100 font-medium tracking-tight text-foreground">
+                        {item.title}
+                      </h4>
+                      <p className="text-muted-foreground mt-1 text-xs sm:text-sm leading-relaxed">{item.desc}</p>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+
+            {/* Right side: 2 pricing cards */}
+            <div className="flex-1 flex flex-col gap-6 mt-12 md:mt-0 w-full max-w-xl">
+              {pricingTiers.map((tier, idx) => (
+                <div 
+                  key={idx}
+                  className="flex flex-col border border-border rounded-2xl shadow-md bg-card dark:[border:1px_solid_rgba(255,255,255,.1)] dark:[box-shadow:0_-20px_80px_-20px_#8686f01f_inset] transform-gpu hover:shadow-lg transition-shadow duration-300"
+                >
+                  <div className="p-6 py-8 border-b border-border/60 md:p-8">
+                    <div className="justify-between flex gap-4">
+                      <div className="max-w-xs">
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-purple-600 dark:text-purple-400 block mb-2">
+                          {tier.best}
+                        </span>
+                        <span className="text-2xl dark:text-gray-100 text-black font-semibold font-geist tracking-tighter sm:text-3xl">
+                          {tier.name}
+                        </span>
+                        <p className="mt-3 text-xs text-muted-foreground leading-relaxed">{tier.desc}</p>
+                      </div>
+                      <div className="flex-none text-right">
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground block mb-2">
+                          Engagement
+                        </span>
+                        <span className="text-sm font-semibold text-foreground bg-secondary/50 border border-border px-3 py-1.5 rounded-full">
+                          Custom Quote
+                        </span>
+                      </div>
+                    </div>
+                    <button className="mt-6 w-full font-geist tracking-tighter text-center rounded-xl bg-gradient-to-br from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2">
+                      <a href="#saas-estimate" className="w-full">Get Cost Estimate</a>
+                    </button>
+                  </div>
+                  <ul className="p-6 space-y-3 sm:grid sm:grid-cols-2 md:block md:p-8 lg:grid">
+                    <div className="pb-2 col-span-2 dark:text-gray-100 text-black font-semibold text-xs uppercase tracking-wider">
+                      Included Features
+                    </div>
+                    {tier.features.map((featureItem, fidx) => (
+                      <li key={fidx} className="flex items-center gap-3 text-muted-foreground text-xs leading-relaxed">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-4 w-4 text-purple-600 dark:text-purple-400 flex-shrink-0"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clipRule="evenodd"
+                          ></path>
+                        </svg>
+                        <span>{featureItem}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
-                <Button variant="hero" className="w-full" asChild>
-                  <a href="#saas-estimate">Get Cost Estimate</a>
-                </Button>
-              </motion.div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -439,7 +502,7 @@ const SaasDevelopment = () => {
       </section>
 
       {/* ── 6. FAQ Accordion ────────────────────────────── */}
-      <section className="section-padding bg-background">
+      <section className="section-padding bg-background scroll-mt-20 md:scroll-mt-24" id="faqs">
         <div className="container-tight max-w-3xl mx-auto">
           <motion.div {...fadeUp} className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-4">
@@ -448,19 +511,18 @@ const SaasDevelopment = () => {
             </h2>
           </motion.div>
 
-          <div className="space-y-3">
+          <Accordion type="single" collapsible className="w-full space-y-3">
             {faqs.map((f, i) => (
-              <details key={i} className="border border-border bg-card rounded-xl overflow-hidden group">
-                <summary className="px-6 py-4 font-semibold text-sm text-foreground/90 flex items-center justify-between cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden">
-                  <span>{f.q}</span>
-                  <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform duration-300 group-open:rotate-180" />
-                </summary>
-                <div className="px-6 pb-5 pt-2 text-xs text-muted-foreground border-t border-border/30 leading-relaxed">
+              <AccordionItem key={i} value={`faq-${i}`} className="border border-border bg-card rounded-xl overflow-hidden px-6 py-0 border-b-0 group">
+                <AccordionTrigger className="font-semibold text-sm text-foreground/90 hover:no-underline py-4">
+                  {f.q}
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground leading-relaxed pt-2 pb-5 text-xs">
                   {f.a}
-                </div>
-              </details>
+                </AccordionContent>
+              </AccordionItem>
             ))}
-          </div>
+          </Accordion>
         </div>
       </section>
     </Layout>

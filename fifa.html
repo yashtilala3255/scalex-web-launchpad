@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Results from the final five matches of the 2022 FIFA World Cup in Qatar.">
+  <title>Last 5 FIFA World Cup Matches</title>
+  <style>
+    :root {
+      --ink: #f7f8ff;
+      --muted: #b8bfd9;
+      --panel: rgba(15, 22, 52, 0.78);
+      --line: rgba(255, 255, 255, 0.12);
+      --blue: #58a6ff;
+      --gold: #f5c451;
+      --green: #4ee0a0;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 15% 15%, rgba(65, 111, 255, .3), transparent 34rem),
+        radial-gradient(circle at 90% 30%, rgba(136, 26, 74, .32), transparent 32rem),
+        #070b1b;
+    }
+
+    .page { width: min(1100px, calc(100% - 32px)); margin: 0 auto; padding: 64px 0 40px; }
+
+    header { max-width: 760px; margin-bottom: 38px; }
+
+    .eyebrow {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      color: var(--gold);
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before { content: ""; width: 28px; height: 2px; background: currentColor; }
+
+    h1 { margin: 12px 0; font-size: clamp(2.5rem, 7vw, 5.5rem); line-height: .96; letter-spacing: -.055em; }
+    .intro { margin: 0; color: var(--muted); font-size: 1.08rem; line-height: 1.7; }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      overflow: hidden;
+      margin-bottom: 24px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--line);
+    }
+
+    .stat { padding: 22px; background: rgba(9, 14, 35, .94); }
+    .stat strong { display: block; color: var(--green); font-size: 1.55rem; }
+    .stat span { color: var(--muted); font-size: .85rem; }
+
+    .matches { display: grid; gap: 14px; }
+
+    .match {
+      display: grid;
+      grid-template-columns: 150px 1fr 160px;
+      align-items: center;
+      gap: 24px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--panel);
+      box-shadow: 0 16px 50px rgba(0, 0, 0, .18);
+      backdrop-filter: blur(12px);
+    }
+
+    .stage { color: var(--gold); font-size: .78rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+    time, .venue { display: block; margin-top: 6px; color: var(--muted); font-size: .83rem; line-height: 1.4; }
+    .teams { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; }
+    .team { font-size: clamp(1rem, 2vw, 1.28rem); font-weight: 750; }
+    .team:last-child { text-align: right; }
+    .score { min-width: 92px; text-align: center; font-size: 1.65rem; font-weight: 900; letter-spacing: .04em; }
+    .result { text-align: right; color: var(--green); font-size: .84rem; font-weight: 700; line-height: 1.45; }
+    .result small { display: block; color: var(--muted); font-weight: 500; }
+
+    footer { margin-top: 34px; padding-top: 24px; border-top: 1px solid var(--line); color: var(--muted); font-size: .83rem; line-height: 1.7; }
+    footer a { color: var(--blue); }
+
+    @media (max-width: 760px) {
+      .page { padding-top: 42px; }
+      .match { grid-template-columns: 1fr; gap: 18px; }
+      .result { text-align: left; }
+      .summary { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <span class="eyebrow">Qatar 2022</span>
+      <h1>The final five.</h1>
+      <p class="intro">The five most recent matches played at the latest completed men's FIFA World Cup, listed newest first. Argentina ended the tournament as world champions after a dramatic penalty shoot-out.</p>
+    </header>
+
+    <section class="summary" aria-label="Tournament summary">
+      <div class="stat"><strong>18</strong><span>Goals across five matches</span></div>
+      <div class="stat"><strong>4–2</strong><span>Argentina's final shoot-out win</span></div>
+      <div class="stat"><strong>Argentina</strong><span>2022 FIFA World Cup champions</span></div>
+    </section>
+
+    <section class="matches" aria-label="Match results">
+      <article class="match">
+        <div><span class="stage">Final</span><time datetime="2022-12-18">18 December 2022</time><span class="venue">Lusail Stadium</span></div>
+        <div class="teams"><span class="team">Argentina</span><strong class="score">3–3</strong><span class="team">France</span></div>
+        <div class="result">Argentina won<small>4–2 on penalties (after extra time)</small></div>
+      </article>
+
+      <article class="match">
+        <div><span class="stage">Third place</span><time datetime="2022-12-17">17 December 2022</time><span class="venue">Khalifa International Stadium</span></div>
+        <div class="teams"><span class="team">Croatia</span><strong class="score">2–1</strong><span class="team">Morocco</span></div>
+        <div class="result">Croatia won<small>Bronze medal secured</small></div>
+      </article>
+
+      <article class="match">
+        <div><span class="stage">Semi-final</span><time datetime="2022-12-14">14 December 2022</time><span class="venue">Al Bayt Stadium</span></div>
+        <div class="teams"><span class="team">France</span><strong class="score">2–0</strong><span class="team">Morocco</span></div>
+        <div class="result">France won<small>Advanced to the final</small></div>
+      </article>
+
+      <article class="match">
+        <div><span class="stage">Semi-final</span><time datetime="2022-12-13">13 December 2022</time><span class="venue">Lusail Stadium</span></div>
+        <div class="teams"><span class="team">Argentina</span><strong class="score">3–0</strong><span class="team">Croatia</span></div>
+        <div class="result">Argentina won<small>Advanced to the final</small></div>
+      </article>
+
+      <article class="match">
+        <div><span class="stage">Quarter-final</span><time datetime="2022-12-10">10 December 2022</time><span class="venue">Al Bayt Stadium</span></div>
+        <div class="teams"><span class="team">England</span><strong class="score">1–2</strong><span class="team">France</span></div>
+        <div class="result">France won<small>Advanced to the semi-final</small></div>
+      </article>
+    </section>
+
+    <footer>
+      <strong>Scope note:</strong> “Last five FIFA matches” is interpreted here as the final five chronological matches of the latest completed men's FIFA World Cup—not recent qualifiers or club fixtures. Scores are regulation/extra-time scores; shoot-out goals are listed separately.<br>
+      Sources: <a href="https://www.fifa.com/tournaments/mens/worldcup/qatar2022" target="_blank" rel="noopener">FIFA — Qatar 2022</a> and <a href="https://www.rsssf.org/tables/2022f.html" target="_blank" rel="noopener">RSSSF — World Cup 2022 results</a>. Last reviewed 21 June 2026.
+    </footer>
+  </main>
+</body>
+</html>

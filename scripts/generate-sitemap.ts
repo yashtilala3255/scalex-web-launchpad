@@ -24,6 +24,7 @@ const entries: SitemapEntry[] = [
   { path: "/services/full-stack-development", changefreq: "monthly", priority: "0.7" },
   { path: "/privacy-policy", changefreq: "yearly", priority: "0.3" },
   { path: "/terms-of-service", changefreq: "yearly", priority: "0.3" },
+  { path: "/cookie-policy", changefreq: "yearly", priority: "0.3" },
 ];
 
 function generateSitemap(entries: SitemapEntry[]) {

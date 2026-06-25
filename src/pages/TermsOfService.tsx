@@ -11,6 +11,18 @@ const sections = [
     content: "By accessing or using the ScaleXWeb Solution website and services, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our website or services. These terms apply to all visitors, users, and clients.",
   },
   {
+    title: "Permitted Use & Prohibited Conduct",
+    content: "You are granted a non-exclusive, non-transferable, revocable license to access our website for informational and project inquiry purposes. You agree not to use our services or website for any unlawful activities, including transmitting malware, scraping content, attempting unauthorized server access, submitting false/fraudulent inquiry data, or violating the intellectual property rights of others.",
+  },
+  {
+    title: "Right to Modify Terms",
+    content: "We reserve the right to update, modify, or replace these Terms of Service at any time. Any revisions will be indicated by an updated 'Last updated' timestamp. Your continued use of the website or our services following any changes constitutes your binding acceptance of the modified Terms of Service.",
+  },
+  {
+    title: "User-Generated Content & Submission Ownership",
+    content: "When you submit project inquiries, ideas, mockups, or attachments through our contact forms, you grant ScaleXWeb Solution a non-exclusive, worldwide, royalty-free license to use, store, and process this information to evaluate your request and prepare quotes. You warrant that you own or have the necessary intellectual property rights for all content you submit and that it does not infringe on third-party rights.",
+  },
+  {
     title: "Services",
     content: "ScaleXWeb Solution provides digital services including website development, mobile application development, SaaS platform development, e-commerce solutions, and UI/UX design. The specific scope, timeline, and deliverables for each project are defined in individual project agreements signed between ScaleXWeb Solution and the client.",
   },
@@ -35,12 +47,12 @@ const sections = [
     content: "ScaleXWeb Solution's liability for any claims arising from our services is limited to the amount paid for the specific service giving rise to the claim. We are not liable for indirect, incidental, special, or consequential damages. We do not warrant that our services will meet all specific business requirements or be error-free.",
   },
   {
-    title: "Termination",
-    content: "Either party may terminate a project with 14 days written notice. Upon termination, the client is responsible for payment of all work completed to date. Deliverables completed and paid for will be provided to the client upon termination.",
+    title: "Termination & Suspension",
+    content: "Either party may terminate an active project with 14 days written notice. Additionally, we reserve the right to suspend or terminate your access to our website, CMS dashboard, or project portals immediately and without notice if we detect a breach of these Terms of Service, fraudulent activity, or abusive behavior.",
   },
   {
-    title: "Governing Law",
-    content: "These Terms of Service are governed by the laws of Gujarat, India. Any disputes arising from these terms or our services shall be subject to the exclusive jurisdiction of the courts of Ahmedabad, Gujarat.",
+    title: "Governing Law & Dispute Resolution",
+    content: "These Terms of Service are governed by the laws of Gujarat, India. Any disputes arising from these terms or our services shall be subject to the exclusive jurisdiction of the courts of Ahmedabad, Gujarat, India.",
   },
   {
     title: "Contact Us",

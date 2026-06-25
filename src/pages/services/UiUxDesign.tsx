@@ -16,6 +16,7 @@ import {
   Send, ArrowRight, Sparkles, Layout as LayoutIcon,
   Award, Heart, PenTool, CheckCircle, Figma
 } from "lucide-react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 /* ─── Data ───────────────────────────────────────────── */
 
@@ -349,7 +350,7 @@ const UiUxDesign = () => {
       </section>
 
       {/* ── 5. FAQ Accordion ────────────────────────────── */}
-      <section className="section-padding bg-secondary/10">
+      <section className="section-padding bg-secondary/10 scroll-mt-20 md:scroll-mt-24" id="faqs">
         <div className="container-tight max-w-3xl mx-auto">
           <motion.div {...fadeUp} className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-4">
@@ -358,19 +359,18 @@ const UiUxDesign = () => {
             </h2>
           </motion.div>
 
-          <div className="space-y-3">
+          <Accordion type="single" collapsible className="w-full space-y-3">
             {faqs.map((f, i) => (
-              <details key={i} className="border border-border bg-card rounded-xl overflow-hidden group">
-                <summary className="px-6 py-4 font-semibold text-sm text-foreground/90 flex items-center justify-between cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden">
-                  <span>{f.q}</span>
-                  <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform duration-300 group-open:rotate-180" />
-                </summary>
-                <div className="px-6 pb-5 pt-2 text-xs text-muted-foreground border-t border-border/30 leading-relaxed">
+              <AccordionItem key={i} value={`faq-${i}`} className="border border-border bg-card rounded-xl overflow-hidden px-6 py-0 border-b-0 group">
+                <AccordionTrigger className="font-semibold text-sm text-foreground/90 hover:no-underline py-4">
+                  {f.q}
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground leading-relaxed pt-2 pb-5 text-xs">
                   {f.a}
-                </div>
-              </details>
+                </AccordionContent>
+              </AccordionItem>
             ))}
-          </div>
+          </Accordion>
         </div>
       </section>
     </Layout>

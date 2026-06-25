@@ -139,44 +139,88 @@ export const SiteDataProvider: React.FC<{ children: React.ReactNode }> = ({ chil
             return acc;
           }, {});
 
-          // Load data with fallback to default static data
-          setStats(contentMap.stats || defaultData.stats);
-          setServices(contentMap.services || defaultData.services);
-          setIndustries(contentMap.industries || defaultData.industries);
-          setTrustPoints(contentMap.trustPoints || defaultData.trustPoints);
-          setProcessSteps(contentMap.processSteps || defaultData.processSteps);
-          setTestimonials(contentMap.testimonials || defaultData.testimonials);
-          setValues(contentMap.values || defaultData.values);
-          setTechMarqueeItems(contentMap.techMarqueeItems || defaultData.techMarqueeItems);
-          setChallenges(contentMap.challenges || defaultData.challenges);
-          setSolutionCategories(contentMap.solutionCategories || defaultData.solutionCategories);
-          setCaseStudies(contentMap.caseStudies || defaultData.caseStudies);
-          setSaasArchitecture(contentMap.saasArchitecture || defaultData.saasArchitecture);
-          setSaasFeatures(contentMap.saasFeatures || defaultData.saasFeatures);
-          setSaasWhyUs(contentMap.saasWhyUs || defaultData.saasWhyUs);
-          setTechStack(contentMap.techStack || defaultData.techStack);
-          setSettings(contentMap.settings || DEFAULT_SETTINGS);
-          setAnalytics(contentMap.analytics || DEFAULT_ANALYTICS);
+          // Helper to combine database + localStorage cache
+          const getCombined = (key: string, defVal: any) => {
+            if (contentMap[key] !== undefined) return contentMap[key];
+            const stored = localStorage.getItem(`scalex_${key}`);
+            return stored ? JSON.parse(stored) : defVal;
+          };
+
+          // Load data with fallback to localStorage edits, and then to default static data
+          const loadedStats = getCombined("stats", defaultData.stats);
+          setStats(loadedStats);
+          
+          let loadedServices = getCombined("services", defaultData.services);
+          if (Array.isArray(loadedServices)) {
+            const missingServices = defaultData.services.filter(
+              (defSvc: any) => !loadedServices.some((s: any) => s.path === defSvc.path)
+            );
+            if (missingServices.length > 0) {
+              loadedServices = [...loadedServices, ...missingServices];
+              if (isSupabaseConfigured && supabase) {
+                supabase
+                  .from("site_content")
+                  .upsert({ key: "services", value: loadedServices, updated_at: new Date().toISOString() })
+                  .then(({ error }) => {
+                    if (error) console.error("Auto-heal services failed:", error.message);
+                    else console.log("Auto-healed services list in database!");
+                  });
+              }
+            }
+          }
+          setServices(loadedServices);
+
+          const loadedIndustries = getCombined("industries", defaultData.industries);
+          const loadedTrustPoints = getCombined("trustPoints", defaultData.trustPoints);
+          const loadedProcessSteps = getCombined("processSteps", defaultData.processSteps);
+          const loadedTestimonials = getCombined("testimonials", defaultData.testimonials);
+          const loadedValues = getCombined("values", defaultData.values);
+          const loadedTechMarqueeItems = getCombined("techMarqueeItems", defaultData.techMarqueeItems);
+          const loadedChallenges = getCombined("challenges", defaultData.challenges);
+          const loadedSolutionCategories = getCombined("solutionCategories", defaultData.solutionCategories);
+          const loadedCaseStudies = getCombined("caseStudies", defaultData.caseStudies);
+          const loadedSaasArchitecture = getCombined("saasArchitecture", defaultData.saasArchitecture);
+          const loadedSaasFeatures = getCombined("saasFeatures", defaultData.saasFeatures);
+          const loadedSaasWhyUs = getCombined("saasWhyUs", defaultData.saasWhyUs);
+          const loadedTechStack = getCombined("techStack", defaultData.techStack);
+          const loadedSettings = getCombined("settings", DEFAULT_SETTINGS);
+          const loadedAnalytics = getCombined("analytics", DEFAULT_ANALYTICS);
+
+          setIndustries(loadedIndustries);
+          setTrustPoints(loadedTrustPoints);
+          setProcessSteps(loadedProcessSteps);
+          setTestimonials(loadedTestimonials);
+          setValues(loadedValues);
+          setTechMarqueeItems(loadedTechMarqueeItems);
+          setChallenges(loadedChallenges);
+          setSolutionCategories(loadedSolutionCategories);
+          setCaseStudies(loadedCaseStudies);
+          setSaasArchitecture(loadedSaasArchitecture);
+          setSaasFeatures(loadedSaasFeatures);
+          setSaasWhyUs(loadedSaasWhyUs);
+          setTechStack(loadedTechStack);
+          setSettings(loadedSettings);
+          setAnalytics(loadedAnalytics);
 
           // Seed Supabase if it's completely empty
           if (contentData.length === 0) {
             const seedItems = [
-              { key: "stats", value: defaultData.stats },
-              { key: "services", value: defaultData.services },
-              { key: "industries", value: defaultData.industries },
-              { key: "trustPoints", value: defaultData.trustPoints },
-              { key: "processSteps", value: defaultData.processSteps },
-              { key: "testimonials", value: defaultData.testimonials },
-              { key: "values", value: defaultData.values },
-              { key: "techMarqueeItems", value: defaultData.techMarqueeItems },
-              { key: "challenges", value: defaultData.challenges },
-              { key: "solutionCategories", value: defaultData.solutionCategories },
-              { key: "caseStudies", value: defaultData.caseStudies },
-              { key: "saasArchitecture", value: defaultData.saasArchitecture },
-              { key: "saasFeatures", value: defaultData.saasFeatures },
-              { key: "saasWhyUs", value: defaultData.saasWhyUs },
-              { key: "techStack", value: defaultData.techStack },
-              { key: "settings", value: DEFAULT_SETTINGS }
+              { key: "stats", value: loadedStats },
+              { key: "services", value: loadedServices },
+              { key: "industries", value: loadedIndustries },
+              { key: "trustPoints", value: loadedTrustPoints },
+              { key: "processSteps", value: loadedProcessSteps },
+              { key: "testimonials", value: loadedTestimonials },
+              { key: "values", value: loadedValues },
+              { key: "techMarqueeItems", value: loadedTechMarqueeItems },
+              { key: "challenges", value: loadedChallenges },
+              { key: "solutionCategories", value: loadedSolutionCategories },
+              { key: "caseStudies", value: loadedCaseStudies },
+              { key: "saasArchitecture", value: loadedSaasArchitecture },
+              { key: "saasFeatures", value: loadedSaasFeatures },
+              { key: "saasWhyUs", value: loadedSaasWhyUs },
+              { key: "techStack", value: loadedTechStack },
+              { key: "settings", value: loadedSettings }
             ];
             await supabase.from("site_content").insert(seedItems);
           }
@@ -210,7 +254,19 @@ export const SiteDataProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     };
 
     setStats(getLocal("stats", defaultData.stats));
-    setServices(getLocal("services", defaultData.services));
+    
+    let localServices = getLocal("services", defaultData.services);
+    if (Array.isArray(localServices)) {
+      const missingServices = defaultData.services.filter(
+        (defSvc: any) => !localServices.some((s: any) => s.path === defSvc.path)
+      );
+      if (missingServices.length > 0) {
+        localServices = [...localServices, ...missingServices];
+        localStorage.setItem("scalex_services", JSON.stringify(localServices));
+      }
+    }
+    setServices(localServices);
+
     setIndustries(getLocal("industries", defaultData.industries));
     setTrustPoints(getLocal("trustPoints", defaultData.trustPoints));
     setProcessSteps(getLocal("processSteps", defaultData.processSteps));
@@ -278,6 +334,7 @@ export const SiteDataProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   // Update Inquiry Status
   const updateInquiryStatus = async (id: string, status: Inquiry["status"]) => {
+    let synced = false;
     if (isSupabaseConfigured && supabase) {
       try {
         const { error } = await supabase
@@ -288,7 +345,7 @@ export const SiteDataProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
         setInquiries(prev => prev.map(inq => inq.id === id ? { ...inq, status } : inq));
         toast.success("Inquiry status updated successfully!");
-        return;
+        synced = true;
       } catch (e: any) {
         console.error("Supabase update status failed:", e.message);
       }
@@ -297,11 +354,14 @@ export const SiteDataProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     const updated = inquiries.map(inq => inq.id === id ? { ...inq, status } : inq);
     setInquiries(updated);
     saveToLocal("inquiries", updated);
-    toast.success("Inquiry status updated locally!");
+    if (!synced) {
+      toast.success("Inquiry status updated locally!");
+    }
   };
 
   // Update Inquiry Notes
   const updateInquiryNotes = async (id: string, notes: string) => {
+    let synced = false;
     if (isSupabaseConfigured && supabase) {
       try {
         const { error } = await supabase
@@ -312,7 +372,7 @@ export const SiteDataProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
         setInquiries(prev => prev.map(inq => inq.id === id ? { ...inq, notes } : inq));
         toast.success("Inquiry notes saved!");
-        return;
+        synced = true;
       } catch (e: any) {
         console.error("Supabase update notes failed:", e.message);
       }
@@ -321,11 +381,14 @@ export const SiteDataProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     const updated = inquiries.map(inq => inq.id === id ? { ...inq, notes } : inq);
     setInquiries(updated);
     saveToLocal("inquiries", updated);
-    toast.success("Inquiry notes saved locally!");
+    if (!synced) {
+      toast.success("Inquiry notes saved locally!");
+    }
   };
 
   // Delete Inquiry
   const deleteInquiry = async (id: string) => {
+    let synced = false;
     if (isSupabaseConfigured && supabase) {
       try {
         const { error } = await supabase
@@ -336,7 +399,7 @@ export const SiteDataProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
         setInquiries(prev => prev.filter(inq => inq.id !== id));
         toast.success("Inquiry deleted successfully!");
-        return;
+        synced = true;
       } catch (e: any) {
         console.error("Supabase delete inquiry failed:", e.message);
       }
@@ -345,7 +408,9 @@ export const SiteDataProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     const updated = inquiries.filter(inq => inq.id !== id);
     setInquiries(updated);
     saveToLocal("inquiries", updated);
-    toast.success("Inquiry deleted locally!");
+    if (!synced) {
+      toast.success("Inquiry deleted locally!");
+    }
   };
 
   // Update Section Data (stats, testimonials, etc.)
@@ -369,6 +434,7 @@ export const SiteDataProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       case "techStack": setTechStack(data); break;
     }
 
+    let synced = false;
     if (isSupabaseConfigured && supabase) {
       try {
         const { error } = await supabase
@@ -376,7 +442,7 @@ export const SiteDataProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           .upsert({ key, value: data, updated_at: new Date().toISOString() });
         if (error) throw error;
         toast.success(`CMS section '${key}' updated in database!`);
-        return;
+        synced = true;
       } catch (e: any) {
         console.error("Supabase update section failed:", e.message);
       }
@@ -384,12 +450,15 @@ export const SiteDataProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
     // Local Storage Fallback
     saveToLocal(key, data);
-    toast.success(`CMS section '${key}' saved locally!`);
+    if (!synced) {
+      toast.success(`CMS section '${key}' saved locally!`);
+    }
   };
 
   // Update site-wide settings
   const updateSettings = async (data: SiteSettings) => {
     setSettings(data);
+    let synced = false;
     if (isSupabaseConfigured && supabase) {
       try {
         const { error } = await supabase
@@ -397,14 +466,16 @@ export const SiteDataProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           .upsert({ key: "settings", value: data, updated_at: new Date().toISOString() });
         if (error) throw error;
         toast.success("Site settings updated in database!");
-        return;
+        synced = true;
       } catch (e: any) {
         console.error("Supabase settings update failed:", e.message);
       }
     }
 
     saveToLocal("settings", data);
-    toast.success("Site settings saved locally!");
+    if (!synced) {
+      toast.success("Site settings saved locally!");
+    }
   };
 
   // Reset to Defaults

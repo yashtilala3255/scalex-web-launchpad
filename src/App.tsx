@@ -22,9 +22,14 @@ const FullStackDevelopment = lazy(() => import("./pages/services/FullStackDevelo
 const NotFound = lazy(() => import("./pages/NotFound"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const TermsOfService = lazy(() => import("./pages/TermsOfService"));
+const CookiePolicy = lazy(() => import("./pages/CookiePolicy"));
+const ClientInvoiceView = lazy(() => import("./pages/ClientInvoiceView"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const MaintenancePage = lazy(() => import("./pages/MaintenancePage"));
 const ComingSoonPage = lazy(() => import("./pages/ComingSoonPage"));
+const Demo = lazy(() => import("./pages/Demo"));
+import ScrollToTop from "@/components/layout/ScrollToTop";
+
 
 const LoaderCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -498,6 +503,7 @@ const App = () => {
                 className="bg-background min-h-screen"
               >
                 <BrowserRouter>
+                  <ScrollToTop />
                   <MaintenanceGuard>
                     <Suspense fallback={<PageLoader />}>
                       <Routes>
@@ -514,8 +520,12 @@ const App = () => {
                         <Route path="/services/full-stack-development" element={<FullStackDevelopment />} />
                         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                         <Route path="/terms-of-service" element={<TermsOfService />} />
+                        <Route path="/cookie-policy" element={<CookiePolicy />} />
+                        <Route path="/invoices/view/:id" element={<ClientInvoiceView />} />
+                        <Route path="/invoices/print/:id" element={<ClientInvoiceView />} />
                         <Route path="/adminloginog" element={<AdminDashboard />} />
                         <Route path="/adminloginfk" element={<AdminDashboard />} />
+                        <Route path="/demo" element={<Demo />} />
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </Suspense>

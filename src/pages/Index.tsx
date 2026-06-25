@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Layout from "@/components/layout/Layout";
 import SEO from "@/components/SEO";
+import { cn } from "@/lib/utils";
 import SectionCTA from "@/components/sections/SectionCTA";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -23,6 +24,16 @@ import {
 } from "lucide-react";
 import { useSiteData } from "@/context/SiteDataContext";
 import { getIconComponent } from "@/components/ui/icon-helper";
+import { BentoPricing } from "@/components/ui/bento-pricing";
+import { Badge } from "@/components/ui/badge";
+import { CheckIcon, SparklesIcon } from "lucide-react";
+import { services as defaultServices } from "@/data";
+import { InfiniteSlider } from "@/components/ui/infinite-slider";
+import { ProgressiveBlur } from "@/components/ui/progressive-blur";
+import { FloatingIconsHero } from "@/components/ui/floating-icons-hero-section";
+import { FeatureGrid } from "@/components/ui/feature-section";
+import { TestimonialSlider } from "@/components/ui/testimonial-slider";
+import { FeatureCard } from "@/components/ui/grid-feature-cards";
 
 // ── AI Enterprise Form ──────────────────────────
 const aiFormSchema = z.object({
@@ -142,6 +153,7 @@ const HeroInquiryForm = ({ onClose }: { onClose?: () => void }) => {
               <SelectItem value="SaaS Platform Development">SaaS Platform Development</SelectItem>
               <SelectItem value="E-Commerce Solutions">E-Commerce Solutions</SelectItem>
               <SelectItem value="UI/UX Interface Design">UI/UX Interface Design</SelectItem>
+              <SelectItem value="Full Stack Development">Full Stack Development</SelectItem>
               <SelectItem value="Custom Enterprise Software">Custom Enterprise Software</SelectItem>
             </SelectContent>
           </Select>
@@ -398,6 +410,20 @@ const Index = () => {
     processSteps, testimonials, techMarqueeItems, settings
   } = useSiteData();
 
+  const mappedSliderTestimonials = (testimonials || []).map((t, idx) => ({
+    id: idx,
+    quote: t.quote,
+    name: t.name,
+    username: `@${t.initials.toLowerCase()}_${t.company.toLowerCase().replace(/\s+/g, '')}`,
+    avatar: `https://i.pravatar.cc/150?img=${(idx % 70) + 1}`
+  }));
+
+  const featureSteps = (processSteps || []).map((step) => ({
+    title: `${step.step}. ${step.title}`,
+    icon: getIconComponent(step.icon) as any,
+    description: step.desc
+  }));
+
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   // Automatically open the form popup on website load
@@ -417,7 +443,48 @@ const Index = () => {
     sessionStorage.setItem("heroFormDismissed", "true");
   };
 
-  if (!services || services.length < 5) return null;
+  if (!services) return null;
+
+  const s0 = services[0] || defaultServices[0];
+  const s1 = services[1] || defaultServices[1];
+  const s2 = services[2] || defaultServices[2];
+  const s3 = services[3] || defaultServices[3];
+  const s4 = services[4] || defaultServices[4];
+  const s5 = services[5] || defaultServices[5];
+
+  const industriesIcons = (industries || []).map((ind, index) => {
+    const IconComponent = getIconComponent(ind.icon);
+    
+    // Position icons nicely in the grid layout coordinates
+    const positions = [
+      'top-[10%] left-[8%]',
+      'top-[18%] right-[8%]',
+      'top-[78%] left-[8%]',
+      'bottom-[12%] right-[8%]',
+      'top-[5%] left-[28%]',
+      'top-[5%] right-[28%]',
+      'bottom-[10%] left-[22%]',
+      'top-[42%] left-[12%]',
+      'top-[72%] right-[22%]',
+      'top-[48%] right-[4%]',
+    ];
+
+    return {
+      id: index + 1,
+      icon: IconComponent,
+      className: positions[index % positions.length],
+      label: ind.name
+    };
+  });
+
+  const trustCategories = (trustPoints || []).map((tp) => {
+    const IconComponent = getIconComponent(tp.icon);
+    return {
+      icon: <IconComponent className="w-5 h-5 text-primary" />,
+      title: tp.title,
+      items: [{ text: tp.desc }]
+    };
+  });
 
   return (
     <Layout>
@@ -589,17 +656,25 @@ const Index = () => {
     </section>
 
     {/* ── Tech Marquee ─────────────────────────────── */}
-    <div className="border-y border-border/40 bg-card/50 py-5">
-      <div className="marquee">
-        <div className="marquee-inner gap-10 px-5">
-          {[...techMarqueeItems, ...techMarqueeItems].map((item, i) => (
-            <span key={i} className="flex items-center gap-2.5 text-sm font-medium text-muted-foreground whitespace-nowrap">
-              <span className="w-1.5 h-1.5 rounded-full gradient-primary" />
-              {item}
-            </span>
-          ))}
-        </div>
-      </div>
+    <div className="relative border-y border-border/40 bg-card/50 py-6 overflow-hidden w-full flex items-center justify-center">
+      <InfiniteSlider className="flex items-center w-full" duration={35} gap={48}>
+        {techMarqueeItems.map((item, i) => (
+          <span key={i} className="flex items-center gap-2.5 text-sm font-medium text-muted-foreground whitespace-nowrap">
+            <span className="w-1.5 h-1.5 rounded-full gradient-primary animate-pulse" />
+            {item}
+          </span>
+        ))}
+      </InfiniteSlider>
+      <ProgressiveBlur
+        className="pointer-events-none absolute top-0 left-0 h-full w-[150px] z-10"
+        direction="left"
+        blurIntensity={1.5}
+      />
+      <ProgressiveBlur
+        className="pointer-events-none absolute top-0 right-0 h-full w-[150px] z-10"
+        direction="right"
+        blurIntensity={1.5}
+      />
     </div>
 
     {/* ── About Snippet ────────────────────────────── */}
@@ -651,9 +726,24 @@ const Index = () => {
       </div>
     </section>
 
-    {/* ── Services Bento Grid ───────────────────────── */}
-    <section id="services" className="section-padding bg-secondary/30">
-      <div className="container-tight">
+    {/* ── Services Bento Grid / Bento Pricing ───────────────────────── */}
+    <section id="services" className="section-padding bg-[radial-gradient(35%_80%_at_50%_0%,hsl(var(--foreground)/0.04),transparent)] relative flex flex-col items-center justify-center overflow-hidden">
+      {/* Background Dots & Gradients from demo.tsx */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 -z-10 size-full bg-[radial-gradient(hsl(var(--foreground)/0.04)_1px,transparent_1px)] bg-[size:12px_12px]"
+      />
+
+      <div
+        aria-hidden
+        className="absolute inset-0 isolate -z-10 opacity-80 contain-strict pointer-events-none"
+      >
+        <div className="bg-[radial-gradient(68.54%_68.72%_at_55.02%_31.46%,hsl(var(--foreground)/0.03)_0,hsla(0,0%,55%,.01)_50%,hsl(var(--foreground)/0.005)_80%)] absolute top-0 left-0 h-[80rem] w-[35rem] -translate-y-[21.875rem] -rotate-45 rounded-full" />
+        <div className="bg-[radial-gradient(50%_50%_at_50%_50%,hsl(var(--foreground)/0.02)_0,hsl(var(--foreground)/0.005)_80%,transparent_100%)] absolute top-0 left-0 h-[80rem] w-[15rem] [translate:5%_-50%] -rotate-45 rounded-full" />
+        <div className="bg-[radial-gradient(50%_50%_at_50%_50%,hsl(var(--foreground)/0.02)_0,hsl(var(--foreground)/0.005)_80%,transparent_100%)] absolute top-0 left-0 h-[80rem] w-[15rem] -translate-y-[21.875rem] -rotate-45 rounded-full" />
+      </div>
+
+      <div className="container-tight relative z-10 w-full">
         <motion.div {...fadeUp} className="text-center mb-14">
           <p className="text-xs font-semibold text-primary uppercase tracking-[0.2em] mb-3">What We Do</p>
           <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-4">
@@ -665,205 +755,300 @@ const Index = () => {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Featured - Website Dev */}
-          <motion.div
-            {...stagger}
-            transition={{ delay: 0 }}
-            className="md:col-span-2 border border-border rounded-xl p-8 md:p-10 bg-card group hover:border-primary/30 transition-all duration-300"
-          >
-            {(() => {
-              const Icon = getIconComponent(services[0]?.icon);
-              return (
-                <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mb-6 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
-                  <Icon className="w-7 h-7" />
-                </div>
-              );
-            })()}
-            <h3 className="text-2xl font-heading font-bold text-foreground mb-3">{services[0].name}</h3>
-            <p className="text-muted-foreground mb-6 leading-relaxed max-w-lg">{services[0].desc} Every project is tailored to convert visitors into paying customers.</p>
-            <ul className="space-y-2.5 mb-8">
-              {services[0].bullets.map((b) => (
-                <li key={b} className="flex items-center gap-2.5 text-sm text-foreground/80">
-                  <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" /> {b}
-                </li>
-              ))}
-            </ul>
-            <Link to={services[0].path} className="inline-flex items-center gap-2 text-primary text-sm font-semibold group-hover:gap-3 transition-all duration-200">
-              Explore Service <ArrowRight className="w-4 h-4" />
-            </Link>
-          </motion.div>
-
-          {/* App Dev */}
-          <motion.div {...stagger} transition={{ delay: 0.1 }} className="border border-border rounded-xl p-7 bg-card group hover:border-primary/30 transition-all duration-300">
-            {(() => {
-              const Icon = getIconComponent(services[1]?.icon);
-              return (
-                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-5 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
-                  <Icon className="w-6 h-6" />
-                </div>
-              );
-            })()}
-            <h3 className="text-xl font-heading font-bold text-foreground mb-2">{services[1].name}</h3>
-            <p className="text-sm text-muted-foreground mb-5 leading-relaxed">{services[1].desc}</p>
-            <Link to={services[1].path} className="inline-flex items-center gap-1.5 text-primary text-xs font-semibold group-hover:gap-2.5 transition-all">
-              Learn More <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </motion.div>
-
-          {/* SaaS Dev */}
-          <motion.div {...stagger} transition={{ delay: 0.2 }} className="border border-border rounded-xl p-7 bg-card group hover:border-primary/30 transition-all duration-300">
-            {(() => {
-              const Icon = getIconComponent(services[2]?.icon);
-              return (
-                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-5 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
-                  <Icon className="w-6 h-6" />
-                </div>
-              );
-            })()}
-            <h3 className="text-xl font-heading font-bold text-foreground mb-2">{services[2].name}</h3>
-            <p className="text-sm text-muted-foreground mb-5 leading-relaxed">{services[2].desc}</p>
-            <Link to={services[2].path} className="inline-flex items-center gap-1.5 text-primary text-xs font-semibold group-hover:gap-2.5 transition-all">
-              Learn More <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </motion.div>
-
-          {/* E-Commerce */}
-          <motion.div {...stagger} transition={{ delay: 0.3 }} className="border border-border rounded-xl p-7 bg-card group hover:border-primary/30 transition-all duration-300">
-            {(() => {
-              const Icon = getIconComponent(services[3]?.icon);
-              return (
-                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-5 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
-                  <Icon className="w-6 h-6" />
-                </div>
-              );
-            })()}
-            <h3 className="text-xl font-heading font-bold text-foreground mb-2">{services[3].name}</h3>
-            <p className="text-sm text-muted-foreground mb-5 leading-relaxed">{services[3].desc}</p>
-            <Link to={services[3].path} className="inline-flex items-center gap-1.5 text-primary text-xs font-semibold group-hover:gap-2.5 transition-all">
-              Learn More <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </motion.div>
-
-          {/* UI/UX card */}
-          <motion.div {...stagger} transition={{ delay: 0.35 }} className="border border-border rounded-xl p-7 bg-card group hover:border-primary/30 transition-all duration-300">
-            {(() => {
-              const Icon = getIconComponent(services[4]?.icon);
-              return (
-                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-5 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
-                  <Icon className="w-6 h-6" />
-                </div>
-              );
-            })()}
-            <h3 className="text-xl font-heading font-bold text-foreground mb-2">{services[4].name}</h3>
-            <p className="text-sm text-muted-foreground mb-5 leading-relaxed">{services[4].desc}</p>
-            <Link to={services[4].path} className="inline-flex items-center gap-1.5 text-primary text-xs font-semibold group-hover:gap-2.5 transition-all">
-              Learn More <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </motion.div>
-
-          {/* Full Stack Development */}
-          {services[5] && (
-            <motion.div {...stagger} transition={{ delay: 0.38 }} className="border border-border rounded-xl p-7 bg-card group hover:border-primary/30 transition-all duration-300">
-              {(() => {
-                const Icon = getIconComponent(services[5]?.icon);
-                return (
-                  <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-5 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
-                    <Icon className="w-6 h-6" />
-                  </div>
-                );
-              })()}
-              <h3 className="text-xl font-heading font-bold text-foreground mb-2">{services[5].name}</h3>
-              <p className="text-sm text-muted-foreground mb-5 leading-relaxed">{services[5].desc}</p>
-              <Link to={services[5].path} className="inline-flex items-center gap-1.5 text-primary text-xs font-semibold group-hover:gap-2.5 transition-all">
-                Learn More <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </motion.div>
-          )}
-
-          {/* CTA card */}
-         
-        </div>
-      </div>
-    </section>
-
-    {/* ── Industries Marquee ───────────────────────── */}
-    <section className="section-padding bg-navy overflow-hidden">
-      <div className="container-tight">
-        <motion.div {...fadeUp} className="text-center mb-14">
-          <p className="text-xs font-semibold text-accent uppercase tracking-[0.2em] mb-3">Industries</p>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-4">
-            <span className="font-heading font-extrabold text-foreground block">Industries We Serve</span>
-            <span className="font-serif italic font-normal text-primary block mt-2 md:translate-x-8">Built for Your Domain.</span>
-          </h2>
-          <p className="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            We deliver tailored solutions across diverse industries, understanding the unique challenges each sector faces.
-          </p>
-        </motion.div>
-      </div>
-
-      {/* Row 1 */}
-      <div className="marquee py-3 mb-3">
-        <div className="marquee-inner gap-4 px-2">
-          {[...industries, ...industries].map((ind, i) => {
-            const Icon = getIconComponent(ind.icon);
-            return (
-              <div key={i} className="bg-card border border-border rounded-full px-6 py-3.5 flex items-center gap-3.5 whitespace-nowrap flex-shrink-0 shadow-[0_2px_8px_rgba(9,9,11,0.02)] hover:border-primary/30 transition-all duration-300">
-                <Icon className="w-4 h-4 text-accent" />
-                <span className="text-sm font-semibold text-foreground/80">{ind.name}</span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Row 2 — reverse */}
-      <div className="marquee py-3">
-        <div className="marquee-inner gap-4 px-2" style={{ animationDirection: "reverse" }}>
-          {[...industries, ...industries].map((ind, i) => {
-            const Icon = getIconComponent(ind.icon);
-            return (
-              <div key={i} className="bg-card border border-border rounded-full px-6 py-3.5 flex items-center gap-3.5 whitespace-nowrap flex-shrink-0 shadow-[0_2px_8px_rgba(9,9,11,0.02)] hover:border-primary/30 transition-all duration-300">
-                <Icon className="w-4 h-4 text-primary" />
-                <span className="text-sm font-semibold text-foreground/80">{ind.name}</span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-
-    {/* ── Why Trust Us ─────────────────────────────── */}
-    <section className="section-padding bg-background">
-      <div className="container-tight">
-        <motion.div {...fadeUp} className="text-center mb-14">
-          <p className="text-xs font-semibold text-primary uppercase tracking-[0.2em] mb-3">Why Choose Us</p>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-4">
-            <span className="font-heading font-extrabold text-foreground block">Why 30+ Businesses</span>
-            <span className="font-serif italic font-normal text-primary block mt-2 md:translate-x-8">Choose ScaleXWeb.</span>
-          </h2>
-        </motion.div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {trustPoints.map((tp, i) => {
-            const Icon = getIconComponent(tp.icon);
-            return (
-              <motion.div
-                key={tp.title}
-                {...stagger}
-                transition={{ delay: i * 0.08 }}
-                className="border border-border rounded-xl p-7 bg-card group hover:border-primary/30 transition-all duration-300"
+        <motion.div {...fadeUp} className="w-full">
+          <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-8 w-full">
+            {/* Service 1: Website Development (col-span-5) */}
+            {s0 && (
+              <div
+                className={cn(
+                  'bg-background border-foreground/10 relative w-full overflow-hidden rounded-md border',
+                  'supports-[backdrop-filter]:bg-background/10 backdrop-blur',
+                  'lg:col-span-5 p-6 flex flex-col justify-between min-h-[280px]'
+                )}
               >
-                <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-5 group-hover:bg-primary group-hover:text-white transition-all duration-300">
-                  <Icon className="w-6 h-6" />
+                <div className="pointer-events-none absolute top-0 left-1/2 -mt-2 -ml-20 h-full w-full [mask-image:linear-gradient(white,transparent)]">
+                  <div className="from-foreground/5 to-foreground/2 absolute inset-0 bg-gradient-to-r [mask-image:radial-gradient(farthest-side_at_top,white,transparent)]">
+                    <div
+                      aria-hidden="true"
+                      className={cn(
+                        'absolute inset-0 size-full mix-blend-overlay',
+                        'bg-[linear-gradient(to_right,hsl(var(--foreground)/0.1)_1px,transparent_1px)]',
+                        'bg-[size:24px]',
+                      )}
+                    />
+                  </div>
                 </div>
-                <h3 className="font-heading font-semibold text-foreground mb-2">{tp.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{tp.desc}</p>
-              </motion.div>
-            );
-          })}
-        </div>
+
+                <div className="relative z-10 w-full">
+                  <div className="flex items-center gap-3 mb-6">
+                    <Badge variant="secondary">MOST POPULAR</Badge>
+                    <Badge variant="outline" className="hidden lg:flex">
+                      <SparklesIcon className="me-1 size-3" /> Recommended
+                    </Badge>
+                    <div className="ml-auto">
+                      <Link to={s0.path}>
+                        <Button size="sm" variant="outline">Explore</Button>
+                      </Link>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col lg:flex-row gap-6 items-start">
+                    <div className="lg:w-[40%]">
+                      <h3 className="font-heading font-extrabold text-2xl tracking-tight mb-2 text-foreground">
+                        {s0.name}
+                      </h3>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        {s0.desc}
+                      </p>
+                    </div>
+                    <ul className="text-muted-foreground grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm lg:w-[60%]">
+                      {s0.bullets?.slice(0, 4).map((bullet: string, idx: number) => (
+                        <li key={idx} className="flex items-center gap-2.5">
+                          <div className="bg-primary text-primary-foreground rounded-full p-0.5 flex items-center justify-center flex-shrink-0">
+                            <CheckIcon className="size-3" strokeWidth={3} />
+                          </div>
+                          <span className="leading-relaxed text-xs">{bullet}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Service 2: App Development (col-span-3) */}
+            {s1 && (
+              <div
+                className={cn(
+                  'bg-background border-foreground/10 relative overflow-hidden rounded-md border p-6 flex flex-col justify-between min-h-[280px]',
+                  'supports-[backdrop-filter]:bg-background/10 backdrop-blur',
+                  'lg:col-span-3'
+                )}
+              >
+                <div>
+                  <div className="flex items-center gap-3 mb-6">
+                    <Badge variant="secondary">MOBILE FIRST</Badge>
+                    <div className="ml-auto">
+                      <Link to={s1.path}>
+                        <Button variant="outline" size="sm">Explore</Button>
+                      </Link>
+                    </div>
+                  </div>
+
+                  <h3 className="font-heading font-extrabold text-xl tracking-tight mb-2 text-foreground">
+                    {s1.name}
+                  </h3>
+                  <p className="text-xs text-muted-foreground leading-relaxed mb-6">
+                    {s1.desc}
+                  </p>
+                </div>
+
+                <ul className="text-muted-foreground grid gap-2.5 text-xs">
+                  {s1.bullets?.slice(0, 3).map((bullet: string, idx: number) => (
+                    <li key={idx} className="flex items-center gap-2">
+                      <div className="bg-primary text-primary-foreground rounded-full p-0.5 flex items-center justify-center flex-shrink-0">
+                        <CheckIcon className="size-3" strokeWidth={3} />
+                      </div>
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Service 3: SaaS Development (col-span-4) */}
+            {s2 && (
+              <div
+                className={cn(
+                  'bg-background border-foreground/10 relative overflow-hidden rounded-md border p-6 flex flex-col justify-between min-h-[280px]',
+                  'supports-[backdrop-filter]:bg-background/10 backdrop-blur',
+                  'lg:col-span-4'
+                )}
+              >
+                <div>
+                  <div className="flex items-center gap-3 mb-6">
+                    <Badge variant="secondary">SCALABLE CLOUD</Badge>
+                    <div className="ml-auto">
+                      <Link to={s2.path}>
+                        <Button variant="outline" size="sm">Explore</Button>
+                      </Link>
+                    </div>
+                  </div>
+
+                  <h3 className="font-heading font-extrabold text-xl tracking-tight mb-2 text-foreground">
+                    {s2.name}
+                  </h3>
+                  <p className="text-xs text-muted-foreground leading-relaxed mb-6">
+                    {s2.desc}
+                  </p>
+                </div>
+
+                <ul className="text-muted-foreground grid gap-2.5 text-xs">
+                  {s2.bullets?.slice(0, 3).map((bullet: string, idx: number) => (
+                    <li key={idx} className="flex items-center gap-2">
+                      <div className="bg-primary text-primary-foreground rounded-full p-0.5 flex items-center justify-center flex-shrink-0">
+                        <CheckIcon className="size-3" strokeWidth={3} />
+                      </div>
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Service 4: E-Commerce Solutions (col-span-4) */}
+            {s3 && (
+              <div
+                className={cn(
+                  'bg-background border-foreground/10 relative overflow-hidden rounded-md border p-6 flex flex-col justify-between min-h-[280px]',
+                  'supports-[backdrop-filter]:bg-background/10 backdrop-blur',
+                  'lg:col-span-4'
+                )}
+              >
+                <div>
+                  <div className="flex items-center gap-3 mb-6">
+                    <Badge variant="secondary">HIGH CONVERSION</Badge>
+                    <div className="ml-auto">
+                      <Link to={s3.path}>
+                        <Button variant="outline" size="sm">Explore</Button>
+                      </Link>
+                    </div>
+                  </div>
+
+                  <h3 className="font-heading font-extrabold text-xl tracking-tight mb-2 text-foreground">
+                    {s3.name}
+                  </h3>
+                  <p className="text-xs text-muted-foreground leading-relaxed mb-6">
+                    {s3.desc}
+                  </p>
+                </div>
+
+                <ul className="text-muted-foreground grid gap-2.5 text-xs">
+                  {s3.bullets?.slice(0, 3).map((bullet: string, idx: number) => (
+                    <li key={idx} className="flex items-center gap-2">
+                      <div className="bg-primary text-primary-foreground rounded-full p-0.5 flex items-center justify-center flex-shrink-0">
+                        <CheckIcon className="size-3" strokeWidth={3} />
+                      </div>
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Service 5: UI/UX Design (col-span-4) */}
+            {s4 && (
+              <div
+                className={cn(
+                  'bg-background border-foreground/10 relative overflow-hidden rounded-md border p-6 flex flex-col justify-between min-h-[280px]',
+                  'supports-[backdrop-filter]:bg-background/10 backdrop-blur',
+                  'lg:col-span-4'
+                )}
+              >
+                <div>
+                  <div className="flex items-center gap-3 mb-6">
+                    <Badge variant="secondary">MODERN DESIGN</Badge>
+                    <div className="ml-auto">
+                      <Link to={s4.path}>
+                        <Button variant="outline" size="sm">Explore</Button>
+                      </Link>
+                    </div>
+                  </div>
+
+                  <h3 className="font-heading font-extrabold text-xl tracking-tight mb-2 text-foreground">
+                    {s4.name}
+                  </h3>
+                  <p className="text-xs text-muted-foreground leading-relaxed mb-6">
+                    {s4.desc}
+                  </p>
+                </div>
+
+                <ul className="text-muted-foreground grid gap-2.5 text-xs">
+                  {s4.bullets?.slice(0, 3).map((bullet: string, idx: number) => (
+                    <li key={idx} className="flex items-center gap-2">
+                      <div className="bg-primary text-primary-foreground rounded-full p-0.5 flex items-center justify-center flex-shrink-0">
+                        <CheckIcon className="size-3" strokeWidth={3} />
+                      </div>
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Service 6: Full Stack Development (col-span-4) */}
+            {s5 && (
+              <div
+                className={cn(
+                  'bg-background border-foreground/10 relative overflow-hidden rounded-md border p-6 flex flex-col justify-between min-h-[280px]',
+                  'supports-[backdrop-filter]:bg-background/10 backdrop-blur',
+                  'lg:col-span-4'
+                )}
+              >
+                <div>
+                  <div className="flex items-center gap-3 mb-6">
+                    <Badge variant="secondary">END TO END</Badge>
+                    <div className="ml-auto">
+                      <Link to={s5.path}>
+                        <Button variant="outline" size="sm">Explore</Button>
+                      </Link>
+                    </div>
+                  </div>
+
+                  <h3 className="font-heading font-extrabold text-xl tracking-tight mb-2 text-foreground">
+                    {s5.name}
+                  </h3>
+                  <p className="text-xs text-muted-foreground leading-relaxed mb-6">
+                    {s5.desc}
+                  </p>
+                </div>
+
+                <ul className="text-muted-foreground grid gap-2.5 text-xs">
+                  {s5.bullets?.slice(0, 3).map((bullet: string, idx: number) => (
+                    <li key={idx} className="flex items-center gap-2">
+                      <div className="bg-primary text-primary-foreground rounded-full p-0.5 flex items-center justify-center flex-shrink-0">
+                        <CheckIcon className="size-3" strokeWidth={3} />
+                      </div>
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </motion.div>
       </div>
     </section>
+
+    {/* ── Industries Section (Floating Icons) ───────────────────────── */}
+    <FloatingIconsHero
+      title={
+        <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-4">
+          <span className="font-heading font-extrabold text-foreground block">Industries We Serve</span>
+          <span className="font-serif italic font-normal text-primary block mt-2 md:translate-x-8">Built for Your Domain.</span>
+        </h2>
+      }
+      subtitle="We deliver tailored digital solutions across diverse industries, understanding and solving the unique challenges each business sector faces."
+      ctaText="Explore Our Solutions"
+      ctaHref="/solutions"
+      icons={industriesIcons}
+    />
+
+    {/* ── Why Choose Us Section (Feature Grid) ─────────────────────────────── */}
+    <FeatureGrid
+      title={
+        <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] text-foreground">
+          <span className="font-heading font-extrabold block">Why 30+ Businesses</span>
+          <span className="font-serif italic font-normal text-primary block mt-2 md:translate-x-8">Choose ScaleXWeb.</span>
+        </h2>
+      }
+      subtitle="We prioritize transparency, scalable codebases, and measurable ROI to ensure your digital products exceed industry standards."
+      illustrationSrc="/why-choose.png"
+      illustrationAlt="Why Choose ScaleXWeb"
+      categories={trustCategories}
+      buttonText="Start Your Project"
+      buttonHref="/contact"
+    />
 
     {/* ── Process ──────────────────────────────────── */}
     <section className="section-padding bg-secondary/30">
@@ -878,77 +1063,16 @@ const Index = () => {
             A proven, repeatable process that delivers quality on time, every time.
           </p>
         </motion.div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {processSteps.map((step, i) => {
-            const Icon = getIconComponent(step.icon);
-            return (
-              <motion.div
-                key={step.title}
-                {...stagger}
-                transition={{ delay: i * 0.1 }}
-                className="border border-border rounded-xl p-7 bg-card group hover:border-primary/30 transition-all duration-300"
-              >
-                <div className="flex items-center justify-between mb-5">
-                  <div className="w-10 h-10 bg-primary/10 text-primary rounded-xl flex items-center justify-center font-mono font-bold text-sm flex-shrink-0 group-hover:bg-primary group-hover:text-white transition-all duration-300">
-                    {step.step}
-                  </div>
-                  <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center text-muted-foreground">
-                    <Icon className="w-4 h-4" />
-                  </div>
-                </div>
-                <h3 className="font-heading font-semibold text-foreground mb-2">{step.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
-              </motion.div>
-            );
-          })}
+        <div className="grid grid-cols-1 divide-x divide-y divide-dashed border border-dashed border-border/60 sm:grid-cols-2 md:grid-cols-3">
+          {featureSteps.map((feature, i) => (
+            <FeatureCard key={i} feature={feature} />
+          ))}
         </div>
       </div>
     </section>
 
     {/* ── Testimonials ─────────────────────────────── */}
-    <section className="section-padding bg-background">
-      <div className="container-tight">
-        <motion.div {...fadeUp} className="text-center mb-14">
-          <p className="text-xs font-semibold text-primary uppercase tracking-[0.2em] mb-3">Testimonials</p>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.1] mb-4">
-            <span className="font-heading font-extrabold text-foreground block">What Our Clients</span>
-            <span className="font-serif italic font-normal text-primary block mt-2 md:translate-x-8">Say About Us.</span>
-          </h2>
-        </motion.div>
-        <div className="grid md:grid-cols-3 gap-5">
-          {testimonials.map((t, i) => (
-            <motion.div
-              key={t.name}
-              {...stagger}
-              transition={{ delay: i * 0.1 }}
-              className="border border-border rounded-xl p-7 bg-card flex flex-col justify-between group hover:border-primary/30 transition-all duration-300"
-            >
-              <div>
-                <div className="flex gap-1 mb-5">
-                  {[...Array(5)].map((_, j) => (
-                    <Star key={j} className="w-3.5 h-3.5 fill-primary text-primary" />
-                  ))}
-                </div>
-                <div className="border-l-2 border-primary/20 pl-4 mb-6">
-                  <p className="text-sm text-muted-foreground leading-relaxed font-serif italic">
-                    &ldquo;{t.quote}&rdquo;
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 pt-4 border-t border-border/50">
-                <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-mono font-bold text-xs flex-shrink-0 group-hover:bg-primary group-hover:text-white transition-all duration-300">
-                  {t.initials}
-                </div>
-                <div>
-                  <p className="font-heading font-semibold text-foreground text-sm">{t.name}</p>
-                  <p className="text-xs text-muted-foreground">{t.role}, {t.company}</p>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
+    <TestimonialSlider items={mappedSliderTestimonials} />
 
     {/* ── AI Enterprise Form ───────────────────────── */}
     <AIEnterpriseForm />
