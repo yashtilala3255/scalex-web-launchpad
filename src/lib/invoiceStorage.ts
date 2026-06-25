@@ -295,10 +295,15 @@ const seedInitialData = () => {
 // Initialize seeding
 seedInitialData();
 
-// Persisted failed tables map to survive refreshes
+// Clear legacy localStorage failed registry to unlock any old offline locks
+if (typeof window !== "undefined") {
+  localStorage.removeItem("scalex_failed_tables");
+}
+
+// In-session failed tables map to handle transient issues
 const getFailedTables = (): { [key: string]: boolean } => {
   if (typeof window === "undefined") return {};
-  const stored = localStorage.getItem("scalex_failed_tables");
+  const stored = sessionStorage.getItem("scalex_failed_tables");
   return stored ? JSON.parse(stored) : {};
 };
 
@@ -306,7 +311,16 @@ const markTableFailed = (table: string) => {
   if (typeof window === "undefined") return;
   const failed = getFailedTables();
   failed[table] = true;
-  localStorage.setItem("scalex_failed_tables", JSON.stringify(failed));
+  sessionStorage.setItem("scalex_failed_tables", JSON.stringify(failed));
+};
+
+const markTableSuccessful = (table: string) => {
+  if (typeof window === "undefined") return;
+  const failed = getFailedTables();
+  if (failed[table]) {
+    delete failed[table];
+    sessionStorage.setItem("scalex_failed_tables", JSON.stringify(failed));
+  }
 };
 
 // Storage helper functions
@@ -315,6 +329,7 @@ export const invoiceStorage = {
   resetSyncRegistry(): void {
     if (typeof window !== "undefined") {
       localStorage.removeItem("scalex_failed_tables");
+      sessionStorage.removeItem("scalex_failed_tables");
     }
   },
 
@@ -333,6 +348,7 @@ export const invoiceStorage = {
       try {
         const { data, error } = await supabase.from("clients").select("*").order("name");
         if (!error && data) {
+          markTableSuccessful("clients");
           const cleanedData = data.filter(c => c.id !== "client-1" && c.id !== "client-2");
           if (cleanedData.length > 0) {
             localStorage.setItem("scalex_invoice_clients", JSON.stringify(cleanedData));
@@ -371,6 +387,7 @@ export const invoiceStorage = {
       try {
         const { data, error } = await supabase.from("clients").upsert(client).select();
         if (!error && data && data.length > 0) {
+          markTableSuccessful("clients");
           savedClient = data[0];
         }
         if (error) {
@@ -398,6 +415,9 @@ export const invoiceStorage = {
     if (isSupabaseConfigured && supabase && !getFailedTables()["clients"]) {
       try {
         const { error } = await supabase.from("clients").delete().eq("id", id);
+        if (!error) {
+          markTableSuccessful("clients");
+        }
         if (error) {
           console.warn("Supabase clients delete failed, falling back to LocalStorage:", error.message);
           markTableFailed("clients");
@@ -419,6 +439,7 @@ export const invoiceStorage = {
       try {
         const { data, error } = await supabase.from("products").select("*").order("name");
         if (!error && data) {
+          markTableSuccessful("products");
           const cleanedData = data.filter(p => p.id !== "prod-1" && p.id !== "prod-2" && p.id !== "prod-3");
           if (cleanedData.length > 0) {
             localStorage.setItem("scalex_invoice_products", JSON.stringify(cleanedData));
@@ -457,6 +478,7 @@ export const invoiceStorage = {
       try {
         const { data, error } = await supabase.from("products").upsert(product).select();
         if (!error && data && data.length > 0) {
+          markTableSuccessful("products");
           savedProduct = data[0];
         }
         if (error) {
@@ -484,6 +506,9 @@ export const invoiceStorage = {
     if (isSupabaseConfigured && supabase && !getFailedTables()["products"]) {
       try {
         const { error } = await supabase.from("products").delete().eq("id", id);
+        if (!error) {
+          markTableSuccessful("products");
+        }
         if (error) {
           console.warn("Supabase products delete failed, falling back to LocalStorage:", error.message);
           markTableFailed("products");
@@ -505,6 +530,7 @@ export const invoiceStorage = {
       try {
         const { data, error } = await supabase.from("invoices").select("*").order("created_at", { ascending: false });
         if (!error && data) {
+          markTableSuccessful("invoices");
           const cleanedData = data.filter(inv => inv.id !== "inv-demo-1" && inv.id !== "inv-demo-2");
           if (cleanedData.length > 0) {
             const invoicesWithItems: Invoice[] = [];
@@ -571,6 +597,7 @@ export const invoiceStorage = {
       try {
         const { data: inv, error } = await supabase.from("invoices").select("*").eq("id", id).maybeSingle();
         if (!error && inv) {
+          markTableSuccessful("invoices");
           // Fetch invoice items
           const { data: items, error: itemsError } = await supabase
             .from("invoice_items")
@@ -620,6 +647,7 @@ export const invoiceStorage = {
         const { items, ...invoiceDbFields } = finalInvoice;
         const { data, error } = await supabase.from("invoices").upsert(invoiceDbFields).select();
         if (!error && data && data.length > 0) {
+          markTableSuccessful("invoices");
           await supabase.from("invoice_items").delete().eq("invoice_id", data[0].id);
           const dbItems = items.map((item, index) => ({
             invoice_id: data[0].id,
@@ -674,6 +702,9 @@ export const invoiceStorage = {
     if (isSupabaseConfigured && supabase && !getFailedTables()["invoices"]) {
       try {
         const { error } = await supabase.from("invoices").delete().eq("id", id);
+        if (!error) {
+          markTableSuccessful("invoices");
+        }
         if (error) {
           console.warn("Supabase invoices delete failed, falling back to LocalStorage:", error.message);
           markTableFailed("invoices");
@@ -705,6 +736,7 @@ export const invoiceStorage = {
         }
         const { data, error } = await query;
         if (!error && data) {
+          markTableSuccessful("payments");
           const cleanedData = data.filter(p => !isMockPayment(p));
           if (cleanedData.length > 0) {
             localStorage.setItem("scalex_invoice_payments", JSON.stringify(cleanedData));
@@ -747,6 +779,7 @@ export const invoiceStorage = {
       try {
         const { data, error } = await supabase.from("payments").insert(payment).select();
         if (!error && data && data.length > 0) {
+          markTableSuccessful("payments");
           savedPayment = data[0];
           await this.syncInvoicePayments(payment.invoice_id);
         }
@@ -812,6 +845,7 @@ export const invoiceStorage = {
       try {
         const { data, error } = await supabase.from("credit_notes").select("*").order("created_at", { ascending: false });
         if (!error && data) {
+          markTableSuccessful("credit_notes");
           if (data.length > 0) {
             localStorage.setItem("scalex_invoice_credit_notes", JSON.stringify(data));
             return data;
@@ -847,6 +881,7 @@ export const invoiceStorage = {
       try {
         const { data, error } = await supabase.from("credit_notes").upsert(creditNote).select();
         if (!error && data && data.length > 0) {
+          markTableSuccessful("credit_notes");
           savedCN = data[0];
         }
         if (error) {
@@ -886,6 +921,7 @@ export const invoiceStorage = {
       try {
         const { data, error } = await supabase.from("recurring_invoices").select("*");
         if (!error && data) {
+          markTableSuccessful("recurring_invoices");
           if (data.length > 0) {
             localStorage.setItem("scalex_invoice_recurring", JSON.stringify(data));
             return data;
@@ -921,6 +957,7 @@ export const invoiceStorage = {
       try {
         const { data, error } = await supabase.from("recurring_invoices").upsert(schedule).select();
         if (!error && data && data.length > 0) {
+          markTableSuccessful("recurring_invoices");
           savedRec = data[0];
         }
         if (error) {
@@ -948,6 +985,9 @@ export const invoiceStorage = {
     if (isSupabaseConfigured && supabase && !getFailedTables()["recurring_invoices"]) {
       try {
         const { error } = await supabase.from("recurring_invoices").delete().eq("id", id);
+        if (!error) {
+          markTableSuccessful("recurring_invoices");
+        }
         if (error) {
           console.warn("Supabase recurring schedules delete failed, falling back to LocalStorage:", error.message);
           markTableFailed("recurring_invoices");
