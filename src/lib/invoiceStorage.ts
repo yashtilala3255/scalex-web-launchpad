@@ -187,6 +187,99 @@ const DEFAULT_SETTINGS: InvoiceSettings = {
   bank_upi_id: "scalexweb@upi",
 };
 
+// Purge Mock Data helper to clean up LocalStorage and Supabase database
+const purgeMockData = async () => {
+  if (typeof window === "undefined") return;
+
+  const mockClientIds = ["client-1", "client-2"];
+  const mockProductIds = ["prod-1", "prod-2", "prod-3"];
+  const mockInvoiceIds = ["inv-demo-1", "inv-demo-2"];
+  const mockPaymentIds = ["pay-1", "pay-2"];
+
+  // 1. Clean LocalStorage
+  // Clients
+  const storedClients = localStorage.getItem("scalex_invoice_clients");
+  if (storedClients) {
+    try {
+      const clients: Client[] = JSON.parse(storedClients);
+      const cleaned = clients.filter(c => !mockClientIds.includes(c.id));
+      if (cleaned.length !== clients.length) {
+        localStorage.setItem("scalex_invoice_clients", JSON.stringify(cleaned));
+      }
+    } catch (e) {
+      console.error("Error parsing local clients:", e);
+    }
+  }
+
+  // Products
+  const storedProducts = localStorage.getItem("scalex_invoice_products");
+  if (storedProducts) {
+    try {
+      const products: Product[] = JSON.parse(storedProducts);
+      const cleaned = products.filter(p => !mockProductIds.includes(p.id));
+      if (cleaned.length !== products.length) {
+        localStorage.setItem("scalex_invoice_products", JSON.stringify(cleaned));
+      }
+    } catch (e) {
+      console.error("Error parsing local products:", e);
+    }
+  }
+
+  // Invoices
+  const storedInvoices = localStorage.getItem("scalex_invoices");
+  if (storedInvoices) {
+    try {
+      const invoices: Invoice[] = JSON.parse(storedInvoices);
+      const cleaned = invoices.filter(inv => !mockInvoiceIds.includes(inv.id));
+      if (cleaned.length !== invoices.length) {
+        localStorage.setItem("scalex_invoices", JSON.stringify(cleaned));
+      }
+    } catch (e) {
+      console.error("Error parsing local invoices:", e);
+    }
+  }
+
+  // Payments
+  const storedPayments = localStorage.getItem("scalex_invoice_payments");
+  if (storedPayments) {
+    try {
+      const payments: Payment[] = JSON.parse(storedPayments);
+      const cleaned = payments.filter(p => !mockPaymentIds.includes(p.id) && !mockInvoiceIds.includes(p.invoice_id));
+      if (cleaned.length !== payments.length) {
+        localStorage.setItem("scalex_invoice_payments", JSON.stringify(cleaned));
+      }
+    } catch (e) {
+      console.error("Error parsing local payments:", e);
+    }
+  }
+
+  // 2. Clean Supabase (if configured and running in browser)
+  if (isSupabaseConfigured && supabase) {
+    try {
+      // Order of deletion: payments first (FK constraints), then invoice_items (FK constraints), then invoices, then products and clients
+      // Note: We run these asynchronously and don't block
+      const deletePayments = supabase.from("payments").delete().in("invoice_id", mockInvoiceIds);
+      const deletePaymentsById = supabase.from("payments").delete().in("id", mockPaymentIds);
+      const deleteItems = supabase.from("invoice_items").delete().in("invoice_id", mockInvoiceIds);
+      const deleteInvoices = supabase.from("invoices").delete().in("id", mockInvoiceIds);
+      const deleteProducts = supabase.from("products").delete().in("id", mockProductIds);
+      const deleteClients = supabase.from("clients").delete().in("id", mockClientIds);
+
+      // Execute queries
+      await Promise.allSettled([
+        deletePayments,
+        deletePaymentsById,
+        deleteItems,
+        deleteInvoices,
+        deleteProducts,
+        deleteClients
+      ]);
+    } catch (err) {
+      console.warn("Could not purge mock data from Supabase:", err);
+    }
+  }
+};
+
 // Seed Defaults Mock Data Helper
 const seedInitialData = () => {
   if (typeof window === "undefined") return;
@@ -195,231 +288,8 @@ const seedInitialData = () => {
     localStorage.setItem("scalex_invoice_settings", JSON.stringify(DEFAULT_SETTINGS));
   }
 
-  const initialClients: Client[] = [
-    {
-      id: "client-1",
-      name: "Rajesh Patel",
-      company: "Patel InfoTech Solutions",
-      email: "rajesh@patelinfotech.in",
-      phone: "+91 98980 12345",
-      address: "102, Shanti Arcade, Drive-in Road",
-      city: "Ahmedabad",
-      state: "Gujarat",
-      pin_code: "380054",
-      country: "India",
-      gstin: "24ABCDE1234F1Z5",
-    },
-    {
-      id: "client-2",
-      name: "John Doe",
-      company: "Acme Global SaaS Corp",
-      email: "john.doe@acmeglobal.com",
-      phone: "+1 (555) 019-2834",
-      address: "500 Howard Street, Suite 400",
-      city: "San Francisco",
-      state: "California",
-      pin_code: "94105",
-      country: "United States",
-    }
-  ];
-
-  if (!localStorage.getItem("scalex_invoice_clients")) {
-    localStorage.setItem("scalex_invoice_clients", JSON.stringify(initialClients));
-  }
-
-  const initialProducts: Product[] = [
-    {
-      id: "prod-1",
-      name: "Custom Website Development",
-      description: "Development of fully responsive, SEO-optimized business websites using React/Next.js.",
-      unit: "months",
-      unit_price: 45000,
-      tax_rate: 18,
-      hsn_sac: "998313",
-    },
-    {
-      id: "prod-2",
-      name: "SaaS Product Engineering Consultancy",
-      description: "Hourly consulting for cloud architecture, database design, and scaling integrations.",
-      unit: "hrs",
-      unit_price: 3500,
-      tax_rate: 18,
-      hsn_sac: "998311",
-    },
-    {
-      id: "prod-3",
-      name: "Mobile App Development Retainer",
-      description: "Ongoing monthly maintenance, bug fixing, and platform updates for Android/iOS apps.",
-      unit: "months",
-      unit_price: 60000,
-      tax_rate: 18,
-      hsn_sac: "998715",
-    }
-  ];
-
-  if (!localStorage.getItem("scalex_invoice_products")) {
-    localStorage.setItem("scalex_invoice_products", JSON.stringify(initialProducts));
-  }
-
-  const initialInvoices: Invoice[] = [
-    {
-      id: "inv-demo-1",
-      invoice_number: "INV-2026-0001",
-      client_id: "client-1",
-      client_data: initialClients[0],
-      invoice_date: "2026-06-01",
-      due_date: "2026-06-16",
-      status: "Paid",
-      currency: "INR",
-      currency_symbol: "₹",
-      payment_terms: "Net 15",
-      items: [
-        {
-          name: "Custom Website Development",
-          description: "CMS Corporate Web portal - Phase 1 milestone delivery",
-          quantity: 1,
-          unit: "months",
-          unit_price: 45000,
-          discount_type: "percent",
-          discount_value: 0,
-          discount_amount: 0,
-          tax_rate: 18,
-          hsn_sac: "998313",
-          line_total: 45000
-        }
-      ],
-      subtotal: 45000,
-      discount_type: "percent",
-      discount_value: 0,
-      discount_amount: 0,
-      tax_summary: [
-        { label: "CGST (9%)", rate: 9, taxable_amount: 45000, tax_amount: 4050 },
-        { label: "SGST (9%)", rate: 9, taxable_amount: 45000, tax_amount: 4050 }
-      ],
-      total_tax: 8100,
-      shipping_charges: 0,
-      adjustment: 0,
-      grand_total: 53100,
-      amount_paid: 53100,
-      balance_due: 0,
-      business_details: {
-        name: DEFAULT_SETTINGS.business_name,
-        address: DEFAULT_SETTINGS.business_address,
-        email: DEFAULT_SETTINGS.business_email,
-        phone: DEFAULT_SETTINGS.business_phone,
-        gstin: DEFAULT_SETTINGS.business_gstin,
-        pan: DEFAULT_SETTINGS.business_pan,
-        cin: DEFAULT_SETTINGS.business_cin,
-      },
-      bank_details: {
-        account_name: DEFAULT_SETTINGS.bank_account_name,
-        account_number: DEFAULT_SETTINGS.bank_account_number,
-        ifsc: DEFAULT_SETTINGS.bank_ifsc,
-        bank_name: DEFAULT_SETTINGS.bank_name,
-        branch: DEFAULT_SETTINGS.bank_branch,
-        upi_id: DEFAULT_SETTINGS.bank_upi_id,
-      },
-      terms_conditions: DEFAULT_SETTINGS.default_terms,
-      notes: DEFAULT_SETTINGS.default_notes,
-      template_id: "gst",
-      color_theme: "#304ce6",
-      show_logo: true,
-      show_bank: true,
-      show_signature: true,
-      show_qr: true,
-    },
-    {
-      id: "inv-demo-2",
-      invoice_number: "INV-2026-0002",
-      client_id: "client-2",
-      client_data: initialClients[1],
-      invoice_date: "2026-06-10",
-      due_date: "2026-07-10",
-      status: "Partially Paid",
-      currency: "USD",
-      currency_symbol: "$",
-      payment_terms: "Net 30",
-      items: [
-        {
-          name: "SaaS Product Engineering Consultancy",
-          description: "Technical architecture consulting - 15 Hours",
-          quantity: 15,
-          unit: "hrs",
-          unit_price: 50, // USD
-          discount_type: "flat",
-          discount_value: 0,
-          discount_amount: 0,
-          tax_rate: 0,
-          line_total: 750
-        }
-      ],
-      subtotal: 750,
-      discount_type: "percent",
-      discount_value: 0,
-      discount_amount: 0,
-      tax_summary: [],
-      total_tax: 0,
-      shipping_charges: 0,
-      adjustment: 0,
-      grand_total: 750,
-      amount_paid: 300,
-      balance_due: 450,
-      business_details: {
-        name: DEFAULT_SETTINGS.business_name,
-        address: DEFAULT_SETTINGS.business_address,
-        email: DEFAULT_SETTINGS.business_email,
-        phone: DEFAULT_SETTINGS.business_phone,
-        gstin: DEFAULT_SETTINGS.business_gstin,
-        pan: DEFAULT_SETTINGS.business_pan,
-        cin: DEFAULT_SETTINGS.business_cin,
-      },
-      bank_details: {
-        account_name: DEFAULT_SETTINGS.bank_account_name,
-        account_number: DEFAULT_SETTINGS.bank_account_number,
-        ifsc: DEFAULT_SETTINGS.bank_ifsc,
-        bank_name: DEFAULT_SETTINGS.bank_name,
-        branch: DEFAULT_SETTINGS.bank_branch,
-        upi_id: DEFAULT_SETTINGS.bank_upi_id,
-      },
-      terms_conditions: DEFAULT_SETTINGS.default_terms,
-      notes: DEFAULT_SETTINGS.default_notes,
-      template_id: "modern",
-      color_theme: "#7c3aed",
-      show_logo: true,
-      show_bank: true,
-      show_signature: true,
-      show_qr: true,
-    }
-  ];
-
-  if (!localStorage.getItem("scalex_invoices")) {
-    localStorage.setItem("scalex_invoices", JSON.stringify(initialInvoices));
-  }
-
-  const initialPayments: Payment[] = [
-    {
-      id: "pay-1",
-      invoice_id: "inv-demo-1",
-      amount: 53100,
-      payment_date: "2026-06-03T10:00:00Z",
-      payment_mode: "Bank Transfer",
-      transaction_ref: "TXN9988776655",
-      notes: "Full payment received via IMPS."
-    },
-    {
-      id: "pay-2",
-      invoice_id: "inv-demo-2",
-      amount: 300,
-      payment_date: "2026-06-15T15:30:00Z",
-      payment_mode: "Card",
-      transaction_ref: "STRIPE_CH_90022",
-      notes: "Initial retainer deposit."
-    }
-  ];
-
-  if (!localStorage.getItem("scalex_invoice_payments")) {
-    localStorage.setItem("scalex_invoice_payments", JSON.stringify(initialPayments));
-  }
+  // Clean/purge any legacy mock data from local storage & Supabase
+  purgeMockData();
 };
 
 // Initialize seeding
@@ -463,22 +333,24 @@ export const invoiceStorage = {
       try {
         const { data, error } = await supabase.from("clients").select("*").order("name");
         if (!error && data) {
-          if (data.length > 0) {
-            localStorage.setItem("scalex_invoice_clients", JSON.stringify(data));
-            return data;
+          const cleanedData = data.filter(c => c.id !== "client-1" && c.id !== "client-2");
+          if (cleanedData.length > 0) {
+            localStorage.setItem("scalex_invoice_clients", JSON.stringify(cleanedData));
+            return cleanedData;
           } else {
             // If Supabase is empty, check if we have local storage data to seed it
             const stored = localStorage.getItem("scalex_invoice_clients");
             const localClients = stored ? JSON.parse(stored) : [];
-            if (localClients.length > 0) {
+            const cleanedLocal = localClients.filter((c: any) => c.id !== "client-1" && c.id !== "client-2");
+            if (cleanedLocal.length > 0) {
               console.log("Supabase clients is empty, seeding from LocalStorage...");
-              for (const c of localClients) {
+              for (const c of cleanedLocal) {
                 await supabase.from("clients").upsert(c);
               }
-              return localClients;
+              return cleanedLocal;
             }
           }
-          return data;
+          return cleanedData;
         }
         if (error) {
           console.warn("Supabase clients query failed, falling back to LocalStorage:", error.message);
@@ -489,7 +361,8 @@ export const invoiceStorage = {
       }
     }
     const stored = localStorage.getItem("scalex_invoice_clients");
-    return stored ? JSON.parse(stored) : [];
+    const localClients = stored ? JSON.parse(stored) : [];
+    return localClients.filter((c: any) => c.id !== "client-1" && c.id !== "client-2");
   },
 
   async saveClient(client: Client): Promise<Client> {
@@ -546,22 +419,24 @@ export const invoiceStorage = {
       try {
         const { data, error } = await supabase.from("products").select("*").order("name");
         if (!error && data) {
-          if (data.length > 0) {
-            localStorage.setItem("scalex_invoice_products", JSON.stringify(data));
-            return data;
+          const cleanedData = data.filter(p => p.id !== "prod-1" && p.id !== "prod-2" && p.id !== "prod-3");
+          if (cleanedData.length > 0) {
+            localStorage.setItem("scalex_invoice_products", JSON.stringify(cleanedData));
+            return cleanedData;
           } else {
             // If Supabase is empty, check if we have local storage data to seed it
             const stored = localStorage.getItem("scalex_invoice_products");
             const localProducts = stored ? JSON.parse(stored) : [];
-            if (localProducts.length > 0) {
+            const cleanedLocal = localProducts.filter((p: any) => p.id !== "prod-1" && p.id !== "prod-2" && p.id !== "prod-3");
+            if (cleanedLocal.length > 0) {
               console.log("Supabase products is empty, seeding from LocalStorage...");
-              for (const p of localProducts) {
+              for (const p of cleanedLocal) {
                 await supabase.from("products").upsert(p);
               }
-              return localProducts;
+              return cleanedLocal;
             }
           }
-          return data;
+          return cleanedData;
         }
         if (error) {
           console.warn("Supabase products query failed, falling back to LocalStorage:", error.message);
@@ -572,7 +447,8 @@ export const invoiceStorage = {
       }
     }
     const stored = localStorage.getItem("scalex_invoice_products");
-    return stored ? JSON.parse(stored) : [];
+    const localProducts = stored ? JSON.parse(stored) : [];
+    return localProducts.filter((p: any) => p.id !== "prod-1" && p.id !== "prod-2" && p.id !== "prod-3");
   },
 
   async saveProduct(product: Product): Promise<Product> {
@@ -629,9 +505,10 @@ export const invoiceStorage = {
       try {
         const { data, error } = await supabase.from("invoices").select("*").order("created_at", { ascending: false });
         if (!error && data) {
-          if (data.length > 0) {
+          const cleanedData = data.filter(inv => inv.id !== "inv-demo-1" && inv.id !== "inv-demo-2");
+          if (cleanedData.length > 0) {
             const invoicesWithItems: Invoice[] = [];
-            for (const inv of data) {
+            for (const inv of cleanedData) {
               const { data: items } = await supabase.from("invoice_items").select("*").eq("invoice_id", inv.id).order("sort_order");
               invoicesWithItems.push({
                 ...inv,
@@ -644,9 +521,10 @@ export const invoiceStorage = {
             // If Supabase is empty, check if we have local storage data to seed it
             const stored = localStorage.getItem("scalex_invoices");
             const localInvoices = stored ? JSON.parse(stored) : [];
-            if (localInvoices.length > 0) {
+            const cleanedLocal = localInvoices.filter((inv: any) => inv.id !== "inv-demo-1" && inv.id !== "inv-demo-2");
+            if (cleanedLocal.length > 0) {
               console.log("Supabase invoices is empty, seeding from LocalStorage...");
-              for (const inv of localInvoices) {
+              for (const inv of cleanedLocal) {
                 const { items, ...invoiceDbFields } = inv;
                 await supabase.from("invoices").upsert(invoiceDbFields);
                 if (items && items.length > 0) {
@@ -669,7 +547,7 @@ export const invoiceStorage = {
                   await supabase.from("invoice_items").insert(dbItems);
                 }
               }
-              return localInvoices;
+              return cleanedLocal;
             }
           }
           return [];
@@ -683,10 +561,12 @@ export const invoiceStorage = {
       }
     }
     const stored = localStorage.getItem("scalex_invoices");
-    return stored ? JSON.parse(stored) : [];
+    const localInvoices = stored ? JSON.parse(stored) : [];
+    return localInvoices.filter((inv: any) => inv.id !== "inv-demo-1" && inv.id !== "inv-demo-2");
   },
 
   async getInvoiceById(id: string): Promise<Invoice | null> {
+    if (id === "inv-demo-1" || id === "inv-demo-2") return null;
     if (isSupabaseConfigured && supabase && !getFailedTables()["invoices"]) {
       try {
         const { data: inv, error } = await supabase.from("invoices").select("*").eq("id", id).maybeSingle();
@@ -811,6 +691,12 @@ export const invoiceStorage = {
 
   // --- Payments ---
   async getPayments(invoiceId?: string): Promise<Payment[]> {
+    const isMockPayment = (p: Payment) => 
+      p.id === "pay-1" || 
+      p.id === "pay-2" || 
+      p.invoice_id === "inv-demo-1" || 
+      p.invoice_id === "inv-demo-2";
+
     if (isSupabaseConfigured && supabase && !getFailedTables()["payments"]) {
       try {
         let query = supabase.from("payments").select("*").order("payment_date", { ascending: false });
@@ -819,22 +705,24 @@ export const invoiceStorage = {
         }
         const { data, error } = await query;
         if (!error && data) {
-          if (data.length > 0) {
-            localStorage.setItem("scalex_invoice_payments", JSON.stringify(data));
-            return data;
+          const cleanedData = data.filter(p => !isMockPayment(p));
+          if (cleanedData.length > 0) {
+            localStorage.setItem("scalex_invoice_payments", JSON.stringify(cleanedData));
+            return cleanedData;
           } else {
             // Seed Supabase if empty
             const stored = localStorage.getItem("scalex_invoice_payments");
             const localPayments = stored ? JSON.parse(stored) : [];
-            if (localPayments.length > 0) {
+            const cleanedLocal = localPayments.filter((p: any) => !isMockPayment(p));
+            if (cleanedLocal.length > 0) {
               console.log("Supabase payments is empty, seeding from LocalStorage...");
-              for (const p of localPayments) {
+              for (const p of cleanedLocal) {
                 await supabase.from("payments").upsert(p);
               }
-              return invoiceId ? localPayments.filter((p: any) => p.invoice_id === invoiceId) : localPayments;
+              return invoiceId ? cleanedLocal.filter((p: any) => p.invoice_id === invoiceId) : cleanedLocal;
             }
           }
-          return data;
+          return cleanedData;
         }
         if (error) {
           console.warn("Supabase payments query failed, falling back to LocalStorage:", error.message);
@@ -846,10 +734,11 @@ export const invoiceStorage = {
     }
     const stored = localStorage.getItem("scalex_invoice_payments");
     const allPayments: Payment[] = stored ? JSON.parse(stored) : [];
+    const cleanedAll = allPayments.filter((p) => !isMockPayment(p));
     if (invoiceId) {
-      return allPayments.filter((p) => p.invoice_id === invoiceId);
+      return cleanedAll.filter((p) => p.invoice_id === invoiceId);
     }
-    return allPayments;
+    return cleanedAll;
   },
 
   async addPayment(payment: Payment): Promise<Payment> {
