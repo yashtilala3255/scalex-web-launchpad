@@ -3,6 +3,7 @@ import {
   Invoice, Client, Product, Payment, RecurringSchedule, CreditNote, InvoiceSettings,
   invoiceStorage
 } from "@/lib/invoiceStorage";
+import { isSupabaseConfigured } from "@/lib/supabaseClient";
 import { InvoiceTemplate } from "./InvoiceTemplate";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -671,32 +672,49 @@ export const InvoiceSystem = () => {
   return (
     <div className="space-y-6">
       {/* Tab Navigation header */}
-      <div className="flex flex-wrap gap-2 border-b border-border/30 pb-4">
-        {[
-          { id: "invoices", label: "Invoices", icon: Receipt },
-          { id: "clients", label: "Clients", icon: User },
-          { id: "products", label: "Product Library", icon: Tag },
-          { id: "recurring", label: "Recurring Schedules", icon: Calendar },
-          { id: "credit-notes", label: "Credit Notes", icon: CreditCard },
-          { id: "settings", label: "Settings", icon: Settings },
-        ].map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => {
-              setActiveTab(tab.id as any);
-              setCurrentView("list");
-              setSelectedInvoice(null);
-            }}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
-              activeTab === tab.id
-                ? "bg-primary text-white shadow"
-                : "bg-card border border-border/30 text-muted-foreground hover:text-foreground hover:bg-muted/30"
-            }`}
-          >
-            <tab.icon className="w-3.5 h-3.5" />
-            <span>{tab.label}</span>
-          </button>
-        ))}
+      <div className="flex flex-wrap justify-between items-center gap-4 border-b border-border/30 pb-4">
+        <div className="flex flex-wrap gap-2">
+          {[
+            { id: "invoices", label: "Invoices", icon: Receipt },
+            { id: "clients", label: "Clients", icon: User },
+            { id: "products", label: "Product Library", icon: Tag },
+            { id: "recurring", label: "Recurring Schedules", icon: Calendar },
+            { id: "credit-notes", label: "Credit Notes", icon: CreditCard },
+            { id: "settings", label: "Settings", icon: Settings },
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => {
+                setActiveTab(tab.id as any);
+                setCurrentView("list");
+                setSelectedInvoice(null);
+              }}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
+                activeTab === tab.id
+                  ? "bg-primary text-white shadow"
+                  : "bg-card border border-border/30 text-muted-foreground hover:text-foreground hover:bg-muted/30"
+              }`}
+            >
+              <tab.icon className="w-3.5 h-3.5" />
+              <span>{tab.label}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Connection status badge */}
+        <div className="flex items-center gap-2">
+          {isSupabaseConfigured ? (
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 rounded-full text-[10px] font-bold">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Cloud Sync Active</span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 rounded-full text-[10px] font-bold" title="Supabase credentials not configured in environment variables. Data is saved locally in this browser and will not sync across devices.">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+              <span>Local Offline Mode</span>
+            </div>
+          )}
+        </div>
       </div>
 
       {loading && currentView === "list" ? (
