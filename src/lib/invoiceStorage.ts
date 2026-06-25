@@ -1026,7 +1026,7 @@ export const invoiceStorage = {
             const stored = localStorage.getItem("scalex_admins");
             const localAdmins = stored ? JSON.parse(stored) : [];
             const defaultAdmin: AdminRecord = {
-              id: "admin-1",
+              id: "00000000-0000-0000-0000-000000000001",
               email: "admin@scalexweb.com",
               name: "Yash Patel",
               password_hash: "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9", // admin123
@@ -1052,7 +1052,7 @@ export const invoiceStorage = {
     const stored = localStorage.getItem("scalex_admins");
     if (!stored) {
       const defaultAdmin: AdminRecord = {
-        id: "admin-1",
+        id: "00000000-0000-0000-0000-000000000001",
         email: "admin@scalexweb.com",
         name: "Yash Patel",
         password_hash: "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9", // admin123

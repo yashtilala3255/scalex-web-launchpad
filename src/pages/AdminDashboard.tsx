@@ -2377,7 +2377,7 @@ CREATE POLICY "Allow public delete" ON public.admins FOR DELETE USING (true);
 
 -- Seed initial admin (email: admin@scalexweb.com, password: admin123, hash: 240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9)
 INSERT INTO public.admins (id, email, name, password_hash)
-VALUES ('admin-1', 'admin@scalexweb.com', 'Yash Patel', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9')
+VALUES ('00000000-0000-0000-0000-000000000001', 'admin@scalexweb.com', 'Yash Patel', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9')
 ON CONFLICT (email) DO NOTHING;`}
                           </pre>
                         </div>
