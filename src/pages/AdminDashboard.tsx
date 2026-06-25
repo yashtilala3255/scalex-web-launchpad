@@ -3,7 +3,6 @@ import Layout from "@/components/layout/Layout";
 import SEO from "@/components/SEO";
 import { WelcomeScreen } from "@/components/ui/onboarding-welcome-screen";
 import { useSiteData, Inquiry } from "@/context/SiteDataContext";
-import { InvoiceSystem } from "@/components/admin/invoices/InvoiceSystem";
 import { getIconComponent } from "@/components/ui/icon-helper";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,7 +17,7 @@ import {
   Lock, LayoutDashboard, FileText, Settings, Database,
   Users, TrendingUp, CheckCircle, Clock, AlertCircle,
   Plus, Trash2, Edit2, Save, Download, RefreshCw,
-  LogOut, Globe, Phone, Mail, MapPin, ExternalLink, HelpCircle, Activity, Receipt
+  LogOut, Globe, Phone, Mail, MapPin, ExternalLink, HelpCircle, Activity
 } from "lucide-react";
 
 export const AdminDashboard = () => {
@@ -41,7 +40,7 @@ export const AdminDashboard = () => {
   const [showLoginForm, setShowLoginForm] = useState(false);
 
   // Tab State
-  const [activeTab, setActiveTab] = useState<"overview" | "content" | "inquiries" | "settings" | "analytics" | "invoices">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "content" | "inquiries" | "settings" | "analytics">("overview");
 
   // CMS Section Editing State
   const [selectedCmsSection, setSelectedCmsSection] = useState<
@@ -725,7 +724,6 @@ export const AdminDashboard = () => {
                 { id: "analytics", label: "Traffic Analytics", icon: Activity },
                 { id: "content", label: "Content Manager", icon: FileText },
                 { id: "inquiries", label: "Leads & Inquiries", icon: Users },
-                { id: "invoices", label: "Invoice System", icon: Receipt },
                 { id: "settings", label: "Settings & Setup", icon: Settings }
               ].map((tab) => {
                 const Icon = tab.icon;
@@ -2043,185 +2041,7 @@ ALTER TABLE public.site_content ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Allow public read content" ON public.site_content
     FOR SELECT USING (true);
 CREATE POLICY "Allow public write content" ON public.site_content
-    FOR ALL USING (true);
-
--- 3. Create Clients Table
-CREATE TABLE IF NOT EXISTS public.clients (
-    id TEXT PRIMARY KEY,
-    name TEXT NOT NULL,
-    company TEXT,
-    email TEXT NOT NULL,
-    phone TEXT,
-    address TEXT,
-    city TEXT,
-    state TEXT,
-    pin_code TEXT,
-    country TEXT,
-    gstin TEXT,
-    ship_to_same BOOLEAN DEFAULT false,
-    shipping_address TEXT,
-    shipping_city TEXT,
-    shipping_state TEXT,
-    shipping_pin TEXT,
-    shipping_country TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
-);
-
-ALTER TABLE public.clients ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Allow public select" ON public.clients FOR SELECT USING (true);
-CREATE POLICY "Allow public insert" ON public.clients FOR INSERT WITH CHECK (true);
-CREATE POLICY "Allow public update" ON public.clients FOR UPDATE USING (true);
-CREATE POLICY "Allow public delete" ON public.clients FOR DELETE USING (true);
-
--- 4. Create Products Table
-CREATE TABLE IF NOT EXISTS public.products (
-    id TEXT PRIMARY KEY,
-    name TEXT NOT NULL,
-    description TEXT,
-    unit TEXT NOT NULL,
-    unit_price NUMERIC NOT NULL,
-    tax_rate NUMERIC NOT NULL,
-    hsn_sac TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
-);
-
-ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Allow public select" ON public.products FOR SELECT USING (true);
-CREATE POLICY "Allow public insert" ON public.products FOR INSERT WITH CHECK (true);
-CREATE POLICY "Allow public update" ON public.products FOR UPDATE USING (true);
-CREATE POLICY "Allow public delete" ON public.products FOR DELETE USING (true);
-
--- 5. Create Invoices Table
-CREATE TABLE IF NOT EXISTS public.invoices (
-    id TEXT PRIMARY KEY,
-    invoice_number TEXT NOT NULL,
-    client_id TEXT,
-    client_data JSONB NOT NULL,
-    invoice_date DATE NOT NULL,
-    due_date DATE NOT NULL,
-    status TEXT NOT NULL,
-    currency TEXT NOT NULL,
-    currency_symbol TEXT NOT NULL,
-    payment_terms TEXT NOT NULL,
-    subtotal NUMERIC NOT NULL,
-    discount_type TEXT NOT NULL,
-    discount_value NUMERIC NOT NULL,
-    discount_amount NUMERIC NOT NULL,
-    tax_summary JSONB NOT NULL,
-    total_tax NUMERIC NOT NULL,
-    shipping_charges NUMERIC NOT NULL,
-    adjustment NUMERIC NOT NULL,
-    grand_total NUMERIC NOT NULL,
-    amount_paid NUMERIC NOT NULL,
-    balance_due NUMERIC NOT NULL,
-    business_details JSONB NOT NULL,
-    bank_details JSONB,
-    terms_conditions TEXT,
-    notes TEXT,
-    template_id TEXT NOT NULL,
-    color_theme TEXT NOT NULL,
-    show_logo BOOLEAN NOT NULL,
-    show_bank BOOLEAN NOT NULL,
-    show_signature BOOLEAN NOT NULL,
-    show_qr BOOLEAN NOT NULL,
-    signature_image TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
-);
-
-ALTER TABLE public.invoices ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Allow public select" ON public.invoices FOR SELECT USING (true);
-CREATE POLICY "Allow public insert" ON public.invoices FOR INSERT WITH CHECK (true);
-CREATE POLICY "Allow public update" ON public.invoices FOR UPDATE USING (true);
-CREATE POLICY "Allow public delete" ON public.invoices FOR DELETE USING (true);
-
--- 6. Create Invoice Items Table
-CREATE TABLE IF NOT EXISTS public.invoice_items (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    invoice_id TEXT REFERENCES public.invoices(id) ON DELETE CASCADE,
-    name TEXT NOT NULL,
-    description TEXT,
-    quantity NUMERIC NOT NULL,
-    unit TEXT NOT NULL,
-    unit_price NUMERIC NOT NULL,
-    discount_type TEXT NOT NULL,
-    discount_value NUMERIC NOT NULL,
-    discount_amount NUMERIC NOT NULL,
-    tax_rate NUMERIC NOT NULL,
-    hsn_sac TEXT,
-    line_total NUMERIC NOT NULL,
-    sort_order INT NOT NULL
-);
-
-ALTER TABLE public.invoice_items ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Allow public select" ON public.invoice_items FOR SELECT USING (true);
-CREATE POLICY "Allow public insert" ON public.invoice_items FOR INSERT WITH CHECK (true);
-CREATE POLICY "Allow public update" ON public.invoice_items FOR UPDATE USING (true);
-CREATE POLICY "Allow public delete" ON public.invoice_items FOR DELETE USING (true);
-
--- 7. Create Payments Table
-CREATE TABLE IF NOT EXISTS public.payments (
-    id TEXT PRIMARY KEY,
-    invoice_id TEXT REFERENCES public.invoices(id) ON DELETE CASCADE,
-    amount NUMERIC NOT NULL,
-    payment_date TIMESTAMP WITH TIME ZONE NOT NULL,
-    payment_mode TEXT NOT NULL,
-    transaction_ref TEXT,
-    notes TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
-);
-
-ALTER TABLE public.payments ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Allow public select" ON public.payments FOR SELECT USING (true);
-CREATE POLICY "Allow public insert" ON public.payments FOR INSERT WITH CHECK (true);
-CREATE POLICY "Allow public update" ON public.payments FOR UPDATE USING (true);
-CREATE POLICY "Allow public delete" ON public.payments FOR DELETE USING (true);
-
--- 8. Create Recurring Invoices Table
-CREATE TABLE IF NOT EXISTS public.recurring_invoices (
-    id TEXT PRIMARY KEY,
-    schedule_name TEXT NOT NULL,
-    client_id TEXT,
-    client_name TEXT NOT NULL,
-    invoice_template_data JSONB NOT NULL,
-    frequency TEXT NOT NULL,
-    start_date DATE NOT NULL,
-    end_date DATE,
-    max_occurrences INT,
-    occurrences_count INT NOT NULL DEFAULT 0,
-    is_active BOOLEAN NOT NULL DEFAULT true,
-    last_generated_at TIMESTAMP WITH TIME ZONE,
-    next_generation_date DATE NOT NULL,
-    auto_send BOOLEAN NOT NULL DEFAULT false,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
-);
-
-ALTER TABLE public.recurring_invoices ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Allow public select" ON public.recurring_invoices FOR SELECT USING (true);
-CREATE POLICY "Allow public insert" ON public.recurring_invoices FOR INSERT WITH CHECK (true);
-CREATE POLICY "Allow public update" ON public.recurring_invoices FOR UPDATE USING (true);
-CREATE POLICY "Allow public delete" ON public.recurring_invoices FOR DELETE USING (true);
-
--- 9. Create Credit Notes Table
-CREATE TABLE IF NOT EXISTS public.credit_notes (
-    id TEXT PRIMARY KEY,
-    credit_note_number TEXT NOT NULL,
-    invoice_id TEXT REFERENCES public.invoices(id) ON DELETE CASCADE,
-    invoice_number TEXT NOT NULL,
-    client_id TEXT NOT NULL,
-    client_name TEXT NOT NULL,
-    credit_note_date DATE NOT NULL,
-    amount NUMERIC NOT NULL,
-    reason TEXT NOT NULL,
-    items JSONB NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
-);
-
-ALTER TABLE public.credit_notes ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Allow public select" ON public.credit_notes FOR SELECT USING (true);
-CREATE POLICY "Allow public insert" ON public.credit_notes FOR INSERT WITH CHECK (true);
-CREATE POLICY "Allow public update" ON public.credit_notes FOR UPDATE USING (true);
-CREATE POLICY "Allow public delete" ON public.credit_notes FOR DELETE USING (true);`}
+    FOR ALL USING (true);`}
                           </pre>
                         </div>
                       </div>
@@ -2468,18 +2288,6 @@ CREATE POLICY "Allow public delete" ON public.credit_notes FOR DELETE USING (tru
                           </div>
                         </div>
                       </div>
-                    </motion.div>
-                  )}
-
-                  {activeTab === "invoices" && (
-                    <motion.div
-                      key="invoices"
-                      initial={{ opacity: 0, y: 15 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0 }}
-                      className="space-y-6"
-                    >
-                      <InvoiceSystem />
                     </motion.div>
                   )}
                 </AnimatePresence>

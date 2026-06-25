@@ -23,7 +23,6 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const TermsOfService = lazy(() => import("./pages/TermsOfService"));
 const CookiePolicy = lazy(() => import("./pages/CookiePolicy"));
-const ClientInvoiceView = lazy(() => import("./pages/ClientInvoiceView"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const MaintenancePage = lazy(() => import("./pages/MaintenancePage"));
 const ComingSoonPage = lazy(() => import("./pages/ComingSoonPage"));
@@ -521,8 +520,6 @@ const App = () => {
                         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                         <Route path="/terms-of-service" element={<TermsOfService />} />
                         <Route path="/cookie-policy" element={<CookiePolicy />} />
-                        <Route path="/invoices/view/:id" element={<ClientInvoiceView />} />
-                        <Route path="/invoices/print/:id" element={<ClientInvoiceView />} />
                         <Route path="/adminloginog" element={<AdminDashboard />} />
                         <Route path="/adminloginfk" element={<AdminDashboard />} />
                         <Route path="/demo" element={<Demo />} />
