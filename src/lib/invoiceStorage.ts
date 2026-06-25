@@ -138,14 +138,6 @@ export interface CreditNote {
   items: { name: string; quantity: number; unit_price: number; total: number }[];
 }
 
-export interface AdminRecord {
-  id: string;
-  email: string;
-  name: string;
-  password_hash: string;
-  created_at?: string;
-}
-
 export interface InvoiceSettings {
   default_currency: string;
   default_currency_symbol: string;
@@ -1008,109 +1000,6 @@ export const invoiceStorage = {
     const schedules: RecurringSchedule[] = stored ? JSON.parse(stored) : [];
     const filtered = schedules.filter((s) => s.id !== id);
     localStorage.setItem("scalex_invoice_recurring", JSON.stringify(filtered));
-    return true;
-  },
-
-  // --- Admin Accounts ---
-  async getAdmins(): Promise<AdminRecord[]> {
-    if (isSupabaseConfigured && supabase && !getFailedTables()["admins"]) {
-      try {
-        const { data, error } = await supabase.from("admins").select("*").order("email");
-        if (!error && data) {
-          markTableSuccessful("admins");
-          if (data.length > 0) {
-            localStorage.setItem("scalex_admins", JSON.stringify(data));
-            return data;
-          } else {
-            // Seed Supabase if empty
-            const stored = localStorage.getItem("scalex_admins");
-            const localAdmins = stored ? JSON.parse(stored) : [];
-            const defaultAdmin: AdminRecord = {
-              id: "00000000-0000-0000-0000-000000000001",
-              email: "admin@scalexweb.com",
-              name: "Yash Patel",
-              password_hash: "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9", // admin123
-            };
-            const toSeed = localAdmins.length > 0 ? localAdmins : [defaultAdmin];
-            console.log("Supabase admins is empty, seeding default admin...");
-            for (const adm of toSeed) {
-              await supabase.from("admins").upsert(adm);
-            }
-            localStorage.setItem("scalex_admins", JSON.stringify(toSeed));
-            return toSeed;
-          }
-          return data;
-        }
-        if (error) {
-          console.warn("Supabase admins query failed, falling back to LocalStorage:", error.message);
-          markTableFailed("admins");
-        }
-      } catch (e) {
-        markTableFailed("admins");
-      }
-    }
-    const stored = localStorage.getItem("scalex_admins");
-    if (!stored) {
-      const defaultAdmin: AdminRecord = {
-        id: "00000000-0000-0000-0000-000000000001",
-        email: "admin@scalexweb.com",
-        name: "Yash Patel",
-        password_hash: "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9", // admin123
-      };
-      localStorage.setItem("scalex_admins", JSON.stringify([defaultAdmin]));
-      return [defaultAdmin];
-    }
-    return JSON.parse(stored);
-  },
-
-  async saveAdmin(admin: AdminRecord): Promise<AdminRecord> {
-    let savedAdmin = admin;
-    if (isSupabaseConfigured && supabase && !getFailedTables()["admins"]) {
-      try {
-        const { data, error } = await supabase.from("admins").upsert(admin).select();
-        if (!error && data && data.length > 0) {
-          markTableSuccessful("admins");
-          savedAdmin = data[0];
-        }
-        if (error) {
-          console.warn("Supabase admin write failed, falling back to LocalStorage:", error.message);
-          markTableFailed("admins");
-        }
-      } catch (e) {
-        markTableFailed("admins");
-      }
-    }
-    const stored = localStorage.getItem("scalex_admins");
-    const admins: AdminRecord[] = stored ? JSON.parse(stored) : [];
-    const existingIndex = admins.findIndex((a) => a.id === savedAdmin.id || a.email === savedAdmin.email);
-    if (existingIndex >= 0) {
-      admins[existingIndex] = savedAdmin;
-    } else {
-      admins.push(savedAdmin);
-    }
-    localStorage.setItem("scalex_admins", JSON.stringify(admins));
-    return savedAdmin;
-  },
-
-  async deleteAdmin(id: string): Promise<boolean> {
-    if (isSupabaseConfigured && supabase && !getFailedTables()["admins"]) {
-      try {
-        const { error } = await supabase.from("admins").delete().eq("id", id);
-        if (!error) {
-          markTableSuccessful("admins");
-        }
-        if (error) {
-          console.warn("Supabase admin delete failed, falling back to LocalStorage:", error.message);
-          markTableFailed("admins");
-        }
-      } catch (e) {
-        markTableFailed("admins");
-      }
-    }
-    const stored = localStorage.getItem("scalex_admins");
-    const admins: AdminRecord[] = stored ? JSON.parse(stored) : [];
-    const filtered = admins.filter((a) => a.id !== id);
-    localStorage.setItem("scalex_admins", JSON.stringify(filtered));
     return true;
   }
 };

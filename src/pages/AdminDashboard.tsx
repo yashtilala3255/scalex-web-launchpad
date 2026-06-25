@@ -4,7 +4,6 @@ import SEO from "@/components/SEO";
 import { WelcomeScreen } from "@/components/ui/onboarding-welcome-screen";
 import { useSiteData, Inquiry } from "@/context/SiteDataContext";
 import { InvoiceSystem } from "@/components/admin/invoices/InvoiceSystem";
-import { invoiceStorage, AdminRecord } from "@/lib/invoiceStorage";
 import { getIconComponent } from "@/components/ui/icon-helper";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -98,28 +97,6 @@ export const AdminDashboard = () => {
   const [tempUsername, setTempUsername] = useState("");
   const [tempPassword, setTempPassword] = useState("");
   const [lockoutTimeLeft, setLockoutTimeLeft] = useState<number>(0);
-
-  // Admin Management State
-  const [adminsList, setAdminsList] = useState<AdminRecord[]>([]);
-  const [newAdminName, setNewAdminName] = useState("");
-  const [newAdminEmail, setNewAdminEmail] = useState("");
-  const [newAdminPassword, setNewAdminPassword] = useState("");
-  const [currentUserDisplayName, setCurrentUserDisplayName] = useState(() => {
-    return sessionStorage.getItem("scalex_admin_name") || "Yash Patel";
-  });
-
-  // Load admins list
-  React.useEffect(() => {
-    const fetchAdmins = async () => {
-      try {
-        const list = await invoiceStorage.getAdmins();
-        setAdminsList(list);
-      } catch (err) {
-        console.error("Failed to load admins:", err);
-      }
-    };
-    fetchAdmins();
-  }, []);
 
   // Check lockout on mount and periodically
   React.useEffect(() => {
@@ -226,54 +203,26 @@ export const AdminDashboard = () => {
     const enteredPass = passwordInput.trim();
 
     let isMatch = false;
-    let authenticatedUser: AdminRecord | null = null;
-    const hashedEntered = await hashPassword(enteredPass);
-
-    // 1. Try to find user in adminsList first
-    const matchedAdmin = adminsList.find(
-      (a) => a.email.toLowerCase() === enteredUser.toLowerCase()
-    );
-
-    if (matchedAdmin) {
-      if (matchedAdmin.password_hash === hashedEntered) {
-        isMatch = true;
-        authenticatedUser = matchedAdmin;
-      }
+    if (isSha256(adminPasswordHash)) {
+      const hashedEntered = await hashPassword(enteredPass);
+      isMatch = hashedEntered === adminPasswordHash;
     } else {
-      // 2. Fallback to legacy single admin account
-      if (enteredUser.toLowerCase() === adminUsername.toLowerCase()) {
-        if (isSha256(adminPasswordHash)) {
-          isMatch = hashedEntered === adminPasswordHash;
-        } else {
-          isMatch = enteredPass === adminPasswordHash;
-          if (isMatch) {
-            // Automatically migrate old plaintext password to hash
-            const newHash = await hashPassword(enteredPass);
-            localStorage.setItem("scalex_admin_pass_hash", newHash);
-            localStorage.removeItem("scalex_admin_pass");
-            setAdminPasswordHash(newHash);
-          }
-        }
-        if (isMatch) {
-          authenticatedUser = {
-            id: "legacy",
-            email: adminUsername,
-            name: "Yash Patel",
-            password_hash: adminPasswordHash
-          };
-        }
+      isMatch = enteredPass === adminPasswordHash;
+      if (isMatch) {
+        // Automatically migrate old plaintext password to hash
+        const newHash = await hashPassword(enteredPass);
+        localStorage.setItem("scalex_admin_pass_hash", newHash);
+        localStorage.removeItem("scalex_admin_pass");
+        setAdminPasswordHash(newHash);
       }
     }
 
-    if (authenticatedUser && isMatch) {
+    if (enteredUser === adminUsername && isMatch) {
       setIsAuthenticated(true);
       sessionStorage.setItem("scalex_admin_auth", "true");
-      sessionStorage.setItem("scalex_admin_name", authenticatedUser.name);
-      sessionStorage.setItem("scalex_admin_email", authenticatedUser.email);
-      setCurrentUserDisplayName(authenticatedUser.name);
       localStorage.setItem("scalex_failed_attempts", "0");
       localStorage.removeItem("scalex_lockout_until");
-      toast.success(`Welcome back, ${authenticatedUser.name}!`);
+      toast.success("Welcome back, Yash Patel!");
     } else {
       const currentFailed = Number(localStorage.getItem("scalex_failed_attempts") || 0) + 1;
       localStorage.setItem("scalex_failed_attempts", String(currentFailed));
@@ -292,8 +241,6 @@ export const AdminDashboard = () => {
   const handleLogout = () => {
     setIsAuthenticated(false);
     sessionStorage.removeItem("scalex_admin_auth");
-    sessionStorage.removeItem("scalex_admin_name");
-    sessionStorage.removeItem("scalex_admin_email");
     toast.success("Logged out successfully.");
   };
 
@@ -313,90 +260,6 @@ export const AdminDashboard = () => {
     toast.success("Admin login credentials updated and secured with SHA-256!");
     setTempUsername("");
     setTempPassword("");
-  };
-
-  // Add new administrator
-  const handleAddAdmin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newAdminName.trim() || !newAdminEmail.trim() || !newAdminPassword.trim()) {
-      toast.error("Please fill in all administrator fields.");
-      return;
-    }
-
-    const emailLower = newAdminEmail.trim().toLowerCase();
-    
-    // Check if email already exists
-    const exists = adminsList.some(a => a.email.toLowerCase() === emailLower);
-    if (exists) {
-      toast.error("An administrator with this email already exists.");
-      return;
-    }
-
-    try {
-      const passwordHash = await hashPassword(newAdminPassword.trim());
-      const newAdmin: AdminRecord = {
-        id: `admin-${Date.now()}`,
-        name: newAdminName.trim(),
-        email: emailLower,
-        password_hash: passwordHash,
-        created_at: new Date().toISOString()
-      };
-
-      const saved = await invoiceStorage.saveAdmin(newAdmin);
-      setAdminsList(prev => [...prev, saved]);
-      
-      // Reset form fields
-      setNewAdminName("");
-      setNewAdminEmail("");
-      setNewAdminPassword("");
-
-      toast.success(`Admin account for "${saved.name}" created successfully.`);
-    } catch (err) {
-      console.error("Failed to add admin:", err);
-      toast.error("An error occurred while creating the administrator account.");
-    }
-  };
-
-  // Delete administrator
-  const handleDeleteAdmin = async (id: string) => {
-    if (adminsList.length <= 1) {
-      toast.error("Cannot delete the only remaining administrator account to prevent lockouts.");
-      return;
-    }
-
-    const adminToDelete = adminsList.find(a => a.id === id);
-    if (!adminToDelete) {
-      toast.error("Administrator not found.");
-      return;
-    }
-
-    if (!window.confirm(`Are you sure you want to delete administrator "${adminToDelete.name}" (${adminToDelete.email})?`)) {
-      return;
-    }
-
-    try {
-      const success = await invoiceStorage.deleteAdmin(id);
-      if (success) {
-        setAdminsList(prev => prev.filter(a => a.id !== id));
-        toast.success(`Administrator "${adminToDelete.name}" deleted.`);
-
-        // Log out if they deleted their own account
-        const loggedInEmail = sessionStorage.getItem("scalex_admin_email") || "";
-        const loggedInName = sessionStorage.getItem("scalex_admin_name") || "";
-        if (
-          adminToDelete.email.toLowerCase() === loggedInEmail.toLowerCase() ||
-          adminToDelete.name === loggedInName
-        ) {
-          handleLogout();
-          toast.info("Your administrator account was deleted. You have been logged out.");
-        }
-      } else {
-        toast.error("Failed to delete the administrator.");
-      }
-    } catch (err) {
-      console.error("Error deleting admin:", err);
-      toast.error("An error occurred while deleting the administrator.");
-    }
   };
 
   // Inactivity Auto-logout
@@ -833,7 +696,7 @@ export const AdminDashboard = () => {
               <div className="flex flex-wrap items-center gap-2 mb-1.5">
                 <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 text-primary border border-primary/20 flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                  {currentUserDisplayName}
+                  Yash Patel
                 </span>
                 <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1 ${isSupabase ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "bg-amber-500/10 text-amber-400 border border-amber-500/20"}`}>
                   <Database className="w-3 h-3" />
@@ -2358,27 +2221,7 @@ ALTER TABLE public.credit_notes ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Allow public select" ON public.credit_notes FOR SELECT USING (true);
 CREATE POLICY "Allow public insert" ON public.credit_notes FOR INSERT WITH CHECK (true);
 CREATE POLICY "Allow public update" ON public.credit_notes FOR UPDATE USING (true);
-CREATE POLICY "Allow public delete" ON public.credit_notes FOR DELETE USING (true);
-
--- 10. Create Admins Table
-CREATE TABLE IF NOT EXISTS public.admins (
-    id TEXT PRIMARY KEY,
-    email TEXT UNIQUE NOT NULL,
-    name TEXT NOT NULL,
-    password_hash TEXT NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
-);
-
-ALTER TABLE public.admins ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Allow public select" ON public.admins FOR SELECT USING (true);
-CREATE POLICY "Allow public insert" ON public.admins FOR INSERT WITH CHECK (true);
-CREATE POLICY "Allow public update" ON public.admins FOR UPDATE USING (true);
-CREATE POLICY "Allow public delete" ON public.admins FOR DELETE USING (true);
-
--- Seed initial admin (email: admin@scalexweb.com, password: admin123, hash: 240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9)
-INSERT INTO public.admins (id, email, name, password_hash)
-VALUES ('00000000-0000-0000-0000-000000000001', 'admin@scalexweb.com', 'Yash Patel', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9')
-ON CONFLICT (email) DO NOTHING;`}
+CREATE POLICY "Allow public delete" ON public.credit_notes FOR DELETE USING (true);`}
                           </pre>
                         </div>
                       </div>
@@ -2566,110 +2409,6 @@ ON CONFLICT (email) DO NOTHING;`}
                             Save Site Settings
                           </Button>
                         </form>
-                      </div>
-
-                      {/* Admin Accounts Management */}
-                      <div className="gradient-border bg-card rounded-3xl p-6 md:p-8 space-y-6">
-                        <div>
-                          <h3 className="font-bold text-foreground text-base mb-1">System Administrators</h3>
-                          <p className="text-xs text-muted-foreground">
-                            Create and manage administrator accounts who have full control over the system.
-                          </p>
-                        </div>
-
-                        <div className="grid md:grid-cols-2 gap-8 pt-2">
-                          {/* Active Admins List */}
-                          <div className="space-y-4">
-                            <h4 className="text-xs font-bold text-foreground flex items-center gap-2">
-                              <Users className="w-4 h-4 text-primary" />
-                              Active Administrators ({adminsList.length})
-                            </h4>
-                            <div className="space-y-3 max-h-[350px] overflow-y-auto pr-1">
-                              {adminsList.map((admin) => {
-                                const isCurrent = sessionStorage.getItem("scalex_admin_email")?.toLowerCase() === admin.email.toLowerCase() || 
-                                                  (sessionStorage.getItem("scalex_admin_name") === admin.name && admin.email === "admin@scalexweb.com");
-                                return (
-                                  <div
-                                    key={admin.id}
-                                    className="flex items-center justify-between p-4 bg-background/40 rounded-2xl border border-border/30 hover:border-border/60 transition-all"
-                                  >
-                                    <div className="space-y-1 flex-1 min-w-0 pr-2">
-                                      <div className="flex items-center gap-2 flex-wrap">
-                                        <span className="text-xs font-bold text-foreground truncate max-w-[150px]" title={admin.name}>{admin.name}</span>
-                                        {isCurrent && (
-                                          <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-primary/10 text-primary border border-primary/25">
-                                            You
-                                          </span>
-                                        )}
-                                      </div>
-                                      <div className="text-[10px] text-muted-foreground truncate" title={admin.email}>{admin.email}</div>
-                                      {admin.created_at && (
-                                        <div className="text-[9px] text-muted-foreground/60">
-                                          Added: {new Date(admin.created_at).toLocaleDateString()}
-                                        </div>
-                                      )}
-                                    </div>
-                                    <button
-                                      type="button"
-                                      onClick={() => handleDeleteAdmin(admin.id)}
-                                      disabled={adminsList.length <= 1}
-                                      className={`p-2 rounded-xl transition-all ${
-                                        adminsList.length <= 1
-                                          ? "text-muted-foreground/30 cursor-not-allowed bg-background/20"
-                                          : "text-destructive hover:bg-destructive/10 border border-transparent hover:border-destructive/20"
-                                      }`}
-                                      title={adminsList.length <= 1 ? "Cannot delete the last admin account" : "Delete administrator account"}
-                                    >
-                                      <Trash2 className="w-4 h-4" />
-                                    </button>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          </div>
-
-                          {/* Add New Admin Form */}
-                          <div className="space-y-4">
-                            <h4 className="text-xs font-bold text-foreground">Create New Administrator</h4>
-                            <form onSubmit={handleAddAdmin} className="space-y-3 text-xs">
-                              <div>
-                                <label className="text-xs font-semibold text-foreground/85 mb-1 block">Full Name</label>
-                                <Input
-                                  required
-                                  placeholder="e.g. Yash Patel"
-                                  value={newAdminName}
-                                  onChange={(e) => setNewAdminName(e.target.value)}
-                                  className="bg-background/60 border-border/50 text-xs rounded-xl"
-                                />
-                              </div>
-                              <div>
-                                <label className="text-xs font-semibold text-foreground/85 mb-1 block">Email Address</label>
-                                <Input
-                                  required
-                                  type="email"
-                                  placeholder="e.g. yash@scalexweb.com"
-                                  value={newAdminEmail}
-                                  onChange={(e) => setNewAdminEmail(e.target.value)}
-                                  className="bg-background/60 border-border/50 text-xs rounded-xl"
-                                />
-                              </div>
-                              <div>
-                                <label className="text-xs font-semibold text-foreground/85 mb-1 block">Secure Password</label>
-                                <Input
-                                  required
-                                  type="password"
-                                  placeholder="••••••••"
-                                  value={newAdminPassword}
-                                  onChange={(e) => setNewAdminPassword(e.target.value)}
-                                  className="bg-background/60 border-border/50 text-xs rounded-xl"
-                                />
-                              </div>
-                              <Button type="submit" size="sm" className="w-full gap-2 rounded-xl font-bold mt-2">
-                                <Plus className="w-4 h-4" /> Create Admin Account
-                              </Button>
-                            </form>
-                          </div>
-                        </div>
                       </div>
 
                       {/* Admin credentials & Reset options */}
