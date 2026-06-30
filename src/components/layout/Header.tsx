@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown, Sun, Moon } from "lucide-react";
+import { Menu, X, ChevronDown, Sun, Moon, User, LogOut, FileText, Bookmark, Bell } from "lucide-react";
 import { useTheme } from "next-themes";
 import { AnimatePresence, motion } from "framer-motion";
 import logoImg from "@/assets/logo.png";
 import { useSiteData } from "@/context/SiteDataContext";
 import { getIconComponent } from "@/components/ui/icon-helper";
+import { supabase, isSupabaseConfigured } from "@/lib/supabaseClient";
+import { toast } from "sonner";
 
 
 
@@ -20,9 +22,40 @@ const Header = () => {
   const [mounted, setMounted] = useState(false);
   const location = useLocation();
 
+  const [user, setUser] = useState<any | null>(null);
+  const [isMockAuth, setIsMockAuth] = useState(false);
+  const [candidateOpen, setCandidateOpen] = useState(false);
+
   useEffect(() => {
     setMounted(true);
+
+    if (isSupabaseConfigured && supabase) {
+      supabase.auth.getSession().then(({ data }) => {
+        setUser(data.session?.user || null);
+      });
+
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        setUser(session?.user || null);
+      });
+
+      return () => subscription.unsubscribe();
+    } else {
+      const mockAuth = sessionStorage.getItem("scalex_mock_seeker_auth") === "true";
+      setIsMockAuth(mockAuth);
+    }
   }, []);
+
+  const handleSignOut = async () => {
+    if (isSupabaseConfigured && supabase) {
+      await supabase.auth.signOut();
+    } else {
+      sessionStorage.removeItem("scalex_mock_seeker_auth");
+      setIsMockAuth(false);
+    }
+    toast.success("Signed out successfully");
+    setCandidateOpen(false);
+    setUser(null);
+  };
 
   const navServices = [...(services || [])];
   const hasFullStack = navServices.some((s) => s.path === "/services/full-stack-development");
@@ -42,6 +75,7 @@ const Header = () => {
     { name: "Services", path: "/services", children: navServices },
     { name: "Solutions", path: "/solutions" },
     { name: "SaaS Products", path: "/saas-products" },
+    { name: "Careers", path: "/jobs" },
     { name: "Contact", path: "/contact" },
   ];
 
@@ -171,6 +205,86 @@ const Header = () => {
           <Link to="/contact" className="hidden lg:block">
             <Button variant="nav" size="sm">Get Free Quote</Button>
           </Link>
+
+          {/* Candidate Profile Dropdown */}
+          <div className="relative">
+            {user || isMockAuth ? (
+              <div
+                className="relative"
+                onMouseEnter={() => setCandidateOpen(true)}
+                onMouseLeave={() => setCandidateOpen(false)}
+              >
+                <button
+                  className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border/50 bg-muted/30 text-xs font-semibold hover:bg-muted transition-colors text-foreground h-9"
+                >
+                  <User className="w-3.5 h-3.5" />
+                  <span>Account</span>
+                  <ChevronDown className="w-3.5 h-3.5" />
+                </button>
+                <AnimatePresence>
+                  {candidateOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.97 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.97 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute top-full right-0 mt-2 w-48 bg-card border border-border rounded-xl shadow-lg p-1.5 z-50 text-left"
+                    >
+                      <div className="px-2.5 py-1.5 text-[10px] text-muted-foreground border-b border-border/40 mb-1">
+                        Signed in as <br/>
+                        <strong className="text-foreground truncate block">{user?.email || "Mock Candidate"}</strong>
+                      </div>
+                      <Link
+                        to="/dashboard/profile"
+                        onClick={() => setCandidateOpen(false)}
+                        className="flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs font-medium text-foreground hover:bg-muted/60 transition-colors"
+                      >
+                        <User className="w-3.5 h-3.5 text-muted-foreground" />
+                        <span>Candidate Profile</span>
+                      </Link>
+                      <Link
+                        to="/dashboard/applications"
+                        onClick={() => setCandidateOpen(false)}
+                        className="flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs font-medium text-foreground hover:bg-muted/60 transition-colors"
+                      >
+                        <FileText className="w-3.5 h-3.5 text-muted-foreground" />
+                        <span>Track Applications</span>
+                      </Link>
+                      <Link
+                        to="/dashboard/saved-jobs"
+                        onClick={() => setCandidateOpen(false)}
+                        className="flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs font-medium text-foreground hover:bg-muted/60 transition-colors"
+                      >
+                        <Bookmark className="w-3.5 h-3.5 text-muted-foreground" />
+                        <span>Saved Bookmarks</span>
+                      </Link>
+                      <Link
+                        to="/dashboard/job-alerts"
+                        onClick={() => setCandidateOpen(false)}
+                        className="flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs font-medium text-foreground hover:bg-muted/60 transition-colors"
+                      >
+                        <Bell className="w-3.5 h-3.5 text-muted-foreground" />
+                        <span>Job Alerts</span>
+                      </Link>
+                      <button
+                        onClick={handleSignOut}
+                        className="w-full flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs font-semibold text-rose-500 hover:bg-rose-500/10 transition-colors text-left"
+                      >
+                        <LogOut className="w-3.5 h-3.5" />
+                        <span>Sign Out</span>
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <Link to="/careers/auth" className="hidden lg:block">
+                <Button variant="outline" size="sm" className="rounded-xl h-9 text-xs border-border/50 text-foreground/80 hover:text-foreground">
+                  Log In
+                </Button>
+              </Link>
+            )}
+          </div>
           {/* Mobile Toggle */}
           <button
             className="lg:hidden w-9 h-9 rounded-xl border border-border/50 bg-muted/30 flex items-center justify-center hover:bg-muted transition-colors"
@@ -243,6 +357,50 @@ const Header = () => {
               <Link to="/contact" className="mt-2">
                 <Button variant="hero" className="w-full">Get a Free Quote</Button>
               </Link>
+
+              {user || isMockAuth ? (
+                <>
+                  <div className="h-px bg-border/40 my-2" />
+                  <Link
+                    to="/dashboard/profile"
+                    onClick={() => setMobileOpen(false)}
+                    className="px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground rounded-xl hover:bg-muted/60 block"
+                  >
+                    Candidate Profile
+                  </Link>
+                  <Link
+                    to="/dashboard/applications"
+                    onClick={() => setMobileOpen(false)}
+                    className="px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground rounded-xl hover:bg-muted/60 block"
+                  >
+                    Track Applications
+                  </Link>
+                  <Link
+                    to="/dashboard/saved-jobs"
+                    onClick={() => setMobileOpen(false)}
+                    className="px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground rounded-xl hover:bg-muted/60 block"
+                  >
+                    Saved Bookmarks
+                  </Link>
+                  <Link
+                    to="/dashboard/job-alerts"
+                    onClick={() => setMobileOpen(false)}
+                    className="px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground rounded-xl hover:bg-muted/60 block"
+                  >
+                    Job Alerts Digests
+                  </Link>
+                  <button
+                    onClick={handleSignOut}
+                    className="w-full px-4 py-2.5 text-sm text-rose-500 font-semibold rounded-xl hover:bg-rose-500/10 transition-colors text-left block"
+                  >
+                    Sign Out Account
+                  </button>
+                </>
+              ) : (
+                <Link to="/careers/auth" className="mt-1" onClick={() => setMobileOpen(false)}>
+                  <Button variant="outline" className="w-full rounded-xl">Candidate Log In</Button>
+                </Link>
+              )}
             </div>
           </motion.div>
         )}

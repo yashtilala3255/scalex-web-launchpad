@@ -27,6 +27,19 @@ const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const MaintenancePage = lazy(() => import("./pages/MaintenancePage"));
 const ComingSoonPage = lazy(() => import("./pages/ComingSoonPage"));
 const Demo = lazy(() => import("./pages/Demo"));
+const JobsDirectory = lazy(() => import("./pages/JobsDirectory"));
+const JobDetails = lazy(() => import("./pages/JobDetails"));
+const AdminJobsList = lazy(() => import("./pages/admin/AdminJobsList"));
+const AdminCompliance = lazy(() => import("./pages/admin/AdminCompliance"));
+const AdminJobEdit = lazy(() => import("./pages/admin/AdminJobEdit"));
+const JobApply = lazy(() => import("./pages/JobApply"));
+const SeekerApplications = lazy(() => import("./pages/SeekerApplications"));
+const AdminJobApplicants = lazy(() => import("./pages/admin/AdminJobApplicants"));
+const AdminApplicantDetail = lazy(() => import("./pages/admin/AdminApplicantDetail"));
+const SeekerSavedJobs = lazy(() => import("./pages/SeekerSavedJobs"));
+const SeekerJobAlerts = lazy(() => import("./pages/SeekerJobAlerts"));
+const CareersAuth = lazy(() => import("./pages/CareersAuth"));
+const SeekerProfile = lazy(() => import("./pages/SeekerProfile"));
 import ScrollToTop from "@/components/layout/ScrollToTop";
 
 
@@ -503,6 +516,7 @@ const App = () => {
               >
                 <BrowserRouter>
                   <ScrollToTop />
+                  <AnalyticsTracker />
                   <MaintenanceGuard>
                     <Suspense fallback={<PageLoader />}>
                       <Routes>
@@ -520,6 +534,20 @@ const App = () => {
                         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                         <Route path="/terms-of-service" element={<TermsOfService />} />
                         <Route path="/cookie-policy" element={<CookiePolicy />} />
+                        <Route path="/jobs" element={<JobsDirectory />} />
+                        <Route path="/jobs/:slug" element={<JobDetails />} />
+                        <Route path="/jobs/:slug/apply" element={<JobApply />} />
+                        <Route path="/dashboard/applications" element={<SeekerApplications />} />
+                        <Route path="/dashboard/saved-jobs" element={<SeekerSavedJobs />} />
+                        <Route path="/dashboard/job-alerts" element={<SeekerJobAlerts />} />
+                        <Route path="/dashboard/profile" element={<SeekerProfile />} />
+                        <Route path="/careers/auth" element={<CareersAuth />} />
+                        <Route path="/admin/jobs" element={<AdminJobsList />} />
+                        <Route path="/admin/jobs/new" element={<AdminJobEdit />} />
+                        <Route path="/admin/jobs/edit/:id" element={<AdminJobEdit />} />
+                        <Route path="/admin/compliance" element={<AdminCompliance />} />
+                        <Route path="/admin/jobs/:id/applicants" element={<AdminJobApplicants />} />
+                        <Route path="/admin/applicants/:id" element={<AdminApplicantDetail />} />
                         <Route path="/adminloginog" element={<AdminDashboard />} />
                         <Route path="/adminloginfk" element={<AdminDashboard />} />
                         <Route path="/demo" element={<Demo />} />
@@ -535,6 +563,22 @@ const App = () => {
       </SiteDataProvider>
     </ThemeProvider>
   );
+};
+
+const AnalyticsTracker = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && typeof window.gtag === "function") {
+      const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID || "G-9KBGB4TYB1";
+      window.gtag("event", "page_view", {
+        page_path: location.pathname + location.search,
+        send_to: GA_MEASUREMENT_ID
+      });
+    }
+  }, [location]);
+
+  return null;
 };
 
 export default App;

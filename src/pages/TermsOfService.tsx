@@ -7,56 +7,40 @@ const fadeUp = { initial: { opacity: 0, y: 30 }, whileInView: { opacity: 1, y: 0
 
 const sections = [
   {
-    title: "Acceptance of Terms",
-    content: "By accessing or using the ScaleXWeb Solution website and services, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our website or services. These terms apply to all visitors, users, and clients.",
+    title: "Definitions",
+    content: "• \"Agreement\" refers to these Terms of Use/Service and any legal updates or schedules attached.\n• \"Service\" refers to the ScaleXWeb web/mobile/SaaS platforms, careers portal, application forms, and CMS dashboards.\n• \"User\" (also \"you\" or \"your\") refers to any visitor, client, or job seeker accessing our Service.\n• \"We,\" \"us,\" or \"our\" refers to ScaleXWeb Solution, registered under the Ministry of MSME, India.",
   },
   {
-    title: "Permitted Use & Prohibited Conduct",
-    content: "You are granted a non-exclusive, non-transferable, revocable license to access our website for informational and project inquiry purposes. You agree not to use our services or website for any unlawful activities, including transmitting malware, scraping content, attempting unauthorized server access, submitting false/fraudulent inquiry data, or violating the intellectual property rights of others.",
+    title: "1. ACCOUNTS",
+    content: "To access certain features of our Careers Portal or CMS Dashboards, you must register a candidate or admin account. You represent that all registration credentials you provide are truthful, accurate, and current. You are entirely responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You must notify us immediately of any unauthorized credentials access.",
   },
   {
-    title: "Right to Modify Terms",
-    content: "We reserve the right to update, modify, or replace these Terms of Service at any time. Any revisions will be indicated by an updated 'Last updated' timestamp. Your continued use of the website or our services following any changes constitutes your binding acceptance of the modified Terms of Service.",
+    title: "2. ACCESS RIGHTS AND PRIVILEGES",
+    content: "ScaleXWeb grants you a limited, non-exclusive, non-transferable, revocable license to access and use the Service strictly for personal, job search, client portfolio audits, or recruiter administrative purposes. Any commercial utilization of our site assets, content duplication, or unauthorized crawling is strictly prohibited. Access privileges may be suspended or revoked at our sole discretion.",
   },
   {
-    title: "User-Generated Content & Submission Ownership",
-    content: "When you submit project inquiries, ideas, mockups, or attachments through our contact forms, you grant ScaleXWeb Solution a non-exclusive, worldwide, royalty-free license to use, store, and process this information to evaluate your request and prepare quotes. You warrant that you own or have the necessary intellectual property rights for all content you submit and that it does not infringe on third-party rights.",
+    title: "3. INFORMATION SECURITY",
+    content: "We implement security measures, including HTTPS encryption and database level role-based access control, to protect candidate credentials and client logs. However, you acknowledge that no digital transmission over the internet or storage system can be guaranteed 100% secure. You agree to cooperate in implementing secure account passwords and immediately report any discovered security vulnerabilities.",
   },
   {
-    title: "Services",
-    content: "ScaleXWeb Solution provides digital services including website development, mobile application development, SaaS platform development, e-commerce solutions, and UI/UX design. The specific scope, timeline, and deliverables for each project are defined in individual project agreements signed between ScaleXWeb Solution and the client.",
+    title: "4. USER CODE OF CONDUCT",
+    content: "You agree not to engage in prohibited conduct, including: (a) uploading files containing viruses, Trojan horses, or malicious scripts; (b) scraping database content, bypassing API security walls, or flooding the Service; (c) submitting falsified job applications, plagiarizing resumes, or claiming unearned professional certifications; and (d) posting abusive, offensive, or harassing content.",
   },
   {
-    title: "Intellectual Property",
-    content: "Upon full payment of all invoices, clients receive full ownership of all custom-developed code, designs, and digital assets created specifically for their project. ScaleXWeb Solution retains the right to use general methodologies, frameworks, and proprietary tools developed independently. We may display completed projects in our portfolio unless explicitly agreed otherwise.",
+    title: "5. DISCLAIMERS",
+    content: "The Service and all content are provided on an \"as is\" and \"as available\" basis without warranties of any kind, either express or implied, including merchantability or fitness for a particular purpose. We do not guarantee that the Service will be uninterrupted, error-free, or secure. Any reliance on the materials or job openings is at your own risk.",
   },
   {
-    title: "Payment Terms",
-    content: "Payment schedules are defined in individual project agreements. Typically, projects require a deposit before work begins, with milestone-based payments throughout the project. Final delivery is contingent on full payment. Late payments may result in project delays. All prices are in INR or USD as specified in the project agreement.",
+    title: "6. BINDING AGREEMENT",
+    content: "These Terms constitute a legally binding agreement between you and ScaleXWeb. By accessing the Service, you signify your irrevocable acceptance of these Terms. If you are accepting on behalf of an enterprise, you represent that you hold full authorization to bind that entity to this Agreement.",
   },
   {
-    title: "Project Changes & Revisions",
-    content: "Changes to project scope after work has begun may result in additional costs and timeline adjustments. We follow a formal change request process for all scope modifications. Revision rounds are defined in each project agreement. Additional revisions beyond the agreed number will be billed at our standard hourly rate.",
+    title: "7. UPDATING THESE TERMS",
+    content: "We reserve the sole right to revise and update these Terms at any time. When updates are published, the \"Last updated\" date will be revised. Continued utilization of our Service following publication of revised Terms represents your binding acceptance of the updated terms. If you do not agree to the new terms, you must terminate your account.",
   },
   {
-    title: "Confidentiality",
-    content: "We treat all client information, business data, and project details as strictly confidential. We do not share client information with third parties without express written consent. Clients may request a Non-Disclosure Agreement (NDA) before project commencement.",
-  },
-  {
-    title: "Limitation of Liability",
-    content: "ScaleXWeb Solution's liability for any claims arising from our services is limited to the amount paid for the specific service giving rise to the claim. We are not liable for indirect, incidental, special, or consequential damages. We do not warrant that our services will meet all specific business requirements or be error-free.",
-  },
-  {
-    title: "Termination & Suspension",
-    content: "Either party may terminate an active project with 14 days written notice. Additionally, we reserve the right to suspend or terminate your access to our website, CMS dashboard, or project portals immediately and without notice if we detect a breach of these Terms of Service, fraudulent activity, or abusive behavior.",
-  },
-  {
-    title: "Governing Law & Dispute Resolution",
-    content: "These Terms of Service are governed by the laws of Gujarat, India. Any disputes arising from these terms or our services shall be subject to the exclusive jurisdiction of the courts of Ahmedabad, Gujarat, India.",
-  },
-  {
-    title: "Contact Us",
-    content: "For questions about these Terms of Service, please contact us at scalexwebsolution@gmail.com or write to us at ScaleXWeb Solution, Ahmedabad, Gujarat, India.",
+    title: "8. COMMUNICATION",
+    content: "By creating an account, you consent to receive electronic communications from us, including recruitment updates, job alerts, dashboard newsletters, and security notices. You may opt-out of optional notifications by adjusting your dashboard settings or clicking the unsubscribe link in our emails.",
   },
 ];
 
@@ -66,7 +50,7 @@ const TermsOfService = () => (
     <PageHero
       breadcrumbs={[{ name: "Home", path: "/" }, { name: "Terms of Service", path: "/terms-of-service" }]}
       headline="Terms of Service"
-      subheadline="Last updated: May 2025"
+      subheadline="Last updated: June 2026"
       badge="Legal"
     />
     <section className="section-padding bg-background">
@@ -80,7 +64,7 @@ const TermsOfService = () => (
           {sections.map((section, i) => (
             <motion.div key={section.title} {...fadeUp} transition={{ delay: i * 0.05 }} className="border border-border bg-card rounded-xl p-7 hover:border-primary/20 transition-all duration-300">
               <h2 className="text-xl font-heading font-bold text-foreground mb-3">{section.title}</h2>
-              <p className="text-muted-foreground leading-relaxed">{section.content}</p>
+              <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{section.content}</p>
             </motion.div>
           ))}
         </div>

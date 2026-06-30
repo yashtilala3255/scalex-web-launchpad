@@ -7,44 +7,56 @@ const fadeUp = { initial: { opacity: 0, y: 30 }, whileInView: { opacity: 1, y: 0
 
 const sections = [
   {
-    title: "Information We Collect (Data Inventory)",
-    content: "We collect information that you directly provide to us when filling out our contact, lead, or newsletter forms. This data inventory includes: name, email address, phone number, company name, and project description text. Additionally, we collect device identifiers, IP addresses, browser types, and behavioral usage statistics when you navigate our site.",
+    title: "Non-Personal Information",
+    content: "We collect non-personal information that does not identify you individually, such as your browser type, device metadata, operating system version, page loading speeds, referring website URLs, exit pages, and clickstream data. This information is used for diagnostic analytics, performance tracking, and optimization of our carrier/dashboard services.",
   },
   {
-    title: "How We Use Your Information (Purpose)",
-    content: "The collected data is used exclusively to evaluate project scopes, respond to user inquiries, provide custom development quotes, personalize user experiences, perform site analytics, and verify form authenticity. We do not use your personal information for automated profiling or behavioral ad-targeting.",
+    title: "COOKIES",
+    content: "We use cookies and similar tracking technologies (such as local storage tokens and device identifiers) to improve your experience on our website, remember your settings, and secure account sessions. You can choose to accept, reject, or manage cookie preferences through our consent banner. Please refer to our Cookie Policy for more details.",
   },
   {
-    title: "Third-Party Service Disclosures",
-    content: "To support our development operations and deliver high-performance experiences, we share data with compliant third-party subprocessors. This includes: Formspree (for secure contact form processing), Supabase (for secure cloud database storage, inquiry logs, and analytics persistence), ipapi.co (for IP-based visitor geolocation lookup to personalize local service views), Google Fonts (for rendering typography, which processes temporary asset delivery requests), Vercel (for high-speed global web hosting and secure infrastructure delivery logs), Google Analytics (for tracking general traffic and anonymous user statistics), and Stripe / Razorpay (for optional billing & transaction processing compliance). All subprocessors are bound by confidentiality terms and vetted for compliance with privacy regulations like GDPR and CCPA.",
+    title: "USE OF THE INFORMATION:",
+    content: "We use your personal information to process job applications, verify candidate identity, manage recruiter alerts, respond to project inquiries, compile analytics, and deliver high-performance development services. We ensure your information is processed lawfully, fairly, and transparently.",
   },
   {
-    title: "Data Retention & Deletion",
-    content: "We retain lead inquiries and associated personal data only for as long as necessary to service your project requests, typically up to 12 months for standard inquiries, or for the duration of an active development agreement. Once this period expires or upon a verified user deletion request, data is permanently erased from our production databases.",
+    title: "THIRD-PARTY SERVICES",
+    content: "To support our operations and deliver high-performance experiences, we share data with compliant third-party subprocessors. This includes: Formspree (for secure contact form processing), Supabase (for secure cloud database storage, applicant profile hosting, private resume file storage, inquiry logs, and analytics persistence), Google Analytics (for tracking general traffic and anonymous user statistics), and Stripe / Razorpay (for secure payment processing). All subprocessors are vetted for compliance with privacy regulations like GDPR.",
   },
   {
-    title: "User Rights & Data Portability",
-    content: "Under GDPR, CCPA, and similar data regulations, you hold the right to access, edit, restrict, or delete any personal information we store. You may also request a portable copy of your data or withdraw your consent at any time. To exercise any of these user rights, contact our data compliance officer at scalexwebsolution@gmail.com.",
+    title: "DISCLOSURE OF INFORMATION",
+    content: "We do not sell or trade your personal information. We may disclose your information if required by law, to enforce our site policies, protect our rights, or in connection with a corporate sale, merger, or restructuring, provided the receiving party agrees to uphold similar privacy standards.",
   },
   {
-    title: "Children's Privacy (COPPA & GDPR)",
-    content: "Our website and agency services are not intended for or directed to minors under the age of 13 (or 16 in the EU). We do not knowingly collect personal data from children. If we discover that a minor has submitted personal information without parental consent, we will delete it immediately from our servers.",
+    title: "YOUR CHOICES ABOUT YOUR INFORMATION",
+    content: "You have control over your data. You may request access to, correction of, or deletion of your personal data by contacting our compliance officer. You can also opt-out of marketing communications by clicking unsubscribe or updating your preferences in your candidate dashboard.",
   },
   {
-    title: "Cookies & Consent Management",
-    content: "We use essential cookies to maintain site security and session state. We also use performance/analytics cookies to track site traffic. You can adjust your cookie preferences directly in your browser. Users can disable non-essential tracking cookies without affecting access to our website.",
+    title: "EXCLUSION",
+    content: "This Privacy Policy does not apply to any information you submit in public forums, third-party sites linked from our platform, or unsolicited communications. Any information shared in public remains public and is outside our data safety protections.",
   },
   {
-    title: "Data Security Measures",
-    content: "We apply rigorous technical security controls. All data in transit is encrypted using industry-standard TLS/HTTPS protocols. Data stored at rest in our databases is encrypted, and access is restricted using strict role-based access control (RBAC). In the event of a data breach, we maintain a response plan to notify affected users within 72 hours.",
+    title: "SEVERABILITY",
+    content: "If any provision of this Privacy Policy is found by a court of competent jurisdiction to be invalid, illegal, or unenforceable, the validity, legality, and enforceability of the remaining provisions shall remain fully intact and in force.",
   },
   {
-    title: "Changes to This Policy",
-    content: "We reserve the right to modify this Privacy Policy at any time. Any changes will be posted on this page with an updated 'Last updated' date. Continued use of our website represents your acceptance of the updated terms.",
+    title: "GOVERNING LAW AND DISPUTE RESOLUTION",
+    content: "This Privacy Policy and any disputes arising from it shall be governed by the laws of India. Any legal proceedings or arbitration arising from or in connection with this policy shall be resolved exclusively within the courts of Ahmedabad, Gujarat, India.",
   },
   {
-    title: "Contact Us",
-    content: "If you have questions regarding our data practices, cookie policy, or user rights, please contact us at scalexwebsolution@gmail.com or write to us at ScaleXWeb Solution, Ahmedabad, Gujarat, India.",
+    title: "FOREIGN JURISDICTION",
+    content: "ScaleXWeb is headquartered in Ahmedabad, India. If you access our services from outside India, you consent to the transfer, storage, and processing of your information in India, where data protection standards may differ from your home country.",
+  },
+  {
+    title: "CHANGES TO THE PRIVACY POLICY",
+    content: "We reserve the right to update this Privacy Policy at any time. When updates are published, we will notify users through our site banner or revise the 'Last updated' date. Continued use represents acceptance of changes.",
+  },
+  {
+    title: "CONTACT",
+    content: "For inquiries regarding your privacy rights, data storage, or to request record deletion, please contact us at scalexwebsolution@gmail.com or write to us at ScaleXWeb Solution, Ahmedabad, Gujarat, India.",
+  },
+  {
+    title: "APPLICABLE LAW AND JURISDICTION",
+    content: "All matters relating to your access to, or use of, the careers portal and services are governed by the laws of India. The courts of Ahmedabad, Gujarat, India shall have exclusive jurisdiction over any claims.",
   },
 ];
 
@@ -54,7 +66,7 @@ const PrivacyPolicy = () => (
     <PageHero
       breadcrumbs={[{ name: "Home", path: "/" }, { name: "Privacy Policy", path: "/privacy-policy" }]}
       headline="Privacy Policy"
-      subheadline="Last updated: May 2025"
+      subheadline="Last updated: June 2026"
       badge="Legal"
     />
     <section className="section-padding bg-background">

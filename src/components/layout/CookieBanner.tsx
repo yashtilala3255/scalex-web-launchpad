@@ -3,6 +3,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Cookie, X, ShieldAlert, Check } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { supabase, isSupabaseConfigured } from "@/lib/supabaseClient";
+import { CURRENT_POLICY_VERSION } from "@/constants/policies";
+import { loadGoogleAnalytics, disableGoogleAnalytics } from "@/lib/analytics";
 
 interface ConsentState {
   essential: boolean;
@@ -26,24 +29,87 @@ const CookieBanner = () => {
       // Delay showing the banner slightly for better entry presentation
       const timer = setTimeout(() => setIsVisible(true), 1500);
       return () => clearTimeout(timer);
+    } else {
+      try {
+        const consent = JSON.parse(savedConsent);
+        if (consent.analytics) {
+          loadGoogleAnalytics();
+        }
+      } catch (err) {
+        console.error("Error parsing saved cookieConsent:", err);
+      }
     }
   }, []);
 
-  const handleAcceptAll = () => {
+  const logConsentToDatabase = async () => {
+    if (!isSupabaseConfigured || !supabase) return;
+    try {
+      // Get or create device ID
+      let deviceId = localStorage.getItem("scalex_device_id");
+      if (!deviceId) {
+        deviceId = typeof window !== "undefined" && window.crypto && window.crypto.randomUUID
+          ? window.crypto.randomUUID()
+          : "d-" + Math.random().toString(36).substring(2, 11) + "-" + Date.now();
+        localStorage.setItem("scalex_device_id", deviceId);
+      }
+
+      // Check current user session if any
+      const { data: { session } } = await supabase.auth.getSession();
+      const userId = session?.user?.id || null;
+
+      // Insert consent record
+      await supabase.from("anonymous_consents").insert({
+        device_id: deviceId,
+        user_id: userId,
+        policy_type: "cookie_policy",
+        policy_version: CURRENT_POLICY_VERSION,
+        user_agent: navigator.userAgent
+      });
+
+      // Also update the profile if user is logged in
+      if (userId) {
+        await supabase
+          .from("profiles")
+          .update({
+            cookie_accepted: true,
+            cookie_accepted_at: new Date().toISOString()
+          })
+          .eq("id", userId);
+      }
+    } catch (err) {
+      console.error("Error logging consent to database:", err);
+    }
+  };
+
+  const handleAcceptAll = async () => {
     const allConsent = { essential: true, analytics: true, marketing: true };
     localStorage.setItem("cookieConsent", JSON.stringify(allConsent));
     setIsVisible(false);
+    loadGoogleAnalytics();
+    await logConsentToDatabase();
   };
 
   const handleRejectAll = () => {
     const essentialOnly = { essential: true, analytics: false, marketing: false };
     localStorage.setItem("cookieConsent", JSON.stringify(essentialOnly));
     setIsVisible(false);
+    disableGoogleAnalytics();
   };
 
-  const handleSavePreferences = () => {
+  const handleSavePreferences = async () => {
     localStorage.setItem("cookieConsent", JSON.stringify(preferences));
     setIsVisible(false);
+    
+    if (preferences.analytics) {
+      loadGoogleAnalytics();
+    } else {
+      disableGoogleAnalytics();
+    }
+
+    // Log consent if they accepted any optional trackers
+    if (preferences.analytics || preferences.marketing) {
+      await logConsentToDatabase();
+    }
   };
 
   return (

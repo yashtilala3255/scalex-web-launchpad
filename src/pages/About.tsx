@@ -94,6 +94,25 @@ const About = () => {
       className="border-b border-border/30"
     />
 
+    {/* ── Recognized By (MSME) Section ── */}
+    <section className="py-12 bg-background border-b border-border/30">
+      <div className="container-tight text-center space-y-6">
+        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-[0.25em]">Recognized by</p>
+        <div className="flex items-center justify-center gap-4">
+          <div className="bg-card border border-border/60 hover:border-primary/20 rounded-2xl p-8 transition-all duration-300 shadow-md max-w-md flex items-center justify-center gap-5">
+            <div className="bg-white p-3 rounded-2xl shrink-0 flex items-center justify-center shadow-sm border border-border/10">
+              <img src="/MSME.webp" alt="MSME Ministry of Micro, Small & Medium Enterprises" className="h-20 w-auto object-contain" />
+            </div>
+            <div className="text-left">
+              <span className="text-xs font-bold text-primary block uppercase tracking-wider">Registered Enterprise</span>
+              <h4 className="text-base font-extrabold text-foreground leading-tight mt-0.5">Ministry of MSME</h4>
+              <p className="text-xs text-muted-foreground mt-0.5">Government of India Registered</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     {/* ── 2. Vision & Mission ────────────────────────── */}
     <section className="section-padding bg-secondary/35 border-y border-border/30">
       <div className="container-tight">

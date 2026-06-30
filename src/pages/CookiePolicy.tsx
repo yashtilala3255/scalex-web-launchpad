@@ -12,11 +12,11 @@ const sections = [
   },
   {
     title: "How We Use Cookies",
-    content: "ScaleXWeb Solution uses cookies for limited purposes. These include maintaining our contact forms, security verification, determining if you have seen and accepted our cookie preferences, and analyzing how visitors interact with our site so we can optimize performance.",
+    content: "ScaleXWeb Solution uses cookies for limited purposes. These include maintaining our contact forms, verifying security tokens, maintaining active candidate and recruiter login sessions, secure resume file upload verification, determining if you have seen and accepted our cookie preferences, and analyzing how visitors interact with our site so we can optimize performance.",
   },
   {
     title: "Categories of Cookies We Use",
-    content: "We classify cookies into three categories. Except for Essential cookies, we require your explicit consent before storing them: \n\n1. Essential/Strictly Necessary: Required for core site operations, secure form submission (such as Formspree), and security protection. These cannot be deactivated.\n\n2. Analytics & Performance: Used to collect anonymous traffic statistics (such as via Google Analytics), page load speeds, and user navigation paths to help us improve the site.\n\n3. Marketing & Lead Generation: Used occasionally to measure the efficiency of our marketing campaigns and understand how users find our website.",
+    content: "We classify cookies into three categories. Except for Essential cookies, we require your explicit consent before storing them: \n\n1. Essential/Strictly Necessary: Required for core site operations, secure form submissions (such as Formspree), candidate/recruiter authentication tokens (via Supabase Auth) to let you log in and track applications securely, and security protection. These cannot be deactivated.\n\n2. Analytics & Performance: Used to collect anonymous traffic statistics (such as via Google Analytics), page load speeds, and user navigation paths to help us improve the site.\n\n3. Marketing & Lead Generation: Used occasionally to measure the efficiency of our marketing campaigns and understand how users find our website.",
   },
   {
     title: "Consent & Managing Your Preferences",
@@ -24,7 +24,7 @@ const sections = [
   },
   {
     title: "Third-Party Cookies",
-    content: "Some services we integrate (including Google Analytics for performance measurement, Formspree for contact forms, Vercel for high-speed routing, Supabase for cloud database storage, ipapi.co for local visitor geolocation personalization, and Google Fonts for typography loading) may place cookies or use local storage on your device. We encourage you to review their respective privacy and cookie policies to understand their data practices.",
+    content: "Some services we integrate (including Google Analytics for performance measurement, Formspree for contact forms, Vercel for high-speed routing, Supabase for cloud database storage and recruiter/candidate authentication session management, ipapi.co for local visitor geolocation personalization, and Google Fonts for typography loading) may place cookies or use local storage on your device. We encourage you to review their respective privacy and cookie policies to understand their data practices.",
   },
   {
     title: "Policy Updates",
