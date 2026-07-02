@@ -135,6 +135,88 @@ export const JobsDirectory = () => {
     return level.charAt(0).toUpperCase() + level.slice(1);
   };
 
+  const regularJobs = jobs.filter((job) => job.job_type !== "internship");
+  const internships = jobs.filter((job) => job.job_type === "internship");
+
+  const renderJobCard = (job: Job) => {
+    return (
+      <Link
+        key={job.id}
+        to={`/jobs/${job.slug}`}
+        className="group block border border-border bg-card hover:bg-card/75 rounded-2xl p-6 transition-all duration-300 hover:shadow-md hover:border-primary/20"
+      >
+        <div className="flex flex-col sm:flex-row sm:items-start gap-4">
+          {/* Company Logo column */}
+          <div className="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center text-white font-extrabold text-sm shrink-0 shadow-sm border border-white/10 uppercase">
+            {job.company?.logo_url ? (
+              <img src={job.company.logo_url} alt={job.company.name} className="w-full h-full object-cover rounded-xl" />
+            ) : (
+              (job.company?.name || "SX").slice(0, 2)
+            )}
+          </div>
+
+          {/* Middle Info Column */}
+          <div className="flex-grow space-y-2">
+            <div className="flex flex-wrap gap-2 items-center">
+              <span className="text-[11px] font-bold text-primary tracking-wide">
+                {job.company?.name || "ScaleXWeb"}
+              </span>
+              <span className="w-1.5 h-1.5 rounded-full bg-border" />
+              <Badge variant="secondary" className="bg-primary/5 text-primary border border-primary/10 rounded-full font-mono text-[9px] uppercase font-bold tracking-wider px-2 py-0.5">
+                {job.category?.name || "Job"}
+              </Badge>
+              <Badge variant="outline" className="border-border text-muted-foreground rounded-full text-[9px] uppercase font-bold tracking-wider px-2 py-0.5">
+                {getJobTypeLabel(job.job_type)}
+              </Badge>
+            </div>
+
+            <h3 className="font-heading font-bold text-lg text-foreground group-hover:text-primary transition-colors leading-tight pt-0.5">
+              {job.title}
+            </h3>
+
+            {job.description && (
+              <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed max-w-2xl pt-0.5">
+                {stripHtml(job.description)}
+              </p>
+            )}
+
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-muted-foreground pt-1.5">
+              <span className="flex items-center gap-1.5">
+                <MapPin className="w-3.5 h-3.5 text-muted-foreground/60" />
+                {job.location}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Briefcase className="w-3.5 h-3.5 text-muted-foreground/60" />
+                {getExperienceLabel(job.experience_level)} Experience
+              </span>
+              <span className="flex items-center gap-1.5">
+                <DollarSign className="w-3.5 h-3.5 text-muted-foreground/60" />
+                {formatSalary(job.salary_min, job.salary_max, job.currency, job.is_unpaid)}
+              </span>
+            </div>
+          </div>
+
+          {/* Right Arrow Column */}
+          <div className="flex items-center sm:self-center gap-1.5 self-end text-xs text-primary font-bold transition-transform group-hover:translate-x-1 shrink-0">
+            View details <ChevronRight className="w-4 h-4" />
+          </div>
+        </div>
+        
+        <div className="flex flex-wrap items-center justify-between text-[10px] text-muted-foreground pt-4 mt-4 border-t border-border/30 gap-2">
+          <span className="flex items-center gap-1">
+            <Calendar className="w-3.5 h-3.5 text-muted-foreground/60" />
+            {job.created_at ? timeAgo(job.created_at) : "Posted recently"}
+          </span>
+          {job.application_deadline && (
+            <span>
+              Apply before {new Date(job.application_deadline).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}
+            </span>
+          )}
+        </div>
+      </Link>
+    );
+  };
+
   return (
     <Layout>
       <SEO
@@ -312,83 +394,50 @@ export const JobsDirectory = () => {
                   </Button>
                 </div>
               ) : (
-                <div className="space-y-4">
-                  {jobs.map((job) => (
-                    <Link
-                      key={job.id}
-                      to={`/jobs/${job.slug}`}
-                      className="group block border border-border bg-card hover:bg-card/75 rounded-2xl p-6 transition-all duration-300 hover:shadow-md hover:border-primary/20"
-                    >
-                      <div className="flex flex-col sm:flex-row sm:items-start gap-4">
-                        {/* Company Logo column */}
-                        <div className="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center text-white font-extrabold text-sm shrink-0 shadow-sm border border-white/10 uppercase">
-                          {job.company?.logo_url ? (
-                            <img src={job.company.logo_url} alt={job.company.name} className="w-full h-full object-cover rounded-xl" />
-                          ) : (
-                            (job.company?.name || "SX").slice(0, 2)
-                          )}
-                        </div>
+                <div className="space-y-10">
+                  {/* Job Openings Section */}
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2 border-b border-border/40 pb-2">
+                      <h2 className="text-base font-heading font-extrabold text-foreground flex items-center gap-2">
+                        <span className="w-1.5 h-4 bg-primary rounded-full" /> Job Openings
+                      </h2>
+                      <Badge className="bg-primary/10 text-primary border border-primary/20 rounded-full font-mono text-[9px] font-bold px-2.5 py-0.5">
+                        {regularJobs.length} {regularJobs.length === 1 ? "position" : "positions"}
+                      </Badge>
+                    </div>
 
-                        {/* Middle Info Column */}
-                        <div className="flex-grow space-y-2">
-                          <div className="flex flex-wrap gap-2 items-center">
-                            <span className="text-[11px] font-bold text-primary tracking-wide">
-                              {job.company?.name || "ScaleXWeb"}
-                            </span>
-                            <span className="w-1.5 h-1.5 rounded-full bg-border" />
-                            <Badge variant="secondary" className="bg-primary/5 text-primary border border-primary/10 rounded-full font-mono text-[9px] uppercase font-bold tracking-wider px-2 py-0.5">
-                              {job.category?.name || "Job"}
-                            </Badge>
-                            <Badge variant="outline" className="border-border text-muted-foreground rounded-full text-[9px] uppercase font-bold tracking-wider px-2 py-0.5">
-                              {getJobTypeLabel(job.job_type)}
-                            </Badge>
-                          </div>
-
-                          <h3 className="font-heading font-bold text-lg text-foreground group-hover:text-primary transition-colors leading-tight pt-0.5">
-                            {job.title}
-                          </h3>
-
-                          {job.description && (
-                            <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed max-w-2xl pt-0.5">
-                              {stripHtml(job.description)}
-                            </p>
-                          )}
-
-                          <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-muted-foreground pt-1.5">
-                            <span className="flex items-center gap-1.5">
-                              <MapPin className="w-3.5 h-3.5 text-muted-foreground/60" />
-                              {job.location}
-                            </span>
-                            <span className="flex items-center gap-1.5">
-                              <Briefcase className="w-3.5 h-3.5 text-muted-foreground/60" />
-                              {getExperienceLabel(job.experience_level)} Experience
-                            </span>
-                            <span className="flex items-center gap-1.5">
-                              <DollarSign className="w-3.5 h-3.5 text-muted-foreground/60" />
-                              {formatSalary(job.salary_min, job.salary_max, job.currency, job.is_unpaid)}
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Right Arrow Column */}
-                        <div className="flex items-center sm:self-center gap-1.5 self-end text-xs text-primary font-bold transition-transform group-hover:translate-x-1 shrink-0">
-                          View details <ChevronRight className="w-4 h-4" />
-                        </div>
+                    {regularJobs.length === 0 ? (
+                      <div className="border border-dashed border-border bg-card/10 rounded-2xl p-6 text-center text-xs text-muted-foreground">
+                        No active job openings matching your search criteria.
                       </div>
-                      
-                      <div className="flex flex-wrap items-center justify-between text-[10px] text-muted-foreground pt-4 mt-4 border-t border-border/30 gap-2">
-                        <span className="flex items-center gap-1">
-                          <Calendar className="w-3.5 h-3.5 text-muted-foreground/60" />
-                          {job.created_at ? timeAgo(job.created_at) : "Posted recently"}
-                        </span>
-                        {job.application_deadline && (
-                          <span>
-                            Apply before {new Date(job.application_deadline).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}
-                          </span>
-                        )}
+                    ) : (
+                      <div className="space-y-4">
+                        {regularJobs.map((job) => renderJobCard(job))}
                       </div>
-                    </Link>
-                  ))}
+                    )}
+                  </div>
+
+                  {/* Internship Opportunities Section */}
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2 border-b border-border/40 pb-2">
+                      <h2 className="text-base font-heading font-extrabold text-foreground flex items-center gap-2">
+                        <span className="w-1.5 h-4 bg-purple-500 rounded-full" /> Internship Opportunities
+                      </h2>
+                      <Badge className="bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 rounded-full font-mono text-[9px] font-bold px-2.5 py-0.5">
+                        {internships.length} {internships.length === 1 ? "position" : "positions"}
+                      </Badge>
+                    </div>
+
+                    {internships.length === 0 ? (
+                      <div className="border border-dashed border-border bg-card/10 rounded-2xl p-6 text-center text-xs text-muted-foreground">
+                        No active internship opportunities matching your search criteria.
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        {internships.map((job) => renderJobCard(job))}
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
