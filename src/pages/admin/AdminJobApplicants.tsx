@@ -19,7 +19,8 @@ import {
   Lock,
   ArrowRightLeft,
   Search,
-  Filter
+  Filter,
+  Trash2
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -331,7 +332,7 @@ export const AdminJobApplicants = () => {
                               </div>
                             </div>
 
-                            {/* Quick Move Stage Button */}
+                            {/* Quick Move Stage Button & Delete */}
                             <div className="flex items-center justify-end gap-1.5 mt-3 pt-2 border-t border-border/30">
                               <span className="text-[9px] text-muted-foreground mr-auto font-mono uppercase tracking-wider font-bold">Move Stage</span>
                               {STAGES.filter((s) => s.id !== stage.id).slice(0, 2).map((s) => (
@@ -346,6 +347,28 @@ export const AdminJobApplicants = () => {
                                   {s.name.slice(0, 3)}
                                 </button>
                               ))}
+                              <button
+                                onClick={async (e) => {
+                                  e.stopPropagation();
+                                  if (window.confirm(`Are you sure you want to permanently delete ${app.applicant?.full_name}'s application?`)) {
+                                    try {
+                                      const success = await jobService.deleteApplication(app.id);
+                                      if (success) {
+                                        toast.success("Application deleted successfully!");
+                                        loadApplicantsData();
+                                      } else {
+                                        toast.error("Failed to delete application");
+                                      }
+                                    } catch (err: any) {
+                                      toast.error(err?.message || "Error deleting application");
+                                    }
+                                  }
+                                }}
+                                className="border border-red-500/20 bg-red-500/5 hover:bg-red-600 hover:text-white rounded p-1 text-red-600 dark:text-red-400 transition-colors ml-1"
+                                title="Delete Application"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </button>
                             </div>
 
                           </div>

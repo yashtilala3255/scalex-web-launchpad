@@ -480,6 +480,25 @@ export const AdminJobsList = () => {
     }
   };
 
+  const handleDeleteApplication = async (appId: string, applicantName: string) => {
+    if (!window.confirm(`Are you sure you want to permanently delete ${applicantName}'s application?`)) return;
+    try {
+      setLoading(true);
+      const success = await jobService.deleteApplication(appId);
+      if (success) {
+        toast.success("Application deleted successfully!");
+        loadDashboardData();
+      } else {
+        toast.error("Failed to delete application");
+      }
+    } catch (err: any) {
+      console.error("Delete application error:", err);
+      toast.error(err?.message || "Delete operation failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const getJobTypeLabel = (type: JobType) => {
     return type.split("_").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join("-");
   };
@@ -1395,11 +1414,20 @@ export const AdminJobsList = () => {
                             {getApplicationStatusBadge(app.status)}
                           </td>
                           <td className="p-4 pr-6 text-right">
-                            <Link to={`/admin/applicants/${app.id}`}>
-                              <Button className="h-8 bg-primary hover:bg-primary/95 text-white text-[10px] font-bold rounded-lg px-3">
-                                Manage Candidate
+                            <div className="flex items-center justify-end gap-2">
+                              <Link to={`/admin/applicants/${app.id}`}>
+                                <Button className="h-8 bg-primary hover:bg-primary/95 text-white text-[10px] font-bold rounded-lg px-3">
+                                  Manage Candidate
+                                </Button>
+                              </Link>
+                              <Button
+                                onClick={() => handleDeleteApplication(app.id, app.applicant?.full_name || "New Candidate")}
+                                className="h-8 w-8 bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 p-0 rounded-lg border border-rose-500/20 flex items-center justify-center"
+                                title="Delete Application"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
                               </Button>
-                            </Link>
+                            </div>
                           </td>
                         </tr>
                       ))}

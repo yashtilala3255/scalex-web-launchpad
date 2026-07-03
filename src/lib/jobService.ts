@@ -759,6 +759,29 @@ export const jobService = {
     return { success: false, emailSent: false };
   },
 
+  // Delete an application (Recruiter operation)
+  async deleteApplication(applicationId: string): Promise<boolean> {
+    if (isSupabaseConfigured && supabase) {
+      const { error } = await supabase
+        .from("applications")
+        .delete()
+        .eq("id", applicationId);
+      if (error) throw new Error(error.message);
+      return true;
+    }
+
+    // Mock Fallback
+    const mockApps = JSON.parse(localStorage.getItem("scalex_mock_applications") || "[]");
+    const filteredApps = mockApps.filter((a: any) => a.id !== applicationId);
+    localStorage.setItem("scalex_mock_applications", JSON.stringify(filteredApps));
+
+    const mockHist = JSON.parse(localStorage.getItem("scalex_mock_status_histories") || "[]");
+    const filteredHist = mockHist.filter((h: any) => h.application_id !== applicationId);
+    localStorage.setItem("scalex_mock_status_histories", JSON.stringify(filteredHist));
+
+    return true;
+  },
+
   // Get status history for application
   async getApplicationStatusHistory(applicationId: string): Promise<any[]> {
     if (isSupabaseConfigured && supabase) {

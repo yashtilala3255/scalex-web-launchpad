@@ -30,9 +30,9 @@ import {
   Lock,
   Plus,
   ArrowRight,
-  TrendingUp,
   AlertCircle,
-  Settings
+  Settings,
+  Trash2
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -56,6 +56,7 @@ export const AdminApplicantDetail = () => {
   const [newStatus, setNewStatus] = useState<ApplicationStatus>("applied");
   const [statusNote, setStatusNote] = useState("");
   const [updatingStatus, setUpdatingStatus] = useState(false);
+  const [deletingApp, setDeletingApp] = useState(false);
 
   // Interview Scheduler State
   const [intDate, setIntDate] = useState("");
@@ -177,6 +178,33 @@ export const AdminApplicantDetail = () => {
       toast.error(err?.message || "An error occurred while saving the status");
     } finally {
       setUpdatingStatus(false);
+    }
+  };
+
+  const handleDeleteApplication = async () => {
+    if (!id) return;
+    if (!window.confirm("Are you sure you want to permanently delete this application? This action cannot be undone.")) {
+      return;
+    }
+
+    try {
+      setDeletingApp(true);
+      const success = await jobService.deleteApplication(id);
+      if (success) {
+        toast.success("Application deleted successfully!");
+        if (application?.job_id) {
+          navigate(`/admin/jobs/${application.job_id}/applicants`);
+        } else {
+          navigate("/admin/jobs");
+        }
+      } else {
+        toast.error("Failed to delete application");
+      }
+    } catch (err: any) {
+      console.error("Delete application error:", err);
+      toast.error(err?.message || "An error occurred while deleting the application");
+    } finally {
+      setDeletingApp(false);
     }
   };
 
@@ -702,6 +730,24 @@ export const AdminApplicantDetail = () => {
                     </div>
                   </div>
                 )}
+
+                {/* Danger Zone: Delete Application */}
+                <div className="border border-red-500/20 bg-red-500/5 rounded-2xl p-6 shadow-sm space-y-4">
+                  <h4 className="font-bold text-red-600 dark:text-red-400 text-sm flex items-center gap-2">
+                    <Trash2 className="w-4 h-4" /> Danger Zone
+                  </h4>
+                  <p className="text-[11px] text-muted-foreground leading-relaxed">
+                    Once deleted, this application will be permanently removed from your dashboard. This action is irreversible.
+                  </p>
+                  <Button 
+                    onClick={handleDeleteApplication}
+                    disabled={deletingApp}
+                    className="w-full h-10 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    {deletingApp ? "Deleting..." : "Delete Application"}
+                  </Button>
+                </div>
 
               </div>
 
