@@ -131,13 +131,17 @@ export const AdminJobApplicants = () => {
 
   const handleQuickStatusMove = async (appId: string, currentStatus: ApplicationStatus, nextStatus: ApplicationStatus) => {
     try {
-      const success = await jobService.updateApplicationStatus(
+      const result = await jobService.updateApplicationStatus(
         appId,
         nextStatus,
         `Status quick-moved from ${currentStatus} to ${nextStatus}`
       );
-      if (success) {
-        toast.success(`Applicant moved to ${nextStatus}`);
+      if (result.success) {
+        if (result.emailSent) {
+          toast.success(`Applicant moved to ${nextStatus} & notification email sent!`);
+        } else {
+          toast.success(`Applicant moved to ${nextStatus}`);
+        }
         loadApplicantsData();
       } else {
         toast.error("Failed to update status");

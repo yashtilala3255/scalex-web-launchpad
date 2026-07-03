@@ -156,9 +156,17 @@ export const AdminApplicantDetail = () => {
     if (!id) return;
     try {
       setUpdatingStatus(true);
-      const success = await jobService.updateApplicationStatus(id, newStatus, statusNote);
-      if (success) {
-        toast.success("Application status updated!");
+      const result = await jobService.updateApplicationStatus(id, newStatus, statusNote);
+      if (result.success) {
+        if (statusNote) {
+          if (result.emailSent) {
+            toast.success("Application status updated and notification email sent!");
+          } else {
+            toast.warning(`Status updated, but email failed: ${result.emailError || "check Resend configuration"}`);
+          }
+        } else {
+          toast.success("Application status updated!");
+        }
         setStatusNote("");
         loadApplicantData();
       } else {

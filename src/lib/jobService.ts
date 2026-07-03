@@ -636,7 +636,7 @@ export const jobService = {
     applicationId: string,
     status: ApplicationStatus,
     note?: string
-  ): Promise<boolean> {
+  ): Promise<{ success: boolean; emailSent: boolean; emailError?: string }> {
     if (isSupabaseConfigured && supabase) {
       const { error } = await supabase
         .from("applications")
@@ -689,33 +689,48 @@ export const jobService = {
           }
         }
       }
-      // Asynchronously trigger status updated email notification
-      try {
-        const { data: appData } = await supabase
-          .from("applications")
-          .select("*, job:jobs(title), applicant:profiles(full_name, email)")
-          .eq("id", applicationId)
-          .single();
 
-        if (appData && appData.applicant?.email) {
-          supabase.functions.invoke("job-emails", {
-            body: {
-              type: "status_updated",
-              email: appData.applicant.email,
-              name: appData.applicant.full_name,
-              details: {
-                jobTitle: appData.job?.title,
-                newStatus: status,
-                notes: note || undefined
+      let emailSent = false;
+      let emailError: string | undefined;
+
+      // Trigger status updated email notification
+      if (note) {
+        try {
+          const { data: appData } = await supabase
+            .from("applications")
+            .select("*, job:jobs(title), applicant:profiles(full_name, email)")
+            .eq("id", applicationId)
+            .single();
+
+          if (appData && appData.applicant?.email) {
+            const { data: invokeData, error: invokeError } = await supabase.functions.invoke("job-emails", {
+              body: {
+                type: "status_updated",
+                email: appData.applicant.email,
+                name: appData.applicant.full_name,
+                details: {
+                  jobTitle: appData.job?.title,
+                  newStatus: status,
+                  notes: note || undefined
+                }
               }
+            });
+
+            if (invokeError) {
+              emailError = invokeError.message;
+            } else if (invokeData && invokeData.error) {
+              emailError = invokeData.error;
+            } else {
+              emailSent = true;
             }
-          }).catch(err => console.error("Email notify background error:", err));
+          }
+        } catch (emailErr: any) {
+          console.error("Failed to query details for status update email:", emailErr);
+          emailError = emailErr.message || "Network error calling email service";
         }
-      } catch (emailErr) {
-        console.error("Failed to query details for status update email:", emailErr);
       }
 
-      return true;
+      return { success: true, emailSent, emailError };
     }
 
     // Mock Fallback
@@ -739,9 +754,9 @@ export const jobService = {
         changed_at: new Date().toISOString()
       });
       localStorage.setItem("scalex_mock_status_histories", JSON.stringify(mockHist));
-      return true;
+      return { success: true, emailSent: false };
     }
-    return false;
+    return { success: false, emailSent: false };
   },
 
   // Get status history for application
