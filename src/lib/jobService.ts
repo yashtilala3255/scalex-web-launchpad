@@ -1,5 +1,5 @@
 import { supabase, isSupabaseConfigured } from "./supabaseClient";
-import { Job, JobCategory, Company, JobStatus, JobType, ExperienceLevel } from "@/types/jobPortal";
+import { Job, JobCategory, Company, JobStatus, JobType, ExperienceLevel, Certificate } from "@/types/jobPortal";
 
 // Mock Data for local fallback when Supabase is offline
 const MOCK_CATEGORIES: JobCategory[] = [
@@ -192,9 +192,9 @@ export const jobService = {
             const search = filters.search.toLowerCase();
             results = results.filter(
               (job) =>
-                job.title.toLowerCase().includes(search) ||
-                job.description.toLowerCase().includes(search) ||
-                job.requirements.toLowerCase().includes(search)
+                (job.title || "").toLowerCase().includes(search) ||
+                (job.description || "").toLowerCase().includes(search) ||
+                (job.requirements || "").toLowerCase().includes(search)
             );
           }
           return results;
@@ -212,7 +212,7 @@ export const jobService = {
       jobs = jobs.filter((job) => job.category_id === filters.categoryId);
     }
     if (filters.location) {
-      jobs = jobs.filter((job) => job.location.toLowerCase().includes(filters.location!.toLowerCase()));
+      jobs = jobs.filter((job) => (job.location || "").toLowerCase().includes(filters.location!.toLowerCase()));
     }
     if (filters.jobType) {
       jobs = jobs.filter((job) => job.job_type === filters.jobType);
@@ -230,9 +230,9 @@ export const jobService = {
       const search = filters.search.toLowerCase();
       jobs = jobs.filter(
         (job) =>
-          job.title.toLowerCase().includes(search) ||
-          job.description.toLowerCase().includes(search) ||
-          job.requirements.toLowerCase().includes(search)
+          (job.title || "").toLowerCase().includes(search) ||
+          (job.description || "").toLowerCase().includes(search) ||
+          (job.requirements || "").toLowerCase().includes(search)
       );
     }
 
@@ -643,20 +643,79 @@ export const jobService = {
         .update({ status, updated_at: new Date().toISOString() })
         .eq("id", applicationId);
 
-      if (!error) {
-        // Log history (Supabase trigger automatically does this, but we'll insert a note if provided)
-        if (note) {
-          const { data: u } = await supabase.auth.getUser();
-          await supabase.from("application_status_history").insert({
+      if (error) {
+        throw new Error(`Application status update failed: ${error.message}`);
+      }
+
+      // Log history (Supabase trigger automatically creates a row with note = null, so we'll update it or insert if missing)
+      if (note) {
+        const { data: u } = await supabase.auth.getUser();
+        
+        // Search for the history row created by the trigger for this update
+        const { data: existingHist, error: findError } = await supabase
+          .from("application_status_history")
+          .select("id")
+          .eq("application_id", applicationId)
+          .eq("new_status", status)
+          .is("note", null)
+          .order("changed_at", { ascending: false })
+          .limit(1);
+
+        if (findError) {
+          throw new Error(`Failed to locate status log row: ${findError.message}`);
+        }
+
+        if (existingHist && existingHist.length > 0) {
+          // Update the trigger-created row with the feedback note
+          const { error: updateError } = await supabase
+            .from("application_status_history")
+            .update({ note: note, changed_by: u?.user?.id })
+            .eq("id", existingHist[0].id);
+
+          if (updateError) {
+            throw new Error(`Failed to save feedback log note: ${updateError.message}`);
+          }
+        } else {
+          // Fallback insert if trigger didn't run or record not found
+          const { error: insertError } = await supabase.from("application_status_history").insert({
             application_id: applicationId,
             new_status: status,
             changed_by: u?.user?.id,
             note: note
           });
+
+          if (insertError) {
+            throw new Error(`Failed to insert feedback log note: ${insertError.message}`);
+          }
         }
-        return true;
       }
-      return false;
+      // Asynchronously trigger status updated email notification
+      try {
+        const { data: appData } = await supabase
+          .from("applications")
+          .select("*, job:jobs(title), applicant:profiles(full_name, email)")
+          .eq("id", applicationId)
+          .single();
+
+        if (appData && appData.applicant?.email) {
+          supabase.functions.invoke("job-emails", {
+            body: {
+              type: "status_updated",
+              email: appData.applicant.email,
+              name: appData.applicant.full_name,
+              details: {
+                jobTitle: appData.job?.title,
+                newStatus: status,
+                notes: note || undefined
+              }
+            }
+          }).catch(err => console.error("Email notify background error:", err));
+        }
+      } catch (emailErr) {
+        console.error("Failed to query details for status update email:", emailErr);
+      }
+
+      return true;
     }
 
     // Mock Fallback
@@ -1095,6 +1154,7 @@ export const jobService = {
         .from("profiles")
         .update({
           full_name: profileData.full_name,
+          email: profileData.email,
           phone: profileData.phone,
           headline: profileData.headline,
           education: profileData.education,
@@ -1166,6 +1226,147 @@ export const jobService = {
       if (error) throw new Error(error.message);
       return true;
     }
+    return true;
+  },
+
+  // Get all certificates (admin view)
+  async getCertificates(): Promise<Certificate[]> {
+    if (isSupabaseConfigured && supabase) {
+      const { data, error } = await supabase
+        .from("certificates")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (error) {
+        console.error("Supabase getCertificates error:", error);
+        throw new Error(error.message);
+      }
+      return data || [];
+    }
+
+    // Local Storage Fallback
+    const stored = localStorage.getItem("scalex_certificates");
+    return stored ? JSON.parse(stored) : [];
+  },
+
+  // Get single certificate for verification
+  async getCertificateById(id: string): Promise<Certificate | null> {
+    if (isSupabaseConfigured && supabase) {
+      const { data, error } = await supabase
+        .from("certificates")
+        .select("*")
+        .eq("id", id)
+        .maybeSingle();
+      if (error) {
+        console.error("Supabase getCertificateById error:", error);
+        throw new Error(error.message);
+      }
+      return data;
+    }
+
+    // Local Storage Fallback
+    const stored = localStorage.getItem("scalex_certificates");
+    const certs: Certificate[] = stored ? JSON.parse(stored) : [];
+    return certs.find((c) => c.id === id || c.certificate_id === id) || null;
+  },
+
+  // Create/Issue a new certificate
+  async createCertificate(certData: Omit<Certificate, "id" | "created_at">): Promise<Certificate> {
+    const tempId = "cert-" + Math.random().toString(36).substr(2, 9);
+    const newCert = {
+      ...certData,
+      id: tempId,
+      created_at: new Date().toISOString()
+    };
+
+    if (isSupabaseConfigured && supabase) {
+      const { data, error } = await supabase
+        .from("certificates")
+        .insert({
+          candidate_name: certData.candidate_name,
+          program_name: certData.program_name,
+          certificate_type: certData.certificate_type,
+          issue_date: certData.issue_date,
+          certificate_id: certData.certificate_id,
+          recipient_email: certData.recipient_email,
+          logo_url: certData.logo_url,
+          description: certData.description
+        })
+        .select()
+        .single();
+      if (error) {
+        console.error("Supabase createCertificate error:", error);
+        throw new Error(error.message);
+      }
+      return data;
+    }
+
+    // Local Storage Fallback
+    const stored = localStorage.getItem("scalex_certificates");
+    const certs: Certificate[] = stored ? JSON.parse(stored) : [];
+    certs.push(newCert as Certificate);
+    localStorage.setItem("scalex_certificates", JSON.stringify(certs));
+    return newCert as Certificate;
+  },
+
+  // Update certificate details
+  async updateCertificate(id: string, certData: Partial<Certificate>): Promise<Certificate> {
+    if (isSupabaseConfigured && supabase) {
+      const { data, error } = await supabase
+        .from("certificates")
+        .update({
+          candidate_name: certData.candidate_name,
+          program_name: certData.program_name,
+          certificate_type: certData.certificate_type,
+          certificate_id: certData.certificate_id,
+          recipient_email: certData.recipient_email,
+          description: certData.description,
+          issue_date: certData.issue_date ? new Date(certData.issue_date).toISOString() : undefined
+        })
+        .eq("id", id)
+        .select()
+        .single();
+      if (error) {
+        console.error("Supabase updateCertificate error:", error);
+        throw new Error(error.message);
+      }
+      return data as Certificate;
+    }
+
+    // Local Storage Fallback
+    const stored = localStorage.getItem("scalex_certificates");
+    const certs: Certificate[] = stored ? JSON.parse(stored) : [];
+    const index = certs.findIndex((c) => c.id === id);
+    if (index !== -1) {
+      certs[index] = {
+        ...certs[index],
+        ...certData,
+        issue_date: certData.issue_date ? new Date(certData.issue_date).toISOString() : certs[index].issue_date
+      } as Certificate;
+      localStorage.setItem("scalex_certificates", JSON.stringify(certs));
+      return certs[index];
+    }
+    throw new Error("Certificate not found");
+  },
+
+  // Revoke/Delete certificate
+  async deleteCertificate(id: string): Promise<boolean> {
+    if (isSupabaseConfigured && supabase) {
+      const { error } = await supabase
+        .from("certificates")
+        .delete()
+        .eq("id", id);
+      if (error) {
+        console.error("Supabase deleteCertificate error:", error);
+        throw new Error(error.message);
+      }
+      return true;
+    }
+
+    // Local Storage Fallback
+    const stored = localStorage.getItem("scalex_certificates");
+    const certs: Certificate[] = stored ? JSON.parse(stored) : [];
+    const filtered = certs.filter((c) => c.id !== id);
+    localStorage.setItem("scalex_certificates", JSON.stringify(filtered));
     return true;
   }
 };

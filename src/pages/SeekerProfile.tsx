@@ -71,12 +71,19 @@ export const SeekerProfile = () => {
     fetchProfile();
   }, [navigate]);
 
-  const handleAddSkill = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleAddSkill = (e?: React.FormEvent | React.MouseEvent) => {
+    if (e) e.preventDefault();
     const skill = newSkill.trim();
     if (skill && !skills.includes(skill)) {
       setSkills([...skills, skill]);
       setNewSkill("");
+    }
+  };
+
+  const handleSkillKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleAddSkill();
     }
   };
 
@@ -158,9 +165,10 @@ export const SeekerProfile = () => {
     }
 
     try {
-      setSaving(false);
+      setSaving(true);
       const success = await jobService.updateProfile(candidateId, {
         full_name: fullName.trim(),
+        email: email.trim(),
         phone: phone.trim() || undefined,
         headline: headline.trim() || undefined,
         education: education.trim() || undefined,
@@ -171,6 +179,10 @@ export const SeekerProfile = () => {
 
       if (success) {
         toast.success("Candidate Profile updated successfully!");
+        const redirectUrl = new URLSearchParams(window.location.search).get("redirect");
+        if (redirectUrl) {
+          navigate(redirectUrl);
+        }
       } else {
         toast.error("Failed to update profile");
       }
@@ -380,17 +392,23 @@ export const SeekerProfile = () => {
                 </div>
 
                 <div className="space-y-4 text-xs text-left">
-                  <form onSubmit={handleAddSkill} className="flex gap-2">
+                  <div className="flex gap-2">
                     <Input
                       placeholder="e.g. React, Docker"
                       value={newSkill}
                       onChange={(e) => setNewSkill(e.target.value)}
+                      onKeyDown={handleSkillKeyDown}
                       className="bg-background/60 border-border/50 text-xs h-9 rounded-xl flex-grow"
                     />
-                    <Button type="submit" size="sm" className="h-9 w-9 p-0 rounded-xl bg-primary hover:bg-primary/95 text-white">
+                    <Button 
+                      type="button" 
+                      onClick={() => handleAddSkill()} 
+                      size="sm" 
+                      className="h-9 w-9 p-0 rounded-xl bg-primary hover:bg-primary/95 text-white"
+                    >
                       <Plus className="w-4 h-4" />
                     </Button>
-                  </form>
+                  </div>
 
                   {skills.length === 0 ? (
                     <p className="text-[11px] text-muted-foreground italic text-center py-2">No skill tags configured.</p>

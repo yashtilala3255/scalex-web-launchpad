@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import SEO from "@/components/SEO";
@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { jobService } from "@/lib/jobService";
 import { supabase, isSupabaseConfigured } from "@/lib/supabaseClient";
-import { Job, JobStatus, JobType, JobCategory, Company } from "@/types/jobPortal";
+import { Job, JobStatus, JobType, JobCategory, Company, Certificate } from "@/types/jobPortal";
 import {
   Briefcase,
   Plus,
@@ -28,7 +28,8 @@ import {
   Globe,
   Settings,
   Mail,
-  Phone
+  Phone,
+  Award
 } from "lucide-react";
 import { toast } from "sonner";
 import { trackEvent } from "@/lib/analytics";
@@ -40,7 +41,7 @@ export const AdminJobsList = () => {
   const [usernameInput, setUsernameInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
 
-  const [activeView, setActiveView] = useState<"jobs" | "internships" | "companies" | "categories" | "candidates" | "applications">("jobs");
+  const [activeView, setActiveView] = useState<"jobs" | "internships" | "companies" | "categories" | "candidates" | "applications" | "certificates">("jobs");
   
   // Lists
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -52,6 +53,19 @@ export const AdminJobsList = () => {
   // Search filters
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+
+  // Certificates CMS State
+  const [certificates, setCertificates] = useState<Certificate[]>([]);
+  const [showAddCertificate, setShowAddCertificate] = useState(false);
+  const [certCandidateName, setCertCandidateName] = useState("");
+  const [certProgramName, setCertProgramName] = useState("");
+  const [certType, setCertType] = useState<"project_completion" | "internship_completion" | "internship_participation">("project_completion");
+  const [certCustomId, setCertCustomId] = useState("");
+  const [certEmail, setCertEmail] = useState("");
+  const [certIssueDate, setCertIssueDate] = useState("");
+  const [certDescription, setCertDescription] = useState("");
+  const [editingCertificateId, setEditingCertificateId] = useState<string | null>(null);
+  const [savingCertificate, setSavingCertificate] = useState(false);
 
   // Stats Counters
   const [stats, setStats] = useState({
@@ -106,18 +120,20 @@ export const AdminJobsList = () => {
   const loadDashboardData = async () => {
     try {
       setLoading(true);
-      const [allJobs, cats, comps, candidatesList, appsList] = await Promise.all([
+      const [allJobs, cats, comps, candidatesList, appsList, certsList] = await Promise.all([
         jobService.getAdminJobs(),
         jobService.getCategories(),
         jobService.getCompanies(),
         jobService.getCandidates(),
-        jobService.getAllApplications()
+        jobService.getAllApplications(),
+        jobService.getCertificates()
       ]);
       setJobs(allJobs);
       setCategories(cats);
       setCompanies(comps);
       setCandidates(candidatesList);
       setApplications(appsList);
+      setCertificates(certsList);
 
       // Compute statistics
       const total = allJobs.length;
@@ -297,6 +313,115 @@ export const AdminJobsList = () => {
     }
   };
 
+  // Certificates CRUD
+  const handleEditCertificateClick = (cert: Certificate) => {
+    setEditingCertificateId(cert.id);
+    setCertCandidateName(cert.candidate_name);
+    setCertProgramName(cert.program_name);
+    setCertType(cert.certificate_type);
+    setCertCustomId(cert.certificate_id);
+    setCertEmail(cert.recipient_email || "");
+    setCertIssueDate(cert.issue_date.split("T")[0]);
+    setCertDescription(cert.description || "");
+    setShowAddCertificate(true);
+  };
+
+  const handleAddCertificateSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!certCandidateName.trim()) {
+      toast.error("Candidate Name is required");
+      return;
+    }
+    if (!certProgramName.trim()) {
+      toast.error("Program Name is required");
+      return;
+    }
+
+    try {
+      setSavingCertificate(true);
+      const issueDateStr = certIssueDate.trim() || new Date().toISOString().split("T")[0];
+
+      if (editingCertificateId) {
+        // Edit flow
+        const updated = await jobService.updateCertificate(editingCertificateId, {
+          candidate_name: certCandidateName.trim(),
+          program_name: certProgramName.trim(),
+          certificate_type: certType,
+          issue_date: issueDateStr,
+          certificate_id: certCustomId.trim(),
+          recipient_email: certEmail.trim() || undefined,
+          description: certDescription.trim() || undefined
+        });
+
+        if (updated) {
+          toast.success("Certificate updated successfully!");
+          setCertCandidateName("");
+          setCertProgramName("");
+          setCertCustomId("");
+          setCertEmail("");
+          setCertIssueDate("");
+          setCertDescription("");
+          setCertType("project_completion");
+          setEditingCertificateId(null);
+          setShowAddCertificate(false);
+          loadDashboardData();
+        } else {
+          toast.error("Failed to update certificate");
+        }
+      } else {
+        // Create flow
+        const nextNum = String(certificates.length + 1).padStart(2, "0");
+        const generatedId = certCustomId.trim() || `SCX-${new Date().getFullYear()}-${nextNum}`;
+        
+        const newCert = await jobService.createCertificate({
+          candidate_name: certCandidateName.trim(),
+          program_name: certProgramName.trim(),
+          certificate_type: certType,
+          issue_date: issueDateStr,
+          certificate_id: generatedId,
+          recipient_email: certEmail.trim() || undefined,
+          description: certDescription.trim() || undefined
+        });
+
+        if (newCert) {
+          toast.success("Certificate issued successfully!");
+          setCertCandidateName("");
+          setCertProgramName("");
+          setCertCustomId("");
+          setCertEmail("");
+          setCertIssueDate("");
+          setCertDescription("");
+          setCertType("project_completion");
+          setShowAddCertificate(false);
+          loadDashboardData();
+        } else {
+          toast.error("Failed to issue certificate");
+        }
+      }
+    } catch (err: any) {
+      console.error("Save certificate error:", err);
+      toast.error(err?.message || "Operation failed");
+    } finally {
+      setSavingCertificate(false);
+    }
+  };
+
+  const handleDeleteCertificate = async (id: string) => {
+    if (!window.confirm("Are you sure you want to revoke this certificate? Verification links will no longer work.")) return;
+    try {
+      const success = await jobService.deleteCertificate(id);
+      if (success) {
+        toast.success("Certificate revoked successfully");
+        loadDashboardData();
+      } else {
+        toast.error("Failed to revoke certificate");
+      }
+    } catch (err: any) {
+      console.error("Revoke certificate error:", err);
+      toast.error(err?.message || "Revocation failed");
+    }
+  };
+
   // Categories CRUD
   const handleAddCategorySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -407,11 +532,11 @@ export const AdminJobsList = () => {
   };
 
   const filteredCompanies = companies.filter((c) =>
-    c.name.toLowerCase().includes(search.toLowerCase())
+    (c.name || "").toLowerCase().includes(search.toLowerCase())
   );
 
   const filteredCategories = categories.filter((c) =>
-    c.name.toLowerCase().includes(search.toLowerCase())
+    (c.name || "").toLowerCase().includes(search.toLowerCase())
   );
 
   const filteredCandidates = candidates.filter((c) =>
@@ -569,11 +694,18 @@ export const AdminJobsList = () => {
                   </Button>
                 </Link>
               ) : activeView === "internships" ? (
-                <Link to="/admin/jobs/new?type=internship">
-                  <Button className="bg-primary hover:bg-primary/95 text-white rounded-xl h-10 text-xs gap-1.5 font-bold">
-                    <Plus className="w-4 h-4" /> Post Internship
-                  </Button>
-                </Link>
+                <div className="flex gap-2">
+                  <Link to="/admin/jobs/new?type=internship">
+                    <Button variant="outline" className="border-border rounded-xl h-10 text-xs gap-1.5 font-bold">
+                      <Plus className="w-4 h-4" /> Post Standard Internship
+                    </Button>
+                  </Link>
+                  <Link to="/admin/programs/new">
+                    <Button className="bg-primary hover:bg-primary/95 text-white rounded-xl h-10 text-xs gap-1.5 font-bold">
+                      <Plus className="w-4 h-4" /> Post Internship Program
+                    </Button>
+                  </Link>
+                </div>
               ) : activeView === "companies" ? (
                 <Button onClick={() => setShowAddCompany(true)} className="bg-primary hover:bg-primary/95 text-white rounded-xl h-10 text-xs gap-1.5 font-bold">
                   <Plus className="w-4 h-4" /> Add Company
@@ -581,6 +713,10 @@ export const AdminJobsList = () => {
               ) : activeView === "categories" ? (
                 <Button onClick={() => setShowAddCategory(true)} className="bg-primary hover:bg-primary/95 text-white rounded-xl h-10 text-xs gap-1.5 font-bold">
                   <Plus className="w-4 h-4" /> Add Category
+                </Button>
+              ) : activeView === "certificates" ? (
+                <Button onClick={() => setShowAddCertificate(true)} className="bg-primary hover:bg-primary/95 text-white rounded-xl h-10 text-xs gap-1.5 font-bold">
+                  <Plus className="w-4 h-4" /> Issue Certificate
                 </Button>
               ) : null}
             </div>
@@ -629,6 +765,13 @@ export const AdminJobsList = () => {
               className="rounded-xl text-xs h-9 gap-1.5 px-4"
             >
               <FileText className="w-4 h-4" /> Job Applications
+            </Button>
+            <Button
+              variant={activeView === "certificates" ? "default" : "outline"}
+              onClick={() => { setActiveView("certificates"); setSearch(""); }}
+              className="rounded-xl text-xs h-9 gap-1.5 px-4"
+            >
+              <Award className="w-4 h-4 text-amber-500" /> Certificates
             </Button>
             <Link to="/admin/compliance">
               <Button
@@ -756,7 +899,7 @@ export const AdminJobsList = () => {
                                     <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
                                   </Button>
                                 </a>
-                                <Link to={`/admin/jobs/edit/${job.id}`} title="Edit Job">
+                                <Link to={job.is_internship_program ? `/admin/programs/edit/${job.id}` : `/admin/jobs/edit/${job.id}`} title="Edit Job">
                                   <Button variant="outline" className="h-8 w-8 p-0 rounded-lg border-border">
                                     <Edit2 className="w-3.5 h-3.5 text-muted-foreground" />
                                   </Button>
@@ -897,7 +1040,7 @@ export const AdminJobsList = () => {
                                     <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
                                   </Button>
                                 </a>
-                                <Link to={`/admin/jobs/edit/${job.id}`} title="Edit Internship">
+                                <Link to={job.is_internship_program ? `/admin/programs/edit/${job.id}` : `/admin/jobs/edit/${job.id}`} title="Edit Internship">
                                   <Button variant="outline" className="h-8 w-8 p-0 rounded-lg border-border">
                                     <Edit2 className="w-3.5 h-3.5 text-muted-foreground" />
                                   </Button>
@@ -1267,6 +1410,130 @@ export const AdminJobsList = () => {
             </div>
           )}
 
+          {/* =========================================================================
+              VIEW: CERTIFICATES
+             ========================================================================= */}
+          {activeView === "certificates" && (
+            <div className="space-y-4">
+              <div className="border border-border bg-card rounded-2xl p-4 shadow-sm flex items-center justify-between gap-3 bg-secondary/10">
+                <div className="relative max-w-xs w-full">
+                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search candidate name or program..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="pl-10 bg-background/50 border-border/50 text-xs h-9 rounded-xl"
+                  />
+                </div>
+                <span className="text-xs text-muted-foreground">
+                  {certificates.filter(c => 
+                    (c.candidate_name || "").toLowerCase().includes(search.toLowerCase()) ||
+                    (c.program_name || "").toLowerCase().includes(search.toLowerCase()) ||
+                    (c.certificate_id || "").toLowerCase().includes(search.toLowerCase())
+                  ).length} issued certificates
+                </span>
+              </div>
+
+              {loading ? (
+                <div className="p-12 text-center text-xs text-muted-foreground">
+                  <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-primary mx-auto mb-3" />
+                  Loading certificates registry...
+                </div>
+              ) : certificates.filter(c => 
+                (c.candidate_name || "").toLowerCase().includes(search.toLowerCase()) ||
+                (c.program_name || "").toLowerCase().includes(search.toLowerCase()) ||
+                (c.certificate_id || "").toLowerCase().includes(search.toLowerCase())
+              ).length === 0 ? (
+                <div className="border border-dashed border-border bg-card/25 rounded-2xl p-12 text-center">
+                  <Award className="w-8 h-8 text-muted-foreground/60 mx-auto mb-3" />
+                  <h4 className="font-bold text-foreground text-sm">No Certificates Found</h4>
+                  <p className="text-xs text-muted-foreground max-w-xs mx-auto mt-1">
+                    No certificates have been issued yet. Click "Issue Certificate" above to generate one.
+                  </p>
+                </div>
+              ) : (
+                <div className="border border-border bg-card rounded-2xl shadow-sm overflow-hidden text-left">
+                  <table className="w-full text-left text-xs border-collapse">
+                    <thead>
+                      <tr className="bg-secondary/20 border-b border-border/40 text-muted-foreground font-mono font-bold text-[10px] uppercase tracking-wider">
+                        <th className="p-4 pl-6">Recipient Name</th>
+                        <th className="p-4">Program / Domain Name</th>
+                        <th className="p-4">Certificate Type</th>
+                        <th className="p-4">Credential ID</th>
+                        <th className="p-4">Issue Date</th>
+                        <th className="p-4 pr-6 text-right font-mono">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border/30">
+                      {certificates.filter(c => 
+                        (c.candidate_name || "").toLowerCase().includes(search.toLowerCase()) ||
+                        (c.program_name || "").toLowerCase().includes(search.toLowerCase()) ||
+                        (c.certificate_id || "").toLowerCase().includes(search.toLowerCase())
+                      ).map((cert) => (
+                        <tr key={cert.id} className="hover:bg-secondary/5 transition-colors">
+                          <td className="p-4 pl-6">
+                            <span className="font-bold text-foreground block">{cert.candidate_name}</span>
+                            {cert.recipient_email && (
+                              <span className="text-[10px] text-muted-foreground block font-mono">{cert.recipient_email}</span>
+                            )}
+                          </td>
+                          <td className="p-4 font-semibold text-foreground">
+                            {cert.program_name}
+                          </td>
+                          <td className="p-4">
+                            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-500 capitalize">
+                              {cert.certificate_type.replace(/_/g, " ")}
+                            </span>
+                          </td>
+                          <td className="p-4 font-mono font-bold text-slate-400">
+                            {cert.certificate_id}
+                          </td>
+                          <td className="p-4 font-semibold text-foreground">
+                            {cert.issue_date ? (
+                              (() => {
+                                const d = new Date(cert.issue_date);
+                                return isNaN(d.getTime()) ? "N/A" : d.toLocaleDateString("en-IN", {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric"
+                                });
+                              })()
+                            ) : "N/A"}
+                          </td>
+                          <td className="p-4 pr-6 text-right">
+                            <div className="flex justify-end gap-2">
+                              <a href={`/verify-certificate/${cert.id}`} target="_blank" rel="noopener noreferrer">
+                                <Button variant="outline" className="h-8 text-[10px] rounded-lg border-border font-bold">
+                                  <ExternalLink className="w-3.5 h-3.5 mr-1" /> View / Verify
+                                </Button>
+                              </a>
+                              <Button 
+                                variant="outline"
+                                onClick={() => handleEditCertificateClick(cert)} 
+                                className="h-8 w-8 p-0 rounded-lg border-border hover:bg-primary/10"
+                                title="Edit Certificate Info"
+                              >
+                                <Edit2 className="w-3.5 h-3.5 text-primary" />
+                              </Button>
+                              <Button 
+                                variant="outline" 
+                                onClick={() => handleDeleteCertificate(cert.id)} 
+                                className="h-8 w-8 p-0 rounded-lg border-border hover:bg-rose-500/10 hover:border-rose-500/20"
+                                title="Revoke Certificate"
+                              >
+                                <Trash2 className="w-3.5 h-3.5 text-rose-500" />
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          )}
+
         </div>
       </section>
 
@@ -1391,6 +1658,132 @@ export const AdminJobsList = () => {
                   className="h-10 px-6 bg-primary hover:bg-primary/95 text-white font-bold rounded-xl text-xs"
                 >
                   {savingCategory ? "Saving..." : "Save Category"}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================================
+          MODAL: ISSUE CERTIFICATE
+         ========================================================================= */}
+      {showAddCertificate && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 backdrop-blur-sm px-4">
+          <div className="max-w-md w-full bg-background border border-border rounded-3xl p-6 md:p-8 shadow-lg space-y-5 animate-scale-in">
+            <div className="pb-3 border-b border-border/40">
+              <h3 className="font-bold text-foreground text-sm flex items-center gap-2">
+                <Award className="w-4 h-4 text-amber-500" /> {editingCertificateId ? "Edit Credential Details" : "Issue Verified Credential"}
+              </h3>
+              <p className="text-[10px] text-muted-foreground mt-1">
+                {editingCertificateId ? "Modify recipient and criteria details for this issued certificate." : "Specify recipient details and program criteria."}
+              </p>
+            </div>
+
+            <form onSubmit={handleAddCertificateSubmit} className="space-y-4 text-xs text-left">
+              <div>
+                <label className="font-semibold text-foreground/80 mb-1.5 block">Candidate Full Name</label>
+                <Input
+                  required
+                  placeholder="e.g. Yash Patel"
+                  value={certCandidateName}
+                  onChange={(e) => setCertCandidateName(e.target.value)}
+                  className="bg-background/60 border-border/50 text-xs h-10 rounded-xl"
+                />
+              </div>
+
+              <div>
+                <label className="font-semibold text-foreground/80 mb-1.5 block">Program Name</label>
+                <Input
+                  required
+                  placeholder="e.g. Web Development Internship Program"
+                  value={certProgramName}
+                  onChange={(e) => setCertProgramName(e.target.value)}
+                  className="bg-background/60 border-border/50 text-xs h-10 rounded-xl"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="font-semibold text-foreground/80 mb-1.5 block">Certificate Type</label>
+                  <select
+                    value={certType}
+                    onChange={(e: any) => setCertType(e.target.value)}
+                    className="w-full bg-background/60 border border-border/50 rounded-xl h-10 px-3 text-xs text-foreground focus:outline-none"
+                  >
+                    <option value="project_completion">Project Completion Certificate</option>
+                    <option value="internship_completion">Internship Completion Certificate</option>
+                    <option value="internship_participation">Internship Participation Certificate</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="font-semibold text-foreground/80 mb-1.5 block">Issue Date</label>
+                  <Input
+                    type="date"
+                    value={certIssueDate}
+                    onChange={(e) => setCertIssueDate(e.target.value)}
+                    className="bg-background/60 border-border/50 text-xs h-10 rounded-xl"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="font-semibold text-foreground/80 mb-1.5 block">Recipient Email (Optional)</label>
+                  <Input
+                    type="email"
+                    placeholder="candidate@email.com"
+                    value={certEmail}
+                    onChange={(e) => setCertEmail(e.target.value)}
+                    className="bg-background/60 border-border/50 text-xs h-10 rounded-xl"
+                  />
+                </div>
+                <div>
+                  <label className="font-semibold text-foreground/80 mb-1.5 block">Credential ID {editingCertificateId ? "" : "(Optional)"}</label>
+                  <Input
+                    required={!!editingCertificateId}
+                    placeholder="e.g. SCX-2026-01"
+                    value={certCustomId}
+                    onChange={(e) => setCertCustomId(e.target.value)}
+                    className="bg-background/60 border-border/50 text-xs h-10 rounded-xl"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="font-semibold text-foreground/80 mb-1.5 block">Custom Description (Optional - Fallbacks to default if empty)</label>
+                <Textarea
+                  placeholder="Describe candidate achievements or custom certificate text. Plaintext / HTML allowed."
+                  value={certDescription}
+                  onChange={(e) => setCertDescription(e.target.value)}
+                  className="bg-background/60 border-border/50 text-xs rounded-xl min-h-[70px] resize-none"
+                />
+              </div>
+
+              <div className="pt-4 border-t border-border/40 flex items-center justify-end gap-3">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => {
+                    setCertCandidateName("");
+                    setCertProgramName("");
+                    setCertCustomId("");
+                    setCertEmail("");
+                    setCertIssueDate("");
+                    setCertDescription("");
+                    setEditingCertificateId(null);
+                    setShowAddCertificate(false);
+                  }}
+                  className="h-10 px-4 rounded-xl border-border text-xs"
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  type="submit" 
+                  disabled={savingCertificate}
+                  className="h-10 px-6 bg-primary hover:bg-primary/95 text-white font-bold rounded-xl text-xs"
+                >
+                  {savingCertificate ? "Saving..." : (editingCertificateId ? "Save Changes" : "Generate Certificate")}
                 </Button>
               </div>
             </form>

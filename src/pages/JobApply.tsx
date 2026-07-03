@@ -21,6 +21,7 @@ export const JobApply = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [candidateId, setCandidateId] = useState<string>("seeker-mock-user");
+  const [profileResumeUrl, setProfileResumeUrl] = useState("");
 
   // Form Fields State
   const [fullName, setFullName] = useState("");
@@ -42,11 +43,14 @@ export const JobApply = () => {
           setJob(fetchedJob);
         }
 
+        let currentUserId = "";
+
         // Fetch auth user details from Supabase if configured
         if (isSupabaseConfigured && supabase) {
           const { data } = await supabase.auth.getUser();
           if (data?.user) {
-            setCandidateId(data.user.id);
+            currentUserId = data.user.id;
+            setCandidateId(currentUserId);
             setFullName(data.user.user_metadata?.full_name || data.user.user_metadata?.name || "");
             setEmail(data.user.email || "");
           } else {
@@ -61,7 +65,43 @@ export const JobApply = () => {
             navigate(`/careers/auth?redirect=/jobs/${slug}/apply`);
             return;
           }
+          currentUserId = "seeker-mock-user";
+          setCandidateId(currentUserId);
         }
+
+        // Fetch and verify candidate profile is complete
+        const profile = await jobService.getProfile(currentUserId);
+        if (profile) {
+          const isComplete = 
+            !!profile.full_name?.trim() &&
+            !!profile.phone?.trim() &&
+            !!profile.headline?.trim() &&
+            !!profile.education?.trim() &&
+            profile.experience_years !== undefined &&
+            profile.experience_years !== null &&
+            Array.isArray(profile.skills) &&
+            profile.skills.length > 0 &&
+            !!profile.resume_url?.trim();
+
+          if (!isComplete) {
+            toast.warning("Profile incomplete! You must fill out your profile details (name, phone, education, headline, skills) and upload a resume before applying.");
+            navigate(`/dashboard/profile?redirect=/jobs/${slug}/apply`);
+            return;
+          }
+
+          // Pre-populate fields from the complete profile
+          setFullName(profile.full_name || "");
+          if (profile.email) {
+            setEmail(profile.email);
+          }
+          setPhone(profile.phone || "");
+          setProfileResumeUrl(profile.resume_url || "");
+        } else {
+          toast.warning("Please complete your profile details first before submitting applications.");
+          navigate(`/dashboard/profile?redirect=/jobs/${slug}/apply`);
+          return;
+        }
+
       } catch (err) {
         console.error("Error setting up application form:", err);
       } finally {
@@ -103,7 +143,19 @@ export const JobApply = () => {
       toast.error("Please enter your email address");
       return;
     }
-    if (!resumeFile) {
+    if (!phone.trim()) {
+      toast.error("Please enter your contact phone number");
+      return;
+    }
+    if (!expectedSalary.trim()) {
+      toast.error("Please enter your expected salary");
+      return;
+    }
+    if (!noticePeriod.trim()) {
+      toast.error("Please enter your notice period");
+      return;
+    }
+    if (!resumeFile && !profileResumeUrl) {
       toast.error("Please upload your resume");
       return;
     }
@@ -115,14 +167,17 @@ export const JobApply = () => {
     try {
       setSubmitting(true);
       
-      // 1. Upload Resume File
-      const resumeUrl = await jobService.uploadResume(resumeFile);
+      // 1. Upload Resume File or use the existing profile resume URL
+      let finalResumeUrl = profileResumeUrl;
+      if (resumeFile) {
+        finalResumeUrl = await jobService.uploadResume(resumeFile);
+      }
       
       // 2. Submit Application
       await jobService.applyToJob({
         job_id: job!.id,
         applicant_id: candidateId,
-        resume_url: resumeUrl,
+        resume_url: finalResumeUrl,
         cover_letter: coverLetter || undefined,
         expected_salary: expectedSalary ? Number(expectedSalary) : undefined,
         notice_period: noticePeriod ? Number(noticePeriod) : undefined
@@ -133,8 +188,9 @@ export const JobApply = () => {
         const existingProfile = await jobService.getProfile(candidateId);
         await jobService.updateProfile(candidateId, {
           full_name: fullName.trim(),
+          email: email.trim(),
           phone: phone.trim() || undefined,
-          resume_url: resumeUrl,
+          resume_url: finalResumeUrl,
           skills: existingProfile?.skills || [],
           education: existingProfile?.education || "",
           headline: existingProfile?.headline || "Software Professional",
@@ -247,19 +303,20 @@ export const JobApply = () => {
                   <Input
                     type="email"
                     required
+                    readOnly
                     placeholder="amit.sharma@example.com"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="bg-background/60 border-border/50 text-xs h-10 rounded-xl"
+                    className="bg-background/40 border-border/50 text-xs h-10 rounded-xl cursor-not-allowed text-muted-foreground"
                   />
                 </div>
               </div>
 
               <div className="grid md:grid-cols-3 gap-4">
                 <div>
-                  <label className="font-semibold text-foreground/80 mb-1.5 block">Contact Phone (Optional)</label>
+                  <label className="font-semibold text-foreground/80 mb-1.5 block">Contact Phone</label>
                   <Input
                     type="tel"
+                    required
                     placeholder="+91 99887 76655"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
@@ -270,6 +327,7 @@ export const JobApply = () => {
                   <label className="font-semibold text-foreground/80 mb-1.5 block">Expected Salary (Annual INR)</label>
                   <Input
                     type="number"
+                    required
                     placeholder="e.g. 1200000"
                     value={expectedSalary}
                     onChange={(e) => setExpectedSalary(e.target.value)}
@@ -280,6 +338,7 @@ export const JobApply = () => {
                   <label className="font-semibold text-foreground/80 mb-1.5 block">Notice Period (Days)</label>
                   <Input
                     type="number"
+                    required
                     placeholder="e.g. 30"
                     value={noticePeriod}
                     onChange={(e) => setNoticePeriod(e.target.value)}
@@ -294,19 +353,30 @@ export const JobApply = () => {
                 <div className="border border-dashed border-border hover:border-primary/40 transition-colors bg-secondary/20 rounded-2xl p-6 text-center relative cursor-pointer group">
                   <input
                     type="file"
-                    required={!resumeFile}
+                    required={!resumeFile && !profileResumeUrl}
                     accept=".pdf,.doc,.docx"
                     onChange={handleFileChange}
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                   />
                   <div className="space-y-2">
                     <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center mx-auto text-primary group-hover:scale-105 transition-transform">
-                      <Upload className="w-4 h-4" />
+                      {resumeFile || profileResumeUrl ? (
+                        <FileText className="w-4 h-4" />
+                      ) : (
+                        <Upload className="w-4 h-4" />
+                      )}
                     </div>
                     {resumeFile ? (
                       <div>
                         <span className="font-bold text-foreground block text-xs">{resumeFile.name}</span>
                         <span className="text-[10px] text-muted-foreground">Click or drag to replace ({(resumeFile.size / (1024 * 1024)).toFixed(2)} MB)</span>
+                      </div>
+                    ) : profileResumeUrl ? (
+                      <div>
+                        <span className="font-bold text-foreground block text-xs">Using Profile Resume</span>
+                        <span className="text-[10px] text-muted-foreground">
+                          {profileResumeUrl.split("/").pop() || "Uploaded Resume Document"} (Click or drag to replace)
+                        </span>
                       </div>
                     ) : (
                       <div>

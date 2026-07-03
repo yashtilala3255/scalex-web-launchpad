@@ -49,6 +49,7 @@ export const AdminApplicantDetail = () => {
   const [application, setApplication] = useState<any | null>(null);
   const [statusHistories, setStatusHistories] = useState<ApplicationStatusHistory[]>([]);
   const [interviews, setInterviews] = useState<InterviewSchedule[]>([]);
+  const [allCandidateApplications, setAllCandidateApplications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Status Form State
@@ -101,13 +102,15 @@ export const AdminApplicantDetail = () => {
         setApplication(appDetails);
         setNewStatus(appDetails.status);
         
-        // Fetch histories and interviews
-        const [histList, intList] = await Promise.all([
+        // Fetch histories, interviews, and all applications by this candidate
+        const [histList, intList, candidateApps] = await Promise.all([
           jobService.getApplicationStatusHistory(id),
-          jobService.getInterviewSchedules(id)
+          jobService.getInterviewSchedules(id),
+          jobService.getApplications(appDetails.applicant_id)
         ]);
         setStatusHistories(histList);
         setInterviews(intList);
+        setAllCandidateApplications(candidateApps);
       } else {
         toast.error("Application not found");
         navigate("/admin/jobs");
@@ -161,9 +164,9 @@ export const AdminApplicantDetail = () => {
       } else {
         toast.error("Failed to update status");
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Status update error:", err);
-      toast.error("An error occurred while saving the status");
+      toast.error(err?.message || "An error occurred while saving the status");
     } finally {
       setUpdatingStatus(false);
     }
@@ -487,6 +490,49 @@ export const AdminApplicantDetail = () => {
                     >
                       <FileText className="w-4 h-4" /> View Resume Document
                     </Button>
+                  </div>
+                </div>
+
+                {/* Candidate's Job Applications Tracking List */}
+                <div className="border border-border bg-card rounded-2xl p-6 md:p-8 space-y-4 shadow-sm">
+                  <h3 className="text-sm font-bold text-foreground pb-2 border-b border-border/40 uppercase tracking-wider">
+                    Track All Applied Jobs ({allCandidateApplications.length})
+                  </h3>
+                  
+                  <div className="divide-y divide-border/30">
+                    {allCandidateApplications.map((otherApp) => {
+                      const isCurrent = otherApp.id === id;
+                      return (
+                        <div 
+                          key={otherApp.id} 
+                          className={`py-3.5 flex items-center justify-between gap-4 text-xs ${isCurrent ? 'bg-primary/5 -mx-4 px-4 rounded-xl border border-primary/20' : ''}`}
+                        >
+                          <div className="space-y-1">
+                            <span className="font-bold text-foreground block">
+                              {otherApp.job?.title || "Unknown Position"}
+                            </span>
+                            <span className="text-[10px] text-muted-foreground block font-mono">
+                              Applied: {new Date(otherApp.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            {getStatusBadge(otherApp.status)}
+                            {isCurrent ? (
+                              <span className="text-[10px] text-primary font-bold uppercase tracking-wider bg-primary/10 px-2 py-0.5 rounded-md border border-primary/20">
+                                Current View
+                              </span>
+                            ) : (
+                              <Link 
+                                to={`/admin/applicants/${otherApp.id}`}
+                                className="h-8 px-3 rounded-lg border border-border bg-background hover:bg-secondary/10 flex items-center justify-center font-bold text-[10px] text-foreground hover:text-primary transition-colors"
+                              >
+                                View Application
+                              </Link>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
 

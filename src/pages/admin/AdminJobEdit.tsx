@@ -55,7 +55,30 @@ export const AdminJobEdit = () => {
     job_role: "",
     industry_type: "IT Services & Consulting",
     role_category: "Software Development",
-    is_unpaid: false
+    is_unpaid: false,
+    is_internship_program: false,
+    program_mentorship_price: "4500",
+    program_mentorship_features: [
+      "Program Duration : 2 months",
+      "30 Hours of Content",
+      "3 Projects",
+      "Live Sessions During Project Execution & Training",
+      "Life time access for content and Customised Dashboard",
+      "Project Completion Certificate from Partnered Companies",
+      "Internship Offer Letter",
+      "Internship Completion Certificate",
+      "Customised Resume Builder"
+    ].join("\n"),
+    program_hybrid_price: "3500",
+    program_hybrid_features: [
+      "Program Duration : 2 months",
+      "30 Hours of Content",
+      "3 Major Projects",
+      "1 year Access for Dashboard and Content",
+      "Project Completion Certificate",
+      "Internship Offer Letter",
+      "Internship Completion Certificate"
+    ].join("\n")
   });
 
   useEffect(() => {
@@ -130,7 +153,34 @@ export const AdminJobEdit = () => {
               job_role: jobToEdit.job_role || "",
               industry_type: jobToEdit.industry_type || "IT Services & Consulting",
               role_category: jobToEdit.role_category || "Software Development",
-              is_unpaid: jobToEdit.is_unpaid || false
+              is_unpaid: jobToEdit.is_unpaid || false,
+              is_internship_program: jobToEdit.is_internship_program || false,
+              program_mentorship_price: jobToEdit.program_mentorship_price ? String(jobToEdit.program_mentorship_price) : "4500",
+              program_mentorship_features: Array.isArray(jobToEdit.program_mentorship_features)
+                ? jobToEdit.program_mentorship_features.join("\n")
+                : [
+                    "Program Duration : 2 months",
+                    "30 Hours of Content",
+                    "3 Projects",
+                    "Live Sessions During Project Execution & Training",
+                    "Life time access for content and Customised Dashboard",
+                    "Project Completion Certificate from Partnered Companies",
+                    "Internship Offer Letter",
+                    "Internship Completion Certificate",
+                    "Customised Resume Builder"
+                  ].join("\n"),
+              program_hybrid_price: jobToEdit.program_hybrid_price ? String(jobToEdit.program_hybrid_price) : "3500",
+              program_hybrid_features: Array.isArray(jobToEdit.program_hybrid_features)
+                ? jobToEdit.program_hybrid_features.join("\n")
+                : [
+                    "Program Duration : 2 months",
+                    "30 Hours of Content",
+                    "3 Major Projects",
+                    "1 year Access for Dashboard and Content",
+                    "Project Completion Certificate",
+                    "Internship Offer Letter",
+                    "Internship Completion Certificate"
+                  ].join("\n")
             });
           } else {
             toast.error("Job posting not found for editing");
@@ -225,7 +275,12 @@ export const AdminJobEdit = () => {
         job_role: form.job_role || undefined,
         industry_type: form.industry_type || undefined,
         role_category: form.role_category || undefined,
-        is_unpaid: form.is_unpaid
+        is_unpaid: form.is_unpaid,
+        is_internship_program: form.job_type === "internship" ? form.is_internship_program : false,
+        program_mentorship_price: (form.job_type === "internship" && form.is_internship_program) ? Number(form.program_mentorship_price) : undefined,
+        program_mentorship_features: (form.job_type === "internship" && form.is_internship_program) ? form.program_mentorship_features.split("\n").map((f) => f.trim()).filter(Boolean) : undefined,
+        program_hybrid_price: (form.job_type === "internship" && form.is_internship_program) ? Number(form.program_hybrid_price) : undefined,
+        program_hybrid_features: (form.job_type === "internship" && form.is_internship_program) ? form.program_hybrid_features.split("\n").map((f) => f.trim()).filter(Boolean) : undefined
       };
 
       let result = null;
@@ -505,6 +560,7 @@ export const AdminJobEdit = () => {
                       />
                     </div>
                   </div>
+
                 </div>
 
                 {/* Section: Job Role & Education Requirements */}

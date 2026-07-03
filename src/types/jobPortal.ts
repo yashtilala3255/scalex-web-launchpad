@@ -60,6 +60,13 @@ export interface Job {
   industry_type?: string;
   role_category?: string;
   is_unpaid?: boolean;
+  is_internship_program?: boolean;
+  program_mentorship_price?: number;
+  program_mentorship_features?: string[];
+  program_hybrid_price?: number;
+  program_hybrid_features?: string[];
+  program_show_mentorship?: boolean;
+  program_show_hybrid?: boolean;
   created_at: string;
   updated_at: string;
 
@@ -138,4 +145,17 @@ export interface InterviewSchedule {
 
   // Joined fields
   application?: Application;
+}
+
+export interface Certificate {
+  id: string;
+  candidate_name: string;
+  program_name: string;
+  certificate_type: "project_completion" | "internship_completion" | "internship_participation";
+  issue_date: string;
+  certificate_id: string;
+  recipient_email?: string;
+  logo_url?: string;
+  description?: string;
+  created_at?: string;
 }

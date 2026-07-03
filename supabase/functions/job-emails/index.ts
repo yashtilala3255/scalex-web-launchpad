@@ -152,7 +152,7 @@ serve(async (req) => {
           Authorization: `Bearer ${resendApiKey}`,
         },
         body: JSON.stringify({
-          from: "ScaleXWeb Careers <careers@scalexweb.com>",
+          from: "ScaleXWeb Careers <scalexwebsolution@gmail.com>",
           to: [email],
           subject: subject,
           html: htmlContent,

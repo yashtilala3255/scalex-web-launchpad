@@ -32,6 +32,7 @@ const JobDetails = lazy(() => import("./pages/JobDetails"));
 const AdminJobsList = lazy(() => import("./pages/admin/AdminJobsList"));
 const AdminCompliance = lazy(() => import("./pages/admin/AdminCompliance"));
 const AdminJobEdit = lazy(() => import("./pages/admin/AdminJobEdit"));
+const AdminProgramEdit = lazy(() => import("./pages/admin/AdminProgramEdit"));
 const JobApply = lazy(() => import("./pages/JobApply"));
 const SeekerApplications = lazy(() => import("./pages/SeekerApplications"));
 const AdminJobApplicants = lazy(() => import("./pages/admin/AdminJobApplicants"));
@@ -40,6 +41,7 @@ const SeekerSavedJobs = lazy(() => import("./pages/SeekerSavedJobs"));
 const SeekerJobAlerts = lazy(() => import("./pages/SeekerJobAlerts"));
 const CareersAuth = lazy(() => import("./pages/CareersAuth"));
 const SeekerProfile = lazy(() => import("./pages/SeekerProfile"));
+const VerifyCertificate = lazy(() => import("./pages/VerifyCertificate"));
 import ScrollToTop from "@/components/layout/ScrollToTop";
 
 
@@ -537,6 +539,7 @@ const App = () => {
                         <Route path="/jobs" element={<JobsDirectory />} />
                         <Route path="/jobs/:slug" element={<JobDetails />} />
                         <Route path="/jobs/:slug/apply" element={<JobApply />} />
+                        <Route path="/verify-certificate/:id" element={<VerifyCertificate />} />
                         <Route path="/dashboard/applications" element={<SeekerApplications />} />
                         <Route path="/dashboard/saved-jobs" element={<SeekerSavedJobs />} />
                         <Route path="/dashboard/job-alerts" element={<SeekerJobAlerts />} />
@@ -545,6 +548,8 @@ const App = () => {
                         <Route path="/admin/jobs" element={<AdminJobsList />} />
                         <Route path="/admin/jobs/new" element={<AdminJobEdit />} />
                         <Route path="/admin/jobs/edit/:id" element={<AdminJobEdit />} />
+                        <Route path="/admin/programs/new" element={<AdminProgramEdit />} />
+                        <Route path="/admin/programs/edit/:id" element={<AdminProgramEdit />} />
                         <Route path="/admin/compliance" element={<AdminCompliance />} />
                         <Route path="/admin/jobs/:id/applicants" element={<AdminJobApplicants />} />
                         <Route path="/admin/applicants/:id" element={<AdminApplicantDetail />} />

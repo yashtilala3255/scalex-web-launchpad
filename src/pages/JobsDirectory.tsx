@@ -127,16 +127,18 @@ export const JobsDirectory = () => {
     return htmlStr.replace(/<[^>]*>/g, "");
   };
 
-  const getJobTypeLabel = (type: JobType) => {
+  const getJobTypeLabel = (type?: JobType) => {
+    if (!type) return "Full-time";
     return type.split("_").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join("-");
   };
 
-  const getExperienceLabel = (level: ExperienceLevel) => {
+  const getExperienceLabel = (level?: ExperienceLevel) => {
+    if (!level) return "Entry Level";
     return level.charAt(0).toUpperCase() + level.slice(1);
   };
 
-  const regularJobs = jobs.filter((job) => job.job_type !== "internship");
-  const internships = jobs.filter((job) => job.job_type === "internship");
+  const regularJobs = (jobs || []).filter((job) => (job.job_type || "full_time") !== "internship");
+  const internships = (jobs || []).filter((job) => (job.job_type || "") === "internship");
 
   const renderJobCard = (job: Job) => {
     return (

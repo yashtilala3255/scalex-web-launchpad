@@ -239,17 +239,19 @@ export const JobDetails = () => {
 
                 <div className="space-y-4 pt-4">
                   <h3 className="text-base font-bold text-foreground pb-2 border-b border-border/40">Requirements</h3>
-                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
-                    {job.requirements}
-                  </p>
+                  <div 
+                    className="text-xs sm:text-sm text-muted-foreground leading-relaxed whitespace-pre-line"
+                    dangerouslySetInnerHTML={{ __html: job.requirements }}
+                  />
                 </div>
 
                 {job.responsibilities && (
                   <div className="space-y-4 pt-4">
                     <h3 className="text-base font-bold text-foreground pb-2 border-b border-border/40">Key Responsibilities</h3>
-                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
-                      {job.responsibilities}
-                    </p>
+                    <div 
+                      className="text-xs sm:text-sm text-muted-foreground leading-relaxed whitespace-pre-line"
+                      dangerouslySetInnerHTML={{ __html: job.responsibilities }}
+                    />
                   </div>
                 )}
                 {/* Structured Role & Education Specifications Table */}
@@ -296,6 +298,137 @@ export const JobDetails = () => {
                     </div>
                   </div>
                 </div>
+
+                {job.is_internship_program && (job.program_show_mentorship !== false || job.program_show_hybrid !== false) && (
+                  <div className="space-y-6 pt-6 border-t border-border/40 mt-8">
+                    <div className="text-center space-y-2">
+                      <h3 className="text-lg sm:text-xl font-black font-heading text-foreground">
+                        Enroll Now and Become One of 50,000+ Happy Learners!
+                      </h3>
+                      <div className="w-24 h-1 bg-primary mx-auto rounded-full" />
+                    </div>
+
+                    <div className={`grid gap-6 pt-4 ${
+                      (job.program_show_mentorship !== false && job.program_show_hybrid !== false)
+                        ? "md:grid-cols-2" 
+                        : "max-w-md mx-auto grid-cols-1"
+                    }`}>
+                      {/* Mentorship Option Card */}
+                      {job.program_show_mentorship !== false && (
+                        <div className="gradient-border bg-card rounded-3xl p-6 flex flex-col justify-between items-center text-center space-y-6 shadow-sm border border-border/40 hover:border-primary/30 transition-all duration-300 relative overflow-hidden group">
+                          <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-xl pointer-events-none" />
+                          <div className="space-y-3 w-full">
+                            <span className="inline-block px-3 py-1 rounded-lg bg-primary text-white text-[10px] font-bold uppercase tracking-wider">
+                              Mentorship
+                            </span>
+                            <div className="space-y-1">
+                              <div className="text-3xl font-black text-foreground">
+                                ₹ {job.program_mentorship_price || 4500}
+                              </div>
+                              <div className="text-[10px] text-muted-foreground font-semibold">
+                                +18% GST
+                              </div>
+                            </div>
+                          </div>
+
+                          <Button 
+                            onClick={() => {
+                              toast.success("Redirecting to Mentorship Program Payment Page...");
+                              window.open("https://rzp.io/l/scalex-mentorship", "_blank");
+                            }}
+                            className="w-full h-11 bg-primary hover:bg-primary/95 text-white font-bold rounded-xl text-xs"
+                          >
+                            Buy Now
+                          </Button>
+
+                          <ul className="text-left text-xs text-muted-foreground space-y-2.5 w-full pt-4 border-t border-border/20">
+                            {Array.isArray(job.program_mentorship_features) && job.program_mentorship_features.length > 0 ? (
+                              job.program_mentorship_features.map((feat, i) => (
+                                <li key={i} className="flex items-start gap-2">
+                                  <span className="text-primary mt-0.5 shrink-0 text-[10px]">🔸</span>
+                                  <span className="leading-tight" dangerouslySetInnerHTML={{ __html: feat }} />
+                                </li>
+                              ))
+                            ) : (
+                              [
+                                "Program Duration : 2 months",
+                                "30 Hours of Content",
+                                "3 Projects",
+                                "Live Sessions During Project Execution & Training",
+                                "Life time access for content and Customised Dashboard",
+                                "Project Completion Certificate from Partnered Companies",
+                                "Internship Offer Letter",
+                                "Internship Completion Certificate",
+                                "Customised Resume Builder"
+                              ].map((feat, i) => (
+                                <li key={i} className="flex items-start gap-2">
+                                  <span className="text-primary mt-0.5 shrink-0 text-[10px]">🔸</span>
+                                  <span className="leading-tight" dangerouslySetInnerHTML={{ __html: feat }} />
+                                </li>
+                              ))
+                            )}
+                          </ul>
+                        </div>
+                      )}
+
+                      {/* Hybrid Option Card */}
+                      {job.program_show_hybrid !== false && (
+                        <div className="gradient-border bg-card rounded-3xl p-6 flex flex-col justify-between items-center text-center space-y-6 shadow-sm border border-border/40 hover:border-purple-500/30 transition-all duration-300 relative overflow-hidden group">
+                          <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 rounded-full blur-xl pointer-events-none" />
+                          <div className="space-y-3 w-full">
+                            <span className="inline-block px-3 py-1 rounded-lg bg-purple-500 text-white text-[10px] font-bold uppercase tracking-wider">
+                              Hybrid
+                            </span>
+                            <div className="space-y-1">
+                              <div className="text-3xl font-black text-foreground">
+                                ₹ {job.program_hybrid_price || 3500}
+                              </div>
+                              <div className="text-[10px] text-muted-foreground font-semibold">
+                                +18% GST
+                              </div>
+                            </div>
+                          </div>
+
+                          <Button 
+                            onClick={() => {
+                              toast.success("Redirecting to Hybrid Program Payment Page...");
+                              window.open("https://rzp.io/l/scalex-hybrid", "_blank");
+                            }}
+                            className="w-full h-11 bg-purple-500 hover:bg-purple-600 text-white font-bold rounded-xl text-xs"
+                          >
+                            Buy Now
+                          </Button>
+
+                          <ul className="text-left text-xs text-muted-foreground space-y-2.5 w-full pt-4 border-t border-border/20">
+                            {Array.isArray(job.program_hybrid_features) && job.program_hybrid_features.length > 0 ? (
+                              job.program_hybrid_features.map((feat, i) => (
+                                <li key={i} className="flex items-start gap-2">
+                                  <span className="text-purple-500 mt-0.5 shrink-0 text-[10px]">🔸</span>
+                                  <span className="leading-tight" dangerouslySetInnerHTML={{ __html: feat }} />
+                                </li>
+                              ))
+                            ) : (
+                              [
+                                "Program Duration : 2 months",
+                                "30 Hours of Content",
+                                "3 Major Projects",
+                                "1 year Access for Dashboard and Content",
+                                "Project Completion Certificate",
+                                "Internship Offer Letter",
+                                "Internship Completion Certificate"
+                              ].map((feat, i) => (
+                                <li key={i} className="flex items-start gap-2">
+                                  <span className="text-purple-500 mt-0.5 shrink-0 text-[10px]">🔸</span>
+                                  <span className="leading-tight" dangerouslySetInnerHTML={{ __html: feat }} />
+                                </li>
+                              ))
+                            )}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
 
             </div>
@@ -303,21 +436,52 @@ export const JobDetails = () => {
             {/* Sidebar Sticky Actions Panel */}
             <div className="lg:col-span-1 space-y-6">
               <div className="border border-border bg-card rounded-2xl p-6 shadow-sm sticky top-24 space-y-4">
-                <h4 className="font-bold text-foreground text-sm">Interested in this role?</h4>
+                <h4 className="font-bold text-foreground text-sm">
+                  {job.is_internship_program ? "Ready to Enroll?" : "Interested in this role?"}
+                </h4>
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  Submit your application detailing your experiences and portfolio today. Our recruitment team reviews inquiries within 48 hours.
+                  {job.is_internship_program 
+                    ? "Select one of our professional paid internship packages below and enroll instantly to start your learning journey."
+                    : "Submit your application detailing your experiences and portfolio today. Our recruitment team reviews inquiries within 48 hours."}
                 </p>
                 
                 <div className="space-y-3 pt-2">
-                  <Link 
-                    to={`/jobs/${job.slug}/apply`} 
-                    onClick={() => trackEvent("job_application_started", { job_id: job.id, job_title: job.title })}
-                    className="block w-full"
-                  >
-                    <Button className="w-full h-11 rounded-xl bg-primary hover:bg-primary/95 text-white flex items-center justify-center gap-2 text-xs font-semibold">
-                      <Send className="w-4 h-4" /> Apply For This Job
-                    </Button>
-                  </Link>
+                  {job.is_internship_program ? (
+                    <div className="space-y-2.5">
+                      {job.program_show_mentorship !== false && (
+                        <Button 
+                          onClick={() => {
+                            toast.success("Redirecting to Mentorship Program Payment Page...");
+                            window.open("https://rzp.io/l/scalex-mentorship", "_blank");
+                          }}
+                          className="w-full h-11 rounded-xl bg-primary hover:bg-primary/95 text-white flex items-center justify-center gap-1.5 text-xs font-semibold"
+                        >
+                          Buy Mentorship (₹{job.program_mentorship_price || 4500})
+                        </Button>
+                      )}
+                      {job.program_show_hybrid !== false && (
+                        <Button 
+                          onClick={() => {
+                            toast.success("Redirecting to Hybrid Program Payment Page...");
+                            window.open("https://rzp.io/l/scalex-hybrid", "_blank");
+                          }}
+                          className="w-full h-11 rounded-xl bg-purple-500 hover:bg-purple-600 text-white flex items-center justify-center gap-1.5 text-xs font-semibold"
+                        >
+                          Buy Hybrid (₹{job.program_hybrid_price || 3500})
+                        </Button>
+                      )}
+                    </div>
+                  ) : (
+                    <Link 
+                      to={`/jobs/${job.slug}/apply`} 
+                      onClick={() => trackEvent("job_application_started", { job_id: job.id, job_title: job.title })}
+                      className="block w-full"
+                    >
+                      <Button className="w-full h-11 rounded-xl bg-primary hover:bg-primary/95 text-white flex items-center justify-center gap-2 text-xs font-semibold">
+                        <Send className="w-4 h-4" /> Apply For This Job
+                      </Button>
+                    </Link>
+                  )}
 
                   <div className="grid grid-cols-2 gap-2">
                     <Button 
