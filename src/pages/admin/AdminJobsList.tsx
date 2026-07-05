@@ -741,6 +741,57 @@ export const AdminJobsList = () => {
             </div>
           </div>
 
+          {/* Global Recruiter Portal Statistics */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            {/* Total Candidates Card */}
+            <div className="gradient-border bg-card rounded-2xl p-5 shadow-sm hover:glow-sm transition-all duration-300 flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
+                <Users className="w-5 h-5" />
+              </div>
+              <div className="space-y-0.5 text-left">
+                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">Registered Candidates</span>
+                <span className="text-xl font-extrabold text-foreground block leading-none">{candidates.length}</span>
+              </div>
+            </div>
+
+            {/* Total Jobs Card */}
+            <div className="gradient-border bg-card rounded-2xl p-5 shadow-sm hover:glow-sm transition-all duration-300 flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                <Briefcase className="w-5 h-5 animate-pulse" />
+              </div>
+              <div className="space-y-0.5 text-left">
+                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">Job Postings</span>
+                <span className="text-xl font-extrabold text-foreground block leading-none">
+                  {jobs.filter(j => j.job_type !== "internship").length}
+                </span>
+              </div>
+            </div>
+
+            {/* Total Internships Card */}
+            <div className="gradient-border bg-card rounded-2xl p-5 shadow-sm hover:glow-sm transition-all duration-300 flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
+                <Briefcase className="w-5 h-5 text-purple-500" />
+              </div>
+              <div className="space-y-0.5 text-left">
+                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">Internship Positions</span>
+                <span className="text-xl font-extrabold text-foreground block leading-none">
+                  {jobs.filter(j => j.job_type === "internship").length}
+                </span>
+              </div>
+            </div>
+
+            {/* Total Applications Card */}
+            <div className="gradient-border bg-card rounded-2xl p-5 shadow-sm hover:glow-sm transition-all duration-300 flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                <FileText className="w-5 h-5 text-primary" />
+              </div>
+              <div className="space-y-0.5 text-left">
+                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">Job Applications</span>
+                <span className="text-xl font-extrabold text-foreground block leading-none">{applications.length}</span>
+              </div>
+            </div>
+          </div>
+
           {/* Sub Tab View Toggles */}
           <div className="flex gap-2 border-b border-border/30 pb-4 mb-6 overflow-x-auto no-scrollbar">
             <Button
