@@ -1,8 +1,12 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Linkedin, Twitter, Instagram, Mail, MapPin, Clock, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import logoImg from "@/assets/logo.png";
 import { useSiteData } from "@/context/SiteDataContext";
+import { supabase, isSupabaseConfigured } from "@/lib/supabaseClient";
+import { toast } from "sonner";
 
 const companyLinks = [
   { name: "About Us", path: "/about" },
@@ -19,11 +23,48 @@ const legalLinks = [
 
 const Footer = () => {
   const { services, settings } = useSiteData();
+  const [footerEmail, setFooterEmail] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const displaySiteName = settings?.siteName || "ScaleXWeb";
   const contactEmail = settings?.contactEmail || "scalexwebsolution@gmail.com";
   const contactPhone = settings?.contactPhone || "+91 98765 43210";
   const contactAddress = settings?.contactAddress || "Ahmedabad, Gujarat, India";
+
+  const handleFooterSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!footerEmail.trim()) return;
+
+    try {
+      setSubmitting(true);
+      if (isSupabaseConfigured) {
+        const { data, error } = await supabase.functions.invoke("newsletter-emails", {
+          body: {
+            action: "subscribe",
+            email: footerEmail.trim().toLowerCase(),
+            topics: ["development", "saas", "ecommerce", "news"],
+            frequency: "weekly"
+          }
+        });
+
+        if (error) throw error;
+        if (data?.error) throw new Error(data.error);
+
+        toast.success("Subscribed successfully! Check your inbox for the welcome email.");
+        setFooterEmail("");
+      } else {
+        setTimeout(() => {
+          toast.success("Subscribed successfully! (Mock)");
+          setFooterEmail("");
+        }, 1000);
+      }
+    } catch (err: any) {
+      console.error("Footer subscribe error:", err);
+      toast.error(err.message || "An error occurred.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   const navServices = [...(services || [])];
   const hasFullStack = navServices.some((s) => s.path === "/services/full-stack-development");
@@ -54,6 +95,37 @@ const Footer = () => {
 
     {/* Main Footer */}
     <div className="relative container-tight py-14">
+      {/* Newsletter Signup CTA Bar */}
+      <div className="relative border-b border-border/30 pb-10 mb-12">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
+          <div className="space-y-1.5 text-center lg:text-left">
+            <h3 className="font-heading font-extrabold text-sm text-foreground flex items-center gap-2 justify-center lg:justify-start">
+              <Mail className="w-4 h-4 text-primary" /> Join Our Newsletter
+            </h3>
+            <p className="text-[11px] text-muted-foreground">
+              Actionable software architecture guidelines and SaaS business tactics. Weekly digest.
+            </p>
+          </div>
+          <form onSubmit={handleFooterSubscribe} className="flex gap-2 w-full max-w-md">
+            <Input
+              required
+              type="email"
+              placeholder="Enter your email address"
+              value={footerEmail}
+              onChange={(e) => setFooterEmail(e.target.value)}
+              className="bg-navy-dark border-border/50 text-xs h-10 rounded-xl"
+            />
+            <Button
+              type="submit"
+              disabled={submitting}
+              className="bg-primary hover:bg-primary/95 text-white font-bold h-10 px-6 rounded-xl text-xs flex items-center gap-1.5 shrink-0"
+            >
+              {submitting ? "..." : "Subscribe"} <ArrowRight className="w-3.5 h-3.5" />
+            </Button>
+          </form>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-14">
         {/* Brand */}
         <div className="lg:col-span-1">

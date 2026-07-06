@@ -2,6 +2,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import CookieBanner from "./CookieBanner";
 import { PolicyReacceptanceModal } from "./PolicyReacceptanceModal";
+import { NewsletterPopup } from "./NewsletterPopup";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -15,6 +16,7 @@ const Layout = ({ children }: LayoutProps) => {
       <Footer />
       <CookieBanner />
       <PolicyReacceptanceModal />
+      <NewsletterPopup />
     </div>
   );
 };

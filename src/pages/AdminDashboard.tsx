@@ -7,6 +7,7 @@ import { useSiteData, Inquiry } from "@/context/SiteDataContext";
 import { supabase, isSupabaseConfigured } from "@/lib/supabaseClient";
 import { getIconComponent } from "@/components/ui/icon-helper";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
@@ -19,7 +20,8 @@ import {
   Lock, LayoutDashboard, FileText, Settings, Database,
   Users, TrendingUp, CheckCircle, Clock, AlertCircle,
   Plus, Trash2, Edit2, Save, Download, RefreshCw,
-  LogOut, Globe, Phone, Mail, MapPin, ExternalLink, HelpCircle, Activity, Briefcase, ShieldAlert
+  LogOut, Globe, Phone, Mail, MapPin, ExternalLink, HelpCircle, Activity, Briefcase, ShieldAlert,
+  Search, Send, Upload, X
 } from "lucide-react";
 
 export const AdminDashboard = () => {
@@ -42,7 +44,7 @@ export const AdminDashboard = () => {
   const [showLoginForm, setShowLoginForm] = useState(false);
 
   // Tab State
-  const [activeTab, setActiveTab] = useState<"overview" | "content" | "inquiries" | "settings" | "analytics">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "content" | "inquiries" | "settings" | "analytics" | "newsletter">("overview");
 
   // Real Traffic Analytics State
   const [realTrafficLogs, setRealTrafficLogs] = useState<any[]>([]);
@@ -71,6 +73,218 @@ export const AdminDashboard = () => {
       fetchRealTrafficAnalytics();
     }
   }, [activeTab, isAuthenticated]);
+
+  // Newsletter State & Handlers
+  const [subscribers, setSubscribers] = useState<any[]>([]);
+  const [campaigns, setCampaigns] = useState<any[]>([]);
+  const [loadingNewsletter, setLoadingNewsletter] = useState(false);
+  const [newsletterSearch, setNewsletterSearch] = useState("");
+  const [newsletterView, setNewsletterView] = useState<"subscribers" | "campaigns">("subscribers");
+
+  const [showAddCampaign, setShowAddCampaign] = useState(false);
+  const [campaignSubject, setCampaignSubject] = useState("");
+  const [campaignContent, setCampaignContent] = useState("");
+  const [campaignTopics, setCampaignTopics] = useState<string[]>(["development", "saas", "ecommerce", "news"]);
+  const [campaignSendImmediately, setCampaignSendImmediately] = useState(true);
+  const [campaignScheduledAt, setCampaignScheduledAt] = useState("");
+  const [savingCampaign, setSavingCampaign] = useState(false);
+  const [selectedCampaignForAnalytics, setSelectedCampaignForAnalytics] = useState<any | null>(null);
+  const [showAnalyticsModal, setShowAnalyticsModal] = useState(false);
+
+  const loadNewsletterData = async () => {
+    if (!isSupabaseConfigured || !supabase) return;
+    try {
+      setLoadingNewsletter(true);
+      const { data: subsData, error: subsErr } = await supabase
+        .from("newsletter_subscribers")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (subsErr) throw subsErr;
+
+      const { data: campsData, error: campsErr } = await supabase
+        .from("newsletter_campaigns")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (campsErr) throw campsErr;
+
+      setSubscribers(subsData || []);
+      setCampaigns(campsData || []);
+    } catch (err: any) {
+      console.error("Newsletter data loading failed:", err);
+    } finally {
+      setLoadingNewsletter(false);
+    }
+  };
+
+  React.useEffect(() => {
+    if (activeTab === "newsletter" && isAuthenticated) {
+      loadNewsletterData();
+    }
+  }, [activeTab, isAuthenticated]);
+
+  const handleDeleteSubscriber = async (id: string) => {
+    if (!window.confirm("Are you sure you want to permanently delete this subscriber?")) return;
+    try {
+      if (isSupabaseConfigured && supabase) {
+        const { error } = await supabase.from("newsletter_subscribers").delete().eq("id", id);
+        if (error) throw error;
+        toast.success("Subscriber deleted successfully.");
+        loadNewsletterData();
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Failed to delete subscriber.");
+    }
+  };
+
+  const handleExportSubscribers = () => {
+    if (subscribers.length === 0) {
+      toast.error("No subscribers to export.");
+      return;
+    }
+    const headers = ["ID", "Email", "Name", "Status", "Tags", "Topics", "Frequency", "Created At"];
+    const rows = subscribers.map(s => [
+      s.id,
+      s.email,
+      s.name || "",
+      s.status,
+      (s.tags || []).join(";"),
+      (s.topics || []).join(";"),
+      s.frequency,
+      s.created_at
+    ]);
+    const csvContent = "data:text/csv;charset=utf-8," 
+      + [headers.join(","), ...rows.map(e => e.map(val => `"${val.replace(/"/g, '""')}"`).join(","))].join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `scalex_newsletter_subscribers_${new Date().toISOString().slice(0,10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleImportSubscribers = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async (evt) => {
+      try {
+        const text = evt.target?.result as string;
+        const lines = text.split("\n");
+        const imported = [];
+
+        for (let i = 1; i < lines.length; i++) {
+          const line = lines[i].trim();
+          if (!line) continue;
+
+          const cols = line.split(",").map(c => c.replace(/^["']|["']$/g, "").trim());
+          const email = cols[0];
+          const name = cols[1] || "";
+
+          if (email && email.includes("@")) {
+            imported.push({
+              email: email.toLowerCase(),
+              name: name || null,
+              status: "confirmed",
+              token: crypto.randomUUID(),
+              topics: ["development", "saas", "ecommerce", "news"],
+              frequency: "weekly"
+            });
+          }
+        }
+
+        if (imported.length === 0) {
+          toast.error("No valid subscriber records found in CSV.");
+          return;
+        }
+
+        if (isSupabaseConfigured && supabase) {
+          const { error } = await supabase.from("newsletter_subscribers").upsert(imported, { onConflict: "email" });
+          if (error) throw error;
+          toast.success(`Successfully imported ${imported.length} subscribers!`);
+          loadNewsletterData();
+        }
+      } catch (err: any) {
+        console.error("Import error:", err);
+        toast.error(err.message || "Failed to parse and import CSV file.");
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  const handleDeleteCampaign = async (id: string) => {
+    if (!window.confirm("Are you sure you want to delete this campaign? This will remove all associated send logs.")) return;
+    try {
+      if (isSupabaseConfigured && supabase) {
+        const { error } = await supabase.from("newsletter_campaigns").delete().eq("id", id);
+        if (error) throw error;
+        toast.success("Campaign deleted.");
+        loadNewsletterData();
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Failed to delete campaign.");
+    }
+  };
+
+  const handleComposeCampaignSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!campaignSubject.trim() || !campaignContent.trim()) {
+      toast.error("Subject and content are required.");
+      return;
+    }
+
+    try {
+      setSavingCampaign(true);
+      if (isSupabaseConfigured && supabase) {
+        const status = campaignSendImmediately ? "sent" : "scheduled";
+        const { data, error } = await supabase
+          .from("newsletter_campaigns")
+          .insert({
+            subject: campaignSubject.trim(),
+            content: campaignContent.trim(),
+            segment_topics: campaignTopics,
+            status: status,
+            scheduled_at: campaignSendImmediately ? null : campaignScheduledAt || null,
+            sent_at: campaignSendImmediately ? new Date().toISOString() : null
+          })
+          .select()
+          .single();
+
+        if (error) throw error;
+
+        if (campaignSendImmediately && data?.id) {
+          const { data: edgeData, error: edgeError } = await supabase.functions.invoke("newsletter-emails", {
+            body: {
+              action: "send-campaign",
+              campaignId: data.id
+            }
+          });
+
+          if (edgeError) throw edgeError;
+          if (edgeData?.error) throw new Error(edgeData.error);
+          toast.success("Campaign composed and dispatched successfully!");
+        } else {
+          toast.success("Campaign scheduled successfully!");
+        }
+
+        setCampaignSubject("");
+        setCampaignContent("");
+        setCampaignTopics(["development", "saas", "ecommerce", "news"]);
+        setCampaignSendImmediately(true);
+        setCampaignScheduledAt("");
+        setShowAddCampaign(false);
+        loadNewsletterData();
+      }
+    } catch (err: any) {
+      console.error("Compose campaign error:", err);
+      toast.error(err.message || "Failed to save or send campaign.");
+    } finally {
+      setSavingCampaign(false);
+    }
+  };
 
   // CMS Section Editing State
   const [selectedCmsSection, setSelectedCmsSection] = useState<
@@ -798,6 +1012,7 @@ export const AdminDashboard = () => {
                 { id: "overview", label: "Overview Metrics", icon: LayoutDashboard },
                 { id: "analytics", label: "Traffic Analytics", icon: Activity },
                 { id: "content", label: "Content Manager", icon: FileText },
+                { id: "newsletter", label: "Newsletters", icon: Mail },
                 { id: "inquiries", label: "Leads & Inquiries", icon: Users },
                 { id: "settings", label: "Settings & Setup", icon: Settings }
               ].map((tab) => {
@@ -2699,12 +2914,569 @@ DO $$ BEGIN CREATE POLICY "Allow admin CRUD logos" ON storage.objects FOR ALL US
                       </div>
                     </motion.div>
                   )}
+
+                  {/* NEWSLETTER TAB */}
+                  {activeTab === "newsletter" && (
+                    <motion.div
+                      key="newsletter"
+                      initial={{ opacity: 0, y: 15 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      className="space-y-6"
+                    >
+                      {/* Sub tab selectors and header actions */}
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border/40">
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => setNewsletterView("subscribers")}
+                            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                              newsletterView === "subscribers"
+                                ? "bg-primary text-white"
+                                : "bg-card border border-border/30 text-muted-foreground hover:text-foreground"
+                            }`}
+                          >
+                            Subscribers List
+                          </button>
+                          <button
+                            onClick={() => setNewsletterView("campaigns")}
+                            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                              newsletterView === "campaigns"
+                                ? "bg-primary text-white"
+                                : "bg-card border border-border/30 text-muted-foreground hover:text-foreground"
+                            }`}
+                          >
+                            Mailing Campaigns
+                          </button>
+                        </div>
+
+                        <div className="flex gap-2">
+                          {newsletterView === "subscribers" ? (
+                            <>
+                              <input
+                                type="file"
+                                id="csv-import-file-cms"
+                                accept=".csv"
+                                onChange={handleImportSubscribers}
+                                className="hidden"
+                              />
+                              <Button
+                                onClick={() => document.getElementById("csv-import-file-cms")?.click()}
+                                variant="outline"
+                                className="border-border rounded-xl h-9 text-xs gap-1.5 font-bold"
+                              >
+                                <Upload className="w-3.5 h-3.5" /> Import CSV
+                              </Button>
+                              <Button
+                                onClick={handleExportSubscribers}
+                                variant="outline"
+                                className="border-border rounded-xl h-9 text-xs gap-1.5 font-bold"
+                              >
+                                <Download className="w-3.5 h-3.5" /> Export CSV
+                              </Button>
+                            </>
+                          ) : (
+                            <Button
+                              onClick={() => setShowAddCampaign(true)}
+                              className="bg-primary hover:bg-primary/95 text-white rounded-xl h-9 text-xs gap-1.5 font-bold"
+                            >
+                              <Plus className="w-3.5 h-3.5" /> Compose Campaign
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* View Renderer */}
+                      {newsletterView === "subscribers" ? (
+                        <div className="space-y-4">
+                          <div className="border border-border bg-card rounded-2xl p-4 shadow-sm flex items-center justify-between gap-3 bg-secondary/10">
+                            <div className="relative max-w-xs w-full">
+                              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                              <Input
+                                placeholder="Search name, email, or tag..."
+                                value={newsletterSearch}
+                                onChange={(e) => setNewsletterSearch(e.target.value)}
+                                className="pl-10 bg-background/50 border-border/50 text-xs h-9 rounded-xl"
+                              />
+                            </div>
+                            <span className="text-xs text-muted-foreground">
+                              {subscribers.filter(s => 
+                                (s.email || "").toLowerCase().includes(newsletterSearch.toLowerCase()) ||
+                                (s.name || "").toLowerCase().includes(newsletterSearch.toLowerCase()) ||
+                                (s.tags || []).some((t: string) => t.toLowerCase().includes(newsletterSearch.toLowerCase()))
+                              ).length} active subscribers
+                            </span>
+                          </div>
+
+                          {loadingNewsletter ? (
+                            <div className="p-12 text-center text-xs text-muted-foreground">
+                              <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-primary mx-auto mb-3" />
+                              Loading subscribers list...
+                            </div>
+                          ) : subscribers.filter(s => 
+                            (s.email || "").toLowerCase().includes(newsletterSearch.toLowerCase()) ||
+                            (s.name || "").toLowerCase().includes(newsletterSearch.toLowerCase()) ||
+                            (s.tags || []).some((t: string) => t.toLowerCase().includes(newsletterSearch.toLowerCase()))
+                          ).length === 0 ? (
+                            <div className="border border-dashed border-border bg-card/25 rounded-2xl p-12 text-center">
+                              <Mail className="w-8 h-8 text-muted-foreground/60 mx-auto mb-3" />
+                              <h4 className="font-bold text-foreground text-sm">No Subscribers Found</h4>
+                              <p className="text-xs text-muted-foreground max-w-xs mx-auto mt-1">
+                                No subscribers match your search filter or no signups have occurred.
+                              </p>
+                            </div>
+                          ) : (
+                            <div className="border border-border bg-card rounded-2xl shadow-sm overflow-hidden text-left">
+                              <table className="w-full text-left text-xs border-collapse">
+                                <thead>
+                                  <tr className="bg-secondary/20 border-b border-border/40 text-muted-foreground font-mono font-bold text-[10px] uppercase tracking-wider">
+                                    <th className="p-4 pl-6">Subscriber Details</th>
+                                    <th className="p-4">Opt-in Status</th>
+                                    <th className="p-4">Frequency</th>
+                                    <th className="p-4">Selected Topics</th>
+                                    <th className="p-4">Subscribed Date</th>
+                                    <th className="p-4 pr-6 text-right font-mono">Actions</th>
+                                  </tr>
+                                </thead>
+                                <tbody className="divide-y divide-border/30">
+                                  {subscribers.filter(s => 
+                                    (s.email || "").toLowerCase().includes(newsletterSearch.toLowerCase()) ||
+                                    (s.name || "").toLowerCase().includes(newsletterSearch.toLowerCase()) ||
+                                    (s.tags || []).some((t: string) => t.toLowerCase().includes(newsletterSearch.toLowerCase()))
+                                  ).map((sub) => (
+                                    <tr key={sub.id} className="hover:bg-secondary/5 transition-colors">
+                                      <td className="p-4 pl-6">
+                                        <span className="font-bold text-foreground block">{sub.name || "Anonymous Subscriber"}</span>
+                                        <span className="text-[10px] text-muted-foreground block font-mono">{sub.email}</span>
+                                      </td>
+                                      <td className="p-4">
+                                        <Badge className={`rounded-full font-mono text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 ${
+                                          sub.status === 'confirmed' 
+                                            ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20' 
+                                            : sub.status === 'pending'
+                                            ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
+                                            : 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20'
+                                        }`}>
+                                          {sub.status}
+                                        </Badge>
+                                      </td>
+                                      <td className="p-4 font-mono font-bold text-slate-400">
+                                        {sub.frequency}
+                                      </td>
+                                      <td className="p-4">
+                                        <div className="flex flex-wrap gap-1 max-w-[200px]">
+                                          {(sub.topics || []).map((topic: string) => (
+                                            <Badge key={topic} variant="secondary" className="bg-secondary/40 text-[9px] px-1 py-0 rounded text-muted-foreground">
+                                              {topic}
+                                            </Badge>
+                                          ))}
+                                        </div>
+                                      </td>
+                                      <td className="p-4 font-semibold text-foreground">
+                                        {new Date(sub.created_at).toLocaleDateString("en-IN", {
+                                          year: "numeric",
+                                          month: "short",
+                                          day: "numeric"
+                                        })}
+                                      </td>
+                                      <td className="p-4 pr-6 text-right">
+                                        <Button 
+                                          variant="outline" 
+                                          onClick={() => handleDeleteSubscriber(sub.id)} 
+                                          className="h-8 w-8 p-0 rounded-lg border-border hover:bg-rose-500/10 hover:border-rose-500/20"
+                                          title="Delete Subscriber"
+                                        >
+                                          <Trash2 className="w-3.5 h-3.5 text-rose-500" />
+                                        </Button>
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="space-y-4">
+                          <div className="border border-border bg-card rounded-2xl p-4 shadow-sm flex items-center justify-between gap-3 bg-secondary/10">
+                            <div className="relative max-w-xs w-full">
+                              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                              <Input
+                                placeholder="Search subject line..."
+                                value={newsletterSearch}
+                                onChange={(e) => setNewsletterSearch(e.target.value)}
+                                className="pl-10 bg-background/50 border-border/50 text-xs h-9 rounded-xl"
+                              />
+                            </div>
+                            <span className="text-xs text-muted-foreground">
+                              {campaigns.filter(c => 
+                                (c.subject || "").toLowerCase().includes(newsletterSearch.toLowerCase())
+                              ).length} campaigns sent or drafted
+                            </span>
+                          </div>
+
+                          {loadingNewsletter ? (
+                            <div className="p-12 text-center text-xs text-muted-foreground">
+                              <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-primary mx-auto mb-3" />
+                              Loading campaigns...
+                            </div>
+                          ) : campaigns.filter(c => 
+                            (c.subject || "").toLowerCase().includes(newsletterSearch.toLowerCase())
+                          ).length === 0 ? (
+                            <div className="border border-dashed border-border bg-card/25 rounded-2xl p-12 text-center">
+                              <Send className="w-8 h-8 text-muted-foreground/60 mx-auto mb-3" />
+                              <h4 className="font-bold text-foreground text-sm">No Campaigns Found</h4>
+                              <p className="text-xs text-muted-foreground max-w-xs mx-auto mt-1">
+                                No newsletters have been created yet. Click "Compose Campaign" above to draft one.
+                              </p>
+                            </div>
+                          ) : (
+                            <div className="border border-border bg-card rounded-2xl shadow-sm overflow-hidden text-left">
+                              <table className="w-full text-left text-xs border-collapse">
+                                <thead>
+                                  <tr className="bg-secondary/20 border-b border-border/40 text-muted-foreground font-mono font-bold text-[10px] uppercase tracking-wider">
+                                    <th className="p-4 pl-6">Campaign Subject Line</th>
+                                    <th className="p-4">Mailing Status</th>
+                                    <th className="p-4">Audience Segment</th>
+                                    <th className="p-4">Recipients Count</th>
+                                    <th className="p-4">Dispatch/Sent Date</th>
+                                    <th className="p-4 pr-6 text-right font-mono">Actions</th>
+                                  </tr>
+                                </thead>
+                                <tbody className="divide-y divide-border/30">
+                                  {campaigns.filter(c => 
+                                    (c.subject || "").toLowerCase().includes(newsletterSearch.toLowerCase())
+                                  ).map((camp) => (
+                                    <tr key={camp.id} className="hover:bg-secondary/5 transition-colors">
+                                      <td className="p-4 pl-6">
+                                        <span className="font-bold text-foreground block">{camp.subject}</span>
+                                        <span className="text-[10px] text-muted-foreground block font-mono truncate max-w-xs">{camp.content.substring(0, 60)}...</span>
+                                      </td>
+                                      <td className="p-4">
+                                        <Badge className={`rounded-full font-mono text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 ${
+                                          camp.status === 'sent' 
+                                            ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20' 
+                                            : camp.status === 'scheduled'
+                                            ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
+                                            : 'bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/20'
+                                        }`}>
+                                          {camp.status}
+                                        </Badge>
+                                      </td>
+                                      <td className="p-4">
+                                        <div className="flex flex-wrap gap-1 max-w-[200px]">
+                                          {(camp.segment_topics || []).map((topic: string) => (
+                                            <Badge key={topic} variant="secondary" className="bg-secondary/40 text-[9px] px-1 py-0 rounded text-muted-foreground">
+                                              {topic}
+                                            </Badge>
+                                          ))}
+                                        </div>
+                                      </td>
+                                      <td className="p-4 font-mono font-bold text-foreground">
+                                        {camp.sent_count || 0} sent
+                                      </td>
+                                      <td className="p-4 font-semibold text-foreground">
+                                        {camp.sent_at ? new Date(camp.sent_at).toLocaleDateString("en-IN", {
+                                          year: "numeric",
+                                          month: "short",
+                                          day: "numeric",
+                                          hour: "2-digit",
+                                          minute: "2-digit"
+                                        }) : (camp.scheduled_at ? `Scheduled: ${new Date(camp.scheduled_at).toLocaleDateString()}` : 'Draft')}
+                                      </td>
+                                      <td className="p-4 pr-6 text-right">
+                                        <div className="flex justify-end gap-2">
+                                          {camp.status === 'sent' && (
+                                            <Button 
+                                              variant="outline" 
+                                              onClick={() => {
+                                                setSelectedCampaignForAnalytics(camp);
+                                                setShowAnalyticsModal(true);
+                                              }} 
+                                              className="h-8 text-[10px] rounded-lg border-border font-bold text-primary"
+                                            >
+                                              <TrendingUp className="w-3.5 h-3.5 mr-1" /> Analytics
+                                            </Button>
+                                          )}
+                                          <Button 
+                                            variant="outline" 
+                                            onClick={() => handleDeleteCampaign(camp.id)} 
+                                            className="h-8 w-8 p-0 rounded-lg border-border hover:bg-rose-500/10 hover:border-rose-500/20"
+                                            title="Delete Campaign"
+                                          >
+                                            <Trash2 className="w-3.5 h-3.5 text-rose-500" />
+                                          </Button>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </motion.div>
+                  )}
                 </AnimatePresence>
               )}
             </div>
           </div>
         </div>
       </section>
+      {/* =========================================================================
+          MODAL: COMPOSE CAMPAIGN
+         ========================================================================= */}
+      {showAddCampaign && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 backdrop-blur-sm px-4">
+          <div className="max-w-2xl w-full bg-background border border-border rounded-3xl p-5 sm:p-6 md:p-8 shadow-lg space-y-4 animate-scale-in max-h-[90vh] overflow-y-auto">
+            <div className="pb-3 border-b border-border/40 flex items-center justify-between">
+              <div className="space-y-1 text-left">
+                <h3 className="font-bold text-foreground text-sm flex items-center gap-2">
+                  <Send className="w-4 h-4 text-emerald-500" /> Compose Mailing Campaign
+                </h3>
+                <p className="text-[10px] text-muted-foreground mt-1">
+                  Compose HTML/Markdown newsletter and dispatch or schedule it to target lists.
+                </p>
+              </div>
+              <button 
+                type="button"
+                onClick={() => setShowAddCampaign(false)}
+                className="p-1.5 rounded-full hover:bg-secondary/20 text-muted-foreground hover:text-foreground shrink-0"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleComposeCampaignSubmit} className="space-y-4 text-xs text-left">
+              <div>
+                <label className="font-semibold text-foreground/80 mb-1.5 block">Subject Line</label>
+                <Input
+                  required
+                  placeholder="e.g. 5 Strategies to Scale SaaS in 2026"
+                  value={campaignSubject}
+                  onChange={(e) => setCampaignSubject(e.target.value)}
+                  className="bg-background/60 border-border/50 text-xs h-10 rounded-xl"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="font-semibold text-foreground/80 mb-1.5 block">Starter Templates Selector</label>
+                  <select
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val === "announcement") {
+                        setCampaignContent(`
+<div style="text-align: center; padding: 10px 0;">
+  <h2 style="color: #4f46e5; margin-bottom: 8px;">ScaleXWeb Launch Announcement</h2>
+  <p style="color: #64748b; font-size: 14px; margin-top: 0;">Exciting changes are coming to your platform</p>
+</div>
+<hr style="border: 0; border-top: 1px solid #f1f5f9; margin: 20px 0;"/>
+<p>Hello there,</p>
+<p>We are absolutely thrilled to announce the launch of our newest suite of digital solutions designed to help you scale your business faster and with less overhead.</p>
+<div style="margin: 30px 0; text-align: center;">
+  <a href="https://scalexweb.tech" style="background-color: #4f46e5; color: #ffffff; padding: 12px 30px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 14px; display: inline-block;">
+    Explore New Features
+  </a>
+</div>
+<p>Best regards,<br/><strong>The ScaleXWeb Engineering Team</strong></p>
+                        `.trim());
+                      } else if (val === "digest") {
+                        setCampaignContent(`
+<div style="padding: 10px 0;">
+  <h2 style="color: #4f46e5; margin-bottom: 8px;">Weekly Engineering Digest</h2>
+  <p style="color: #64748b; font-size: 14px; margin-top: 0;">Curated articles and SaaS architecture guidelines</p>
+</div>
+<hr style="border: 0; border-top: 1px solid #f1f5f9; margin: 20px 0;"/>
+<h3 style="color: #1e293b; margin-bottom: 5px;">1. Optimizing React Performance with Concurrent Loading</h3>
+<p>Learn how to utilize Concurrent Features in React 18+ to eliminate unnecessary re-renders and speed up interactive dashboards.</p>
+<br/>
+<h3 style="color: #1e293b; margin-bottom: 5px;">2. Multi-Tenant Database Design Patterns in Postgres</h3>
+<p>A deep dive into Schema-based separation vs Column-based partitioning for enterprise SaaS platforms.</p>
+<hr style="border: 0; border-top: 1px solid #f1f5f9; margin: 25px 0;"/>
+<p>Best regards,<br/><strong>ScaleXWeb Solutions</strong></p>
+                        `.trim());
+                      } else {
+                        setCampaignContent("");
+                      }
+                    }}
+                    className="w-full bg-background/60 border border-border/50 rounded-xl h-10 px-3 text-xs text-foreground focus:outline-none"
+                  >
+                    <option value="">-- Start Blank --</option>
+                    <option value="announcement">Announcement Template</option>
+                    <option value="digest">Weekly Engineering Digest Template</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="font-semibold text-foreground/80 mb-1.5 block">Segment Focus / Target Topics</label>
+                  <div className="flex flex-wrap gap-2 pt-1.5">
+                    {["development", "saas", "ecommerce", "news"].map((topic) => {
+                      const active = campaignTopics.includes(topic);
+                      return (
+                        <button
+                          key={topic}
+                          type="button"
+                          onClick={() => {
+                            setCampaignTopics(prev =>
+                              prev.includes(topic)
+                                ? prev.filter(t => t !== topic)
+                                : [...prev, topic]
+                            );
+                          }}
+                          className={`px-2.5 py-1 rounded-full text-[9px] font-bold border transition-colors ${
+                            active 
+                              ? 'bg-primary/10 border-primary/30 text-primary' 
+                              : 'bg-background border-border/40 text-muted-foreground'
+                          }`}
+                        >
+                          {topic}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label className="font-semibold text-foreground/80 mb-1.5 block">Campaign Content (HTML/Markdown Allowed)</label>
+                <Textarea
+                  required
+                  rows={8}
+                  placeholder="Type your newsletter body here... HTML tags like <h2>, <p>, <a> and <strong> are fully supported."
+                  value={campaignContent}
+                  onChange={(e) => setCampaignContent(e.target.value)}
+                  className="bg-background/60 border-border/50 text-xs rounded-xl font-mono"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-border/20 pt-4">
+                <div>
+                  <label className="font-semibold text-foreground/80 mb-1.5 block">Mailing Type</label>
+                  <div className="flex gap-4 pt-1.5">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        checked={campaignSendImmediately}
+                        onChange={() => setCampaignSendImmediately(true)}
+                        className="text-primary focus:ring-primary w-4 h-4"
+                      />
+                      <span>Send Immediately</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        checked={!campaignSendImmediately}
+                        onChange={() => setCampaignSendImmediately(false)}
+                        className="text-primary focus:ring-primary w-4 h-4"
+                      />
+                      <span>Schedule Later</span>
+                    </label>
+                  </div>
+                </div>
+
+                {!campaignSendImmediately && (
+                  <div>
+                    <label className="font-semibold text-foreground/80 mb-1.5 block">Scheduled Send Time</label>
+                    <Input
+                      required
+                      type="datetime-local"
+                      value={campaignScheduledAt}
+                      onChange={(e) => setCampaignScheduledAt(e.target.value)}
+                      className="bg-background/60 border-border/50 text-xs h-10 rounded-xl"
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div className="pt-4 border-t border-border/40 flex items-center justify-end gap-3">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => setShowAddCampaign(false)}
+                  className="h-10 px-4 rounded-xl border-border text-xs"
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  type="submit" 
+                  disabled={savingCampaign}
+                  className="h-10 px-6 bg-primary hover:bg-primary/95 text-white font-bold rounded-xl text-xs gap-1.5"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                  {savingCampaign ? "Saving..." : (campaignSendImmediately ? "Send Campaign" : "Schedule Campaign")}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================================
+          MODAL: CAMPAIGN ANALYTICS
+         ========================================================================= */}
+      {showAnalyticsModal && selectedCampaignForAnalytics && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 backdrop-blur-sm px-4">
+          <div className="max-w-md w-full bg-background border border-border rounded-3xl p-6 md:p-8 shadow-lg space-y-5 animate-scale-in">
+            <div className="pb-3 border-b border-border/40 flex items-center justify-between">
+              <h3 className="font-bold text-foreground text-sm flex items-center gap-2">
+                <TrendingUp className="w-4 h-4 text-primary" /> Campaign Analytics
+              </h3>
+              <button 
+                onClick={() => {
+                  setSelectedCampaignForAnalytics(null);
+                  setShowAnalyticsModal(false);
+                }}
+                className="p-1 rounded-full hover:bg-secondary/20 text-muted-foreground hover:text-foreground"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="space-y-4 text-xs text-left">
+              <div>
+                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">Subject Line</span>
+                <span className="text-xs font-bold text-foreground block pt-0.5">{selectedCampaignForAnalytics.subject}</span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 pt-2">
+                <div className="bg-secondary/10 p-4 border border-border/20 rounded-2xl text-center space-y-1">
+                  <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider block">Total Sent</span>
+                  <span className="text-lg font-extrabold text-foreground block leading-none">{selectedCampaignForAnalytics.sent_count}</span>
+                </div>
+                <div className="bg-secondary/10 p-4 border border-border/20 rounded-2xl text-center space-y-1">
+                  <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider block">Opens</span>
+                  <span className="text-lg font-extrabold text-indigo-500 block leading-none">
+                    {selectedCampaignForAnalytics.open_count} <span className="text-[10px] text-muted-foreground font-medium">({
+                      selectedCampaignForAnalytics.sent_count > 0 
+                        ? Math.round((selectedCampaignForAnalytics.open_count / selectedCampaignForAnalytics.sent_count) * 100)
+                        : 0
+                    }%)</span>
+                  </span>
+                </div>
+                <div className="bg-secondary/10 p-4 border border-border/20 rounded-2xl text-center space-y-1">
+                  <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider block">Clicks</span>
+                  <span className="text-lg font-extrabold text-emerald-500 block leading-none">
+                    {selectedCampaignForAnalytics.click_count} <span className="text-[10px] text-muted-foreground font-medium">({
+                      selectedCampaignForAnalytics.sent_count > 0 
+                        ? Math.round((selectedCampaignForAnalytics.click_count / selectedCampaignForAnalytics.sent_count) * 100)
+                        : 0
+                    }%)</span>
+                  </span>
+                </div>
+                <div className="bg-secondary/10 p-4 border border-border/20 rounded-2xl text-center space-y-1">
+                  <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider block">Unsubscribes</span>
+                  <span className="text-lg font-extrabold text-rose-500 block leading-none">{selectedCampaignForAnalytics.unsubscribe_count}</span>
+                </div>
+              </div>
+
+              <div className="text-[10px] text-muted-foreground leading-relaxed pt-2">
+                * Engagement statistics are computed dynamically using tracking pixels and wrapped destination links in outgoing emails.
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </Layout>
   );
 };

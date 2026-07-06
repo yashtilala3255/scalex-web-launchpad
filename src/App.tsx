@@ -42,6 +42,10 @@ const SeekerJobAlerts = lazy(() => import("./pages/SeekerJobAlerts"));
 const CareersAuth = lazy(() => import("./pages/CareersAuth"));
 const SeekerProfile = lazy(() => import("./pages/SeekerProfile"));
 const VerifyCertificate = lazy(() => import("./pages/VerifyCertificate"));
+const Newsletter = lazy(() => import("./pages/Newsletter"));
+const NewsletterConfirm = lazy(() => import("./pages/NewsletterConfirm"));
+const PreferenceCenter = lazy(() => import("./pages/PreferenceCenter"));
+const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 import ScrollToTop from "@/components/layout/ScrollToTop";
 
 
@@ -540,6 +544,10 @@ const App = () => {
                         <Route path="/jobs/:slug" element={<JobDetails />} />
                         <Route path="/jobs/:slug/apply" element={<JobApply />} />
                         <Route path="/verify-certificate/:id" element={<VerifyCertificate />} />
+                        <Route path="/newsletter" element={<Newsletter />} />
+                        <Route path="/newsletter/confirm" element={<NewsletterConfirm />} />
+                        <Route path="/newsletter/preferences" element={<PreferenceCenter />} />
+                        <Route path="/newsletter/unsubscribe" element={<Unsubscribe />} />
                         <Route path="/dashboard/applications" element={<SeekerApplications />} />
                         <Route path="/dashboard/saved-jobs" element={<SeekerSavedJobs />} />
                         <Route path="/dashboard/job-alerts" element={<SeekerJobAlerts />} />

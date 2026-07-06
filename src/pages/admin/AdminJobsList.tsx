@@ -29,7 +29,10 @@ import {
   Settings,
   Mail,
   Phone,
-  Award
+  Award,
+  Send,
+  Download,
+  Upload
 } from "lucide-react";
 import { toast } from "sonner";
 import { trackEvent } from "@/lib/analytics";
@@ -49,6 +52,8 @@ export const AdminJobsList = () => {
   const [companies, setCompanies] = useState<Company[]>([]);
   const [candidates, setCandidates] = useState<any[]>([]);
   const [applications, setApplications] = useState<any[]>([]);
+  const [subscribers, setSubscribers] = useState<any[]>([]);
+  const [campaigns, setCampaigns] = useState<any[]>([]);
   
   // Search filters
   const [search, setSearch] = useState("");
@@ -66,6 +71,17 @@ export const AdminJobsList = () => {
   const [certDescription, setCertDescription] = useState("");
   const [editingCertificateId, setEditingCertificateId] = useState<string | null>(null);
   const [savingCertificate, setSavingCertificate] = useState(false);
+
+  // Newsletter Campaigns State
+  const [showAddCampaign, setShowAddCampaign] = useState(false);
+  const [campaignSubject, setCampaignSubject] = useState("");
+  const [campaignContent, setCampaignContent] = useState("");
+  const [campaignTopics, setCampaignTopics] = useState<string[]>(["development", "saas", "ecommerce", "news"]);
+  const [campaignSendImmediately, setCampaignSendImmediately] = useState(true);
+  const [campaignScheduledAt, setCampaignScheduledAt] = useState("");
+  const [savingCampaign, setSavingCampaign] = useState(false);
+  const [selectedCampaignForAnalytics, setSelectedCampaignForAnalytics] = useState<any | null>(null);
+  const [showAnalyticsModal, setShowAnalyticsModal] = useState(false);
 
   // Stats Counters
   const [stats, setStats] = useState({
@@ -134,6 +150,23 @@ export const AdminJobsList = () => {
       setCandidates(candidatesList);
       setApplications(appsList);
       setCertificates(certsList);
+
+      let subsList: any[] = [];
+      let campsList: any[] = [];
+      if (isSupabaseConfigured && supabase) {
+        try {
+          const [subsRes, campsRes] = await Promise.all([
+            supabase.from("newsletter_subscribers").select("*").order("created_at", { ascending: false }),
+            supabase.from("newsletter_campaigns").select("*").order("created_at", { ascending: false })
+          ]);
+          subsList = subsRes.data || [];
+          campsList = campsRes.data || [];
+        } catch (dbErr) {
+          console.error("Error loading newsletter tables:", dbErr);
+        }
+      }
+      setSubscribers(subsList);
+      setCampaigns(campsList);
 
       // Compute statistics
       const total = allJobs.length;
@@ -499,6 +532,171 @@ export const AdminJobsList = () => {
     }
   };
 
+  const handleDeleteSubscriber = async (id: string) => {
+    if (!window.confirm("Are you sure you want to permanently delete this subscriber?")) return;
+    try {
+      if (isSupabaseConfigured && supabase) {
+        const { error } = await supabase.from("newsletter_subscribers").delete().eq("id", id);
+        if (error) throw error;
+        toast.success("Subscriber deleted successfully.");
+        loadDashboardData();
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Failed to delete subscriber.");
+    }
+  };
+
+  const handleExportSubscribers = () => {
+    if (subscribers.length === 0) {
+      toast.error("No subscribers to export.");
+      return;
+    }
+    const headers = ["ID", "Email", "Name", "Status", "Tags", "Topics", "Frequency", "Created At"];
+    const rows = subscribers.map(s => [
+      s.id,
+      s.email,
+      s.name || "",
+      s.status,
+      (s.tags || []).join(";"),
+      (s.topics || []).join(";"),
+      s.frequency,
+      s.created_at
+    ]);
+    const csvContent = "data:text/csv;charset=utf-8," 
+      + [headers.join(","), ...rows.map(e => e.map(val => `"${val.replace(/"/g, '""')}"`).join(","))].join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `scalex_newsletter_subscribers_${new Date().toISOString().slice(0,10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleImportSubscribers = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async (evt) => {
+      try {
+        const text = evt.target?.result as string;
+        const lines = text.split("\n");
+        const imported = [];
+
+        for (let i = 1; i < lines.length; i++) {
+          const line = lines[i].trim();
+          if (!line) continue;
+
+          const cols = line.split(",").map(c => c.replace(/^["']|["']$/g, "").trim());
+          const email = cols[0];
+          const name = cols[1] || "";
+
+          if (email && email.includes("@")) {
+            imported.push({
+              email: email.toLowerCase(),
+              name: name || null,
+              status: "confirmed",
+              token: crypto.randomUUID(),
+              topics: ["development", "saas", "ecommerce", "news"],
+              frequency: "weekly"
+            });
+          }
+        }
+
+        if (imported.length === 0) {
+          toast.error("No valid subscriber records found in CSV.");
+          return;
+        }
+
+        if (isSupabaseConfigured && supabase) {
+          const { error } = await supabase.from("newsletter_subscribers").upsert(imported, { onConflict: "email" });
+          if (error) throw error;
+          toast.success(`Successfully imported ${imported.length} subscribers!`);
+          loadDashboardData();
+        }
+      } catch (err: any) {
+        console.error("Import error:", err);
+        toast.error(err.message || "Failed to parse and import CSV file.");
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  const handleDeleteCampaign = async (id: string) => {
+    if (!window.confirm("Are you sure you want to delete this campaign? This will remove all associated send logs.")) return;
+    try {
+      if (isSupabaseConfigured && supabase) {
+        const { error } = await supabase.from("newsletter_campaigns").delete().eq("id", id);
+        if (error) throw error;
+        toast.success("Campaign deleted.");
+        loadDashboardData();
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Failed to delete campaign.");
+    }
+  };
+
+  const handleComposeCampaignSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!campaignSubject.trim() || !campaignContent.trim()) {
+      toast.error("Subject and content are required.");
+      return;
+    }
+
+    try {
+      setSavingCampaign(true);
+      if (isSupabaseConfigured && supabase) {
+        // 1. Save campaign
+        const status = campaignSendImmediately ? "sent" : "scheduled";
+        const { data, error } = await supabase
+          .from("newsletter_campaigns")
+          .insert({
+            subject: campaignSubject.trim(),
+            content: campaignContent.trim(),
+            segment_topics: campaignTopics,
+            status: status,
+            scheduled_at: campaignSendImmediately ? null : campaignScheduledAt || null,
+            sent_at: campaignSendImmediately ? new Date().toISOString() : null
+          })
+          .select()
+          .single();
+
+        if (error) throw error;
+
+        // 2. Dispatch campaign if immediate
+        if (campaignSendImmediately && data?.id) {
+          const { data: edgeData, error: edgeError } = await supabase.functions.invoke("newsletter-emails", {
+            body: {
+              action: "send-campaign",
+              campaignId: data.id
+            }
+          });
+
+          if (edgeError) throw edgeError;
+          if (edgeData?.error) throw new Error(edgeData.error);
+          toast.success("Campaign composed and dispatched successfully!");
+        } else {
+          toast.success("Campaign scheduled successfully!");
+        }
+
+        // Reset composer states
+        setCampaignSubject("");
+        setCampaignContent("");
+        setCampaignTopics(["development", "saas", "ecommerce", "news"]);
+        setCampaignSendImmediately(true);
+        setCampaignScheduledAt("");
+        setShowAddCampaign(false);
+        loadDashboardData();
+      }
+    } catch (err: any) {
+      console.error("Compose campaign error:", err);
+      toast.error(err.message || "Failed to save or send campaign.");
+    } finally {
+      setSavingCampaign(false);
+    }
+  };
+
   const getJobTypeLabel = (type: JobType) => {
     return type.split("_").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join("-");
   };
@@ -843,6 +1041,7 @@ export const AdminJobsList = () => {
             >
               <Award className="w-4 h-4 text-amber-500" /> Certificates
             </Button>
+
             <Link to="/admin/compliance">
               <Button
                 variant="outline"
@@ -1612,6 +1811,8 @@ export const AdminJobsList = () => {
               )}
             </div>
           )}
+
+
 
         </div>
       </section>
