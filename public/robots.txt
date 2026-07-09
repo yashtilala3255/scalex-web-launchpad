@@ -1,6 +1,12 @@
 User-agent: *
 Disallow: /admin
 Disallow: /admin/
+Disallow: /adminloginog
+Disallow: /adminloginfk
+Disallow: /dashboard
+Disallow: /dashboard/
+Disallow: /careers/auth
+Disallow: /verify-certificate/
 Allow: /
 
 Sitemap: https://scalexweb.tech/sitemap.xml
