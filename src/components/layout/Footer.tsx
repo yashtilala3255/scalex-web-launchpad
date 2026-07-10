@@ -13,6 +13,7 @@ const companyLinks = [
   { name: "Solutions", path: "/solutions" },
   { name: "SaaS Products", path: "/saas-products" },
   { name: "Contact", path: "/contact" },
+  { name: "Verify Certificate", path: "/verify" },
 ];
 
 const legalLinks = [

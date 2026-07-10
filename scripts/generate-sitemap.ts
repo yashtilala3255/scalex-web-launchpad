@@ -24,6 +24,7 @@ const entries: SitemapEntry[] = [
   { path: "/services/full-stack-development", changefreq: "monthly", priority: "0.7" },
   { path: "/jobs", changefreq: "daily", priority: "0.8" },
   { path: "/newsletter", changefreq: "weekly", priority: "0.6" },
+  { path: "/verify", changefreq: "weekly", priority: "0.8" },
   { path: "/privacy-policy", changefreq: "yearly", priority: "0.3" },
   { path: "/terms-of-service", changefreq: "yearly", priority: "0.3" },
   { path: "/cookie-policy", changefreq: "yearly", priority: "0.3" },

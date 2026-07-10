@@ -42,6 +42,7 @@ const SeekerJobAlerts = lazy(() => import("./pages/SeekerJobAlerts"));
 const CareersAuth = lazy(() => import("./pages/CareersAuth"));
 const SeekerProfile = lazy(() => import("./pages/SeekerProfile"));
 const VerifyCertificate = lazy(() => import("./pages/VerifyCertificate"));
+const Verify = lazy(() => import("./pages/Verify"));
 const Newsletter = lazy(() => import("./pages/Newsletter"));
 const NewsletterConfirm = lazy(() => import("./pages/NewsletterConfirm"));
 const PreferenceCenter = lazy(() => import("./pages/PreferenceCenter"));
@@ -544,6 +545,7 @@ const App = () => {
                         <Route path="/jobs/:slug" element={<JobDetails />} />
                         <Route path="/jobs/:slug/apply" element={<JobApply />} />
                         <Route path="/verify-certificate/:id" element={<VerifyCertificate />} />
+                        <Route path="/verify" element={<Verify />} />
                         <Route path="/newsletter" element={<Newsletter />} />
                         <Route path="/newsletter/confirm" element={<NewsletterConfirm />} />
                         <Route path="/newsletter/preferences" element={<PreferenceCenter />} />

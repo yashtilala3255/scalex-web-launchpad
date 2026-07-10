@@ -147,7 +147,7 @@ export const JobApply = () => {
       toast.error("Please enter your contact phone number");
       return;
     }
-    if (!expectedSalary.trim()) {
+    if (!expectedSalary.trim() && !job?.is_unpaid) {
       toast.error("Please enter your expected salary");
       return;
     }
@@ -179,7 +179,7 @@ export const JobApply = () => {
         applicant_id: candidateId,
         resume_url: finalResumeUrl,
         cover_letter: coverLetter || undefined,
-        expected_salary: expectedSalary ? Number(expectedSalary) : undefined,
+        expected_salary: job?.is_unpaid ? 0 : (expectedSalary ? Number(expectedSalary) : undefined),
         notice_period: noticePeriod ? Number(noticePeriod) : undefined
       });
 
@@ -323,17 +323,19 @@ export const JobApply = () => {
                     className="bg-background/60 border-border/50 text-xs h-10 rounded-xl"
                   />
                 </div>
-                <div>
-                  <label className="font-semibold text-foreground/80 mb-1.5 block">Expected Salary (Annual INR)</label>
-                  <Input
-                    type="number"
-                    required
-                    placeholder="e.g. 1200000"
-                    value={expectedSalary}
-                    onChange={(e) => setExpectedSalary(e.target.value)}
-                    className="bg-background/60 border-border/50 text-xs h-10 rounded-xl"
-                  />
-                </div>
+                {!job?.is_unpaid && (
+                  <div>
+                    <label className="font-semibold text-foreground/80 mb-1.5 block">Expected Salary (Annual INR)</label>
+                    <Input
+                      type="number"
+                      required
+                      placeholder="e.g. 1200000"
+                      value={expectedSalary}
+                      onChange={(e) => setExpectedSalary(e.target.value)}
+                      className="bg-background/60 border-border/50 text-xs h-10 rounded-xl"
+                    />
+                  </div>
+                )}
                 <div>
                   <label className="font-semibold text-foreground/80 mb-1.5 block">Notice Period (Days)</label>
                   <Input

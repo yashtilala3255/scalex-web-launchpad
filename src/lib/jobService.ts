@@ -1307,6 +1307,27 @@ export const jobService = {
     return certs.find((c) => c.id === id || c.certificate_id === id) || null;
   },
 
+  // Get all certificates associated with a recipient email
+  async getCertificatesByEmail(email: string): Promise<Certificate[]> {
+    if (isSupabaseConfigured && supabase) {
+      const { data, error } = await supabase
+        .from("certificates")
+        .select("*")
+        .eq("recipient_email", email.trim().toLowerCase())
+        .order("created_at", { ascending: false });
+      if (error) {
+        console.error("Supabase getCertificatesByEmail error:", error);
+        throw new Error(error.message);
+      }
+      return data || [];
+    }
+
+    // Local Storage Fallback
+    const stored = localStorage.getItem("scalex_certificates");
+    const certs: Certificate[] = stored ? JSON.parse(stored) : [];
+    return certs.filter((c) => (c.recipient_email || "").toLowerCase() === email.trim().toLowerCase());
+  },
+
   // Create/Issue a new certificate
   async createCertificate(certData: Omit<Certificate, "id" | "created_at">): Promise<Certificate> {
     const tempId = "cert-" + Math.random().toString(36).substr(2, 9);
